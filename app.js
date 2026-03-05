@@ -11,6 +11,7 @@ app.use(cookieParser())
  */
 const authRouter = require("./routes/auth.routes")
 const productRouter = require("./routes/product.routes");
+const messageRouter = require("./routes/message.routes")
 
 /**
  * - Use Routes
@@ -18,5 +19,7 @@ const productRouter = require("./routes/product.routes");
 
 app.use("/api/auth", authRouter)
 app.use("/api/products", productRouter);
+app.use("/api/messages", messageRouter)
+
 
 module.exports = app

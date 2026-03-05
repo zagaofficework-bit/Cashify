@@ -6,6 +6,7 @@ const userSchema = new mongoose.Schema(
       type: String,
       trim: true,
       lowercase: true,
+      unique: true,
     },
     firstname: String,
     lastname: String,
@@ -21,6 +22,11 @@ const userSchema = new mongoose.Schema(
     refreshToken: {
       type: String,
       select: false,
+    },
+    role: {
+      type: String,
+      enum: ["user", "admin"],
+      default: "user",
     },
   },
   { timestamps: true }

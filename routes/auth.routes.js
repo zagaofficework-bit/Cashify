@@ -13,7 +13,7 @@ router.post("/register", authController.userRegisterController);
  * - POST /api/auth/register/verify-otp
  * - Verify OTP and create user
  */
-router.post("/register/verify-otp", authController.verifyRegisterOtpController);
+router.post("/register/verify-otp",authController.verifyRegisterOtpController);
 
 /**
  * - POST /api/auth/login
@@ -31,5 +31,10 @@ router.post("/login/verify-otp", authController.verifyLoginOtpController);
  * - POST /api/auth/logout
  */
 router.post("/logout", authController.userLogoutController);
+
+/**
+ * - POST /api/auth/refresh-token 
+ */
+router.post("/refresh-token", authController.refreshAccessToken);
 
 module.exports = router;

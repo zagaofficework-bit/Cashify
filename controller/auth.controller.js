@@ -181,7 +181,7 @@ async function verifyLoginOtpController(req, res) {
 
 async function userLogoutController(req, res) {
   const token =
-    req.cookies.token || req.headers.authorization?.split(" ")[1];
+    req.cookies.refreshToken || req.headers.authorization?.split(" ")[1];
 
   if (!token) {
     return res.status(200).json({
@@ -200,6 +200,41 @@ async function userLogoutController(req, res) {
   });
 }
 
+async function refreshAccessToken(req, res) {
+  try {
+    const refreshToken = req.cookies.refreshToken;
+
+    if (!refreshToken) {
+      return res.status(401).json({
+        message: "Refresh token missing"
+      });
+    }
+
+    const decoded = jwt.verify(
+      refreshToken,
+      process.env.JWT_REFRESH_SECRET
+    );
+
+    const user = await userModel.findById(decoded.userId);
+
+    if (!user || user.refreshToken !== refreshToken) {
+      return res.status(401).json({
+        message: "Invalid refresh token"
+      });
+    }
+
+    const newAccessToken = generateAccessToken(user._id);
+
+    res.json({
+      accessToken: newAccessToken
+    });
+
+  } catch (error) {
+    res.status(401).json({
+      message: "Invalid refresh token"
+    });
+  }
+}
 ////////////////////////////////////////////////////////////////////
 //// EXPORT
 ////////////////////////////////////////////////////////////////////
@@ -210,4 +245,5 @@ module.exports = {
   userLoginController,
   verifyLoginOtpController,
   userLogoutController,
+  refreshAccessToken
 };
