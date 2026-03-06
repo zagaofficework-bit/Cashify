@@ -6,11 +6,12 @@ import Feedback from "../components/Feedback";
 import FAQ from "../components/FAQ";
 import DownloadAppBanner from "../components/DownloadAppBanner";
 import Info from "../components/Info";
+import SellCard from "../components/SellCard";
 
 
 export default function Home(){
     return (<>
-    <NavBar/>
+{/* <NavBar/>
     <NavMenu/>
     <BuyRefurbishedDevices/>
     <RefurbishedLaptops/>
@@ -18,6 +19,7 @@ export default function Home(){
     <FAQ/>
     <DownloadAppBanner/>
     <Info/>
+    <SellCard/> */}
     </>)
 }
 
