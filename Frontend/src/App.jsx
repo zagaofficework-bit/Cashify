@@ -1,5 +1,10 @@
 import Brands from "./UI/components/Brands";
 import Home from "./UI/pages/Home";
+import SellGamingConsole from "./UI/pages/SellGamingConsole";
+import SellOldLaptops from "./UI/pages/SellOldLaptops";
+import SellSmartSpeakers from "./UI/pages/SellSmartSpeakers";
+import SellSmartWatch from "./UI/pages/SellSmartWatch";
+import SellTablet from "./UI/pages/SellTablet";
 
 function App() {
   return (
@@ -16,7 +21,11 @@ function App() {
     //     <Route path="/otp" element={<OtpGeneration />} />
     //   </Routes>
     // </BrowserRouter> */}
-    <Brands/>
+  {/* <SellOldLaptops/> */}
+  {/* <SellTablet/> */}
+  {/* <SellGamingConsole/> */}
+  {/* <SellSmartWatch/> */}
+  <SellSmartSpeakers/>
     </>
    
   );

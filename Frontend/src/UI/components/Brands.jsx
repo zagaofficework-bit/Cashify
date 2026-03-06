@@ -133,7 +133,7 @@ export default function Brands() {
   return (
     <div>
       {/* Why Us Section */}
-      <section className="bg-teal-50 py-8 px-6">
+      <section className="bg-teal-50 py-8 px-6 mt-10">
         <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
           {features.map(({ icon, title, description }, idx) => (
             <div key={idx} className="flex items-start space-x-4">
@@ -148,7 +148,7 @@ export default function Brands() {
       </section>
 
       {/* Brands Section */}
-      <section className="max-w-7xl mx-auto px-6 py-8">
+      <section className="max-w-full mx-auto px-20 py-8 mt-10 mb-10 bg-gray-100">
         <h3 className="font-bold text-lg mb-6">Top Selling Brands</h3>
         <div className="relative">
           {/* Carousel */}

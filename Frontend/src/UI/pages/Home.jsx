@@ -6,6 +6,7 @@ import Feedback from "../components/Feedback";
 import FAQ from "../components/FAQ";
 import DownloadAppBanner from "../components/DownloadAppBanner";
 import Info from "../components/Info";
+import SellCard from "../components/SellCard";
 // import { BrowserRouter, Routes, Route, ServerRouter } from "react-router-dom";
 // import { Signup } from "./UI/pages/signup";
 // import OtpGeneration from "./UI/pages/OtpGeneration";
@@ -25,7 +26,7 @@ import Footer from "../components/Footer";
 
 export default function Home(){
     return (<>
-    <NavBar/>
+{/* <NavBar/>
     <NavMenu/>
      <SlidingAnimation/>
       <ServicesSection/>
@@ -43,6 +44,7 @@ export default function Home(){
       <Recents/>
     <DownloadAppBanner/>
     <Info/>
+    <SellCard/> */}
    
    
     

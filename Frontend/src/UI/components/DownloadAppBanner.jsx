@@ -2,7 +2,7 @@ import React from "react";
 
 export default function DownloadAppBanner() {
   return (
-    <section className="bg-teal-600 rounded text-white px-6 py-12 m-5">
+    <section className="bg-teal-600 rounded text-white px-6 py-12 ml-12 mr-12 mb-12 rounded-lg " >
       <div className="max-w-6xl mx-auto flex flex-col lg:flex-row items-center justify-between gap-10">
         
         {/* Left: Text + Buttons */}
