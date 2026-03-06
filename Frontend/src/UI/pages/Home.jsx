@@ -31,7 +31,7 @@ export default function Home(){
       <ServicesSection/>
     <SellOldDevice/>
 
-    <BuyRefurbishedDevices/>
+    <BuyRefurbisgithedDevices/>
     <RefurbishedLaptops/>
     <StoreSection/>
      
