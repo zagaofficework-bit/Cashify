@@ -25,8 +25,9 @@ import Footer from "../components/Footer";
 
 
 export default function Home(){
-    return (<>
-{/* <NavBar/>
+    return (
+    <>
+    {/* <NavBar/>
     <NavMenu/>
      <SlidingAnimation/>
       <ServicesSection/>
@@ -43,15 +44,9 @@ export default function Home(){
      <TrendingSection/>
       <Recents/>
     <DownloadAppBanner/>
-    <Info/>
-    <SellCard/> */}
-   
-   
-    
-   
-   
-   
-    <Footer/>
+    <Info/> */}
+    <SellCard/> 
+    {/* <Footer/> */}
     </>)
 }
 
