@@ -16,7 +16,7 @@ function App() {
     //     <Route path="/otp" element={<OtpGeneration />} />
     //   </Routes>
     // </BrowserRouter> */}
-    <Brands/>
+   <Home/>
     </>
    
   );
