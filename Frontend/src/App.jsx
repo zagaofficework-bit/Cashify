@@ -1,21 +1,25 @@
-import React from 'react'
-import Home from './UI/pages/Home'
-import Login from './UI/pages/Login'
-import Header from './UI/components/NavBar'
-import {BrowserRouter, Routes, Route} from "react-router-dom"
+import Brands from "./UI/components/Brands";
+import Home from "./UI/pages/Home";
 
-const App = () => {
+function App() {
   return (
-    <div>
-      <BrowserRouter>
+    <>
+     {/* <BrowserRouter>
       <Routes>
         <Route path="/" element={<Home/>}></Route>
         <Route path="/login" element={<Login/>}></Route>
       </Routes>
-      </BrowserRouter>
-      
-    </div>
-  )
+      </BrowserRouter> */}
+     {/* // <BrowserRouter>
+    //   <Routes>
+    //     <Route path="/" element={<Signup />} />
+    //     <Route path="/otp" element={<OtpGeneration />} />
+    //   </Routes>
+    // </BrowserRouter> */}
+    <Brands/>
+    </>
+   
+  );
 }
 
-export default App
+export default App;

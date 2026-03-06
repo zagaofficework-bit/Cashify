@@ -88,21 +88,26 @@ export default function BuyRefurbishedDevices() {
   };
 
   return (
-    <section className="px-6 py-10 bg-gray-50">
-      <h2 className="text-2xl font-bold mb-6 text-gray-800">
-        Buy Refurbished Devices
-      </h2>
-      <div className="overflow-hidden">
-        <div
-          className="flex transition-transform duration-500"
-          style={{ transform: `translateX(-${currentIndex * (100 / visibleItems)}%)` }}
-        >
+   <section className="bg-gray-50 py-10">
+  <div className="max-w-7xl mx-auto px-6">
+    <h2 className="text-2xl font-bold mb-6 text-gray-800">
+      Buy Refurbished Devices
+    </h2>
+
+    {/* Slider container with relative for arrows */}
+    <div className="relative overflow-hidden">
+
+      {/* Slider flex container */}
+      <div
+        className="flex transition-transform duration-500"
+        style={{ transform: `translateX(-${currentIndex * (100 / visibleItems)}%)` }}
+      >
         {products.map((product, index) => (
           <div
             key={index}
             className="flex-shrink-0 basis-1/5 p-4 bg-white rounded-lg shadow-md"
           >
-            <img src={product.img} alt="image" />
+            <img src={product.img} alt={product.name} className="w-full object-contain" />
             <h3 className="text-lg font-semibold text-gray-800 mb-2">
               {product.name}
             </h3>
@@ -121,20 +126,26 @@ export default function BuyRefurbishedDevices() {
           </div>
         ))}
       </div>
-      </div>
-       {/* Arrows */}
+
+      {/* Arrows */}
       <button
         onClick={prevSlide}
+        disabled={currentIndex === 0}
         className="absolute left-0 top-1/2 -translate-y-1/2 bg-white shadow-md rounded-full w-10 h-10 flex items-center justify-center disabled:opacity-40"
+        aria-label="Previous Slide"
       >
         &#x3c;
       </button>
       <button
         onClick={nextSlide}
+        disabled={currentIndex >= products.length - visibleItems}
         className="absolute right-0 top-1/2 -translate-y-1/2 bg-white shadow-md rounded-full w-10 h-10 flex items-center justify-center disabled:opacity-40"
+        aria-label="Next Slide"
       >
         &#x3e;
       </button>
-    </section>
+    </div>
+  </div>
+</section>
   );
 }

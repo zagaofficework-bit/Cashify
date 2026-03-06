@@ -2,10 +2,11 @@ import React from "react";
 
 export default function Info() {
   return (
-    <section className="px-6 py-10 bg-gray-50 text-gray-800">
-      <div className="max-w-4xl mx-auto space-y-8">
+    <section className="bg-gray-50 py-10">
+      <div className="max-w-7xl mx-auto px-6">
+
         {/* Intro */}
-        <div>
+        <div className="mb-8">
           <h2 className="text-2xl font-bold mb-4">
             Sell Your Old Phone & Buy Old Mobile Phones with Cashify
           </h2>
@@ -20,21 +21,27 @@ export default function Info() {
         </div>
 
         {/* Sell Your Old Phone */}
-        <div>
+        <div className="mb-8">
           <h3 className="text-xl font-semibold mb-3">Sell Your Old Phone</h3>
           <p className="mb-4">
             Ready to sell old mobile phone? With Cashify, you can easily get cash for your old mobile phone without leaving home. 
             Just share your phone’s details, and we’ll offer you the best price. It’s that simple:
           </p>
           <ul className="list-disc list-inside space-y-2">
-            <li><strong>Get an Instant Quote:</strong> Enter your phone’s details on our website or app.</li>
-            <li><strong>Free Home Pickup:</strong> Book a convenient time, and we’ll pick up your phone from your doorstep.</li>
-            <li><strong>Instant Cash Payment:</strong> Receive cash on the spot upon pickup.</li>
+            <li>
+              <strong>Get an Instant Quote:</strong> Enter your phone’s details on our website or app.
+            </li>
+            <li>
+              <strong>Free Home Pickup:</strong> Book a convenient time, and we’ll pick up your phone from your doorstep.
+            </li>
+            <li>
+              <strong>Instant Cash Payment:</strong> Receive cash on the spot upon pickup.
+            </li>
           </ul>
         </div>
 
         {/* Brands */}
-        <div>
+        <div className="mb-8">
           <h3 className="text-xl font-semibold mb-3">
             Which Mobile Phone Brands Can Be Sold and Bought On Cashify?
           </h3>
@@ -51,7 +58,7 @@ export default function Info() {
         </div>
 
         {/* Buy Old Mobile Phones */}
-        <div>
+        <div className="mb-8">
           <h3 className="text-xl font-semibold mb-3">Buy Old Mobile Phones</h3>
           <p className="mb-4">
             Cashify offers an affordable way to upgrade to a new phone. You can explore the vast selection of refurbished phones at low price. 
@@ -70,9 +77,11 @@ export default function Info() {
         </div>
 
         {/* How to Buy */}
-        <div>
+        <div className="mb-8">
           <h3 className="text-xl font-semibold mb-3">How to Buy Old Phone From Cashify</h3>
-          <p className="mb-4">Buying old mobile phone from Cashify is very easy and convenient. Just follow these steps:</p>
+          <p className="mb-4">
+            Buying old mobile phone from Cashify is very easy and convenient. Just follow these steps:
+          </p>
           <ul className="list-disc list-inside space-y-2">
             <li>Visit the website or App</li>
             <li>Click on the Buy Phone section to select the brand you want to purchase.</li>
@@ -93,6 +102,7 @@ export default function Info() {
             You can also choose your brand from the quick links below.
           </p>
         </div>
+
       </div>
     </section>
   );

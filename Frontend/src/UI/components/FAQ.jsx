@@ -54,7 +54,8 @@ export default function FAQ() {
   };
 
   return (
-    <section className="px-6 py-10 bg-gray-50">
+   <section className=" py-10">
+      <div className="max-w-7xl mx-auto px-6">
       <h2 className="text-2xl font-bold mb-6 text-gray-800">
         Frequently Asked Questions
       </h2>
@@ -109,6 +110,7 @@ export default function FAQ() {
         <button className="text-teal-600 font-semibold hover:underline">
           Load More FAQs
         </button>
+      </div>
       </div>
     </section>
   );
