@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import React from 'react'
 import Home from './UI/pages/Home'
 import Login from './UI/pages/Login'
@@ -20,7 +19,6 @@ const App = () => {
 }
 
 export default App
-=======
 import { BrowserRouter, Routes, Route, ServerRouter } from "react-router-dom";
 import { Signup } from "./UI/pages/signup";
 import OtpGeneration from "./UI/pages/OtpGeneration";
@@ -59,5 +57,3 @@ function App() {
   );
 }
 
-export default App;
->>>>>>> a4a14d0 (new files added)
