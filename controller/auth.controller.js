@@ -1,177 +1,290 @@
+const jwt = require("jsonwebtoken");
+const crypto = require("crypto");
 const userModel = require("../models/user.model");
-const generateAccessToken = require("../helper/auth.helper").generateAccessToken;
-const generateRefreshToken = require("../helper/auth.helper").generateRefreshToken;
-const generateOTP = require("../helper/auth.helper").generateOTP;
+const {
+  generateAccessToken,
+  generateRefreshToken,
+  generateOTP,
+} = require("../helper/auth.helper");
 const emailService = require("../service/email.service");
-const tokenBlackListModel = require("../models/blackList.model");
-// Temporary OTP store (use Redis in production)
-const otpStore = new Map();
+const redisClient = require("../config/redis.client");
 
 ////////////////////////////////////////////////////////////////////
-//// REGISTER - SEND OTP
+//// REDIS KEY HELPERS  — keeps key format consistent everywhere
+////////////////////////////////////////////////////////////////////
+
+const OTP_KEY              = (email) => `otp:${email}`;
+const BLACKLIST_KEY        = (token) => `blacklist:${token}`;
+const REGISTER_SESSION_KEY = (token) => `register_session:${token}`;
+const LOGIN_SESSION_KEY    = (token) => `login_session:${token}`;
+
+const OTP_TTL_SECONDS = 5 * 60; // 5 minutes
+
+////////////////////////////////////////////////////////////////////
+//// REGISTER — SEND OTP
 ////////////////////////////////////////////////////////////////////
 
 async function userRegisterController(req, res) {
   try {
     const { email, firstname, lastname, mobile } = req.body;
 
-    const isExists = await userModel.findOne({ mobile });
+    // 1. Check duplicate mobile & email in parallel
+    const [mobileExists, emailExists] = await Promise.all([
+      userModel.findOne({ mobile }).lean(),
+      userModel.findOne({ email }).lean(),
+    ]);
 
-    if (isExists) {
+    if (mobileExists) {
       return res.status(422).json({
         message: "User already exists with this mobile",
       });
     }
 
-    const otp = generateOTP();
+    if (emailExists) {
+      return res.status(422).json({
+        message: "User already exists with this email",
+      });
+    }
 
-    otpStore.set(email, {
-      otp,
-      userData: { email, firstname, lastname, mobile },
-      expires: Date.now() + 5 * 60 * 1000,
-    });
+    // 2. Rate-limit: block resend if a fresh OTP already exists
+    const existing = await redisClient.get(OTP_KEY(email));
+    if (existing) {
+      return res.status(429).json({
+        message: "OTP already sent. Please wait before requesting again",
+      });
+    }
 
+    // 3. Generate OTP and session token
+    const otp          = generateOTP();
+    const sessionToken = crypto.randomUUID();
+
+    // 4. Store OTP + session mapping in Redis in parallel
+    await Promise.all([
+      redisClient.setEx(
+        OTP_KEY(email),
+        OTP_TTL_SECONDS,
+        JSON.stringify({ otp, userData: { email, firstname, lastname, mobile } })
+      ),
+      redisClient.setEx(
+        REGISTER_SESSION_KEY(sessionToken),
+        OTP_TTL_SECONDS,
+        email
+      ),
+    ]);
+
+    // 5. Send OTP email
     await emailService.sendRegistrationEmail(email, firstname, otp);
 
     res.status(200).json({
       message: "OTP sent to your email for verification",
+      sessionToken,
     });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error("userRegisterController error:", error);
+    res.status(500).json({ message: "Registration failed. Please try again" });
   }
 }
 
 ////////////////////////////////////////////////////////////////////
-//// VERIFY REGISTER OTP
+//// VERIFY REGISTER OTP  — user only types OTP
 ////////////////////////////////////////////////////////////////////
 
 async function verifyRegisterOtpController(req, res) {
   try {
-    const { email, otp } = req.body;
+    const { otp, sessionToken } = req.body;
 
-    const record = otpStore.get(email);
-
-    if (!record || record.expires < Date.now()) {
+    // 1. Resolve email from session token
+    const email = await redisClient.get(REGISTER_SESSION_KEY(sessionToken));
+    if (!email) {
       return res.status(400).json({
-        message: "OTP expired",
+        message: "Session expired. Please register again",
       });
     }
 
+    // 2. Fetch OTP record from Redis
+    const raw = await redisClient.get(OTP_KEY(email));
+    if (!raw) {
+      return res.status(400).json({
+        message: "OTP expired or not found. Please register again",
+      });
+    }
+
+    const record = JSON.parse(raw);
+
+    // 3. Validate OTP
     if (record.otp !== otp) {
-      return res.status(400).json({
-        message: "Invalid OTP",
-      });
+      return res.status(400).json({ message: "Invalid OTP" });
     }
 
+    // 4. Create user
     const user = await userModel.create({
       ...record.userData,
       isVerified: true,
     });
 
-    otpStore.delete(email);
+    // 5. Cleanup both Redis keys in parallel
+    await Promise.all([
+      redisClient.del(OTP_KEY(email)),
+      redisClient.del(REGISTER_SESSION_KEY(sessionToken)),
+    ]);
 
-    const accessToken = generateAccessToken(user._id);
+    // 6. Generate tokens
+    const accessToken  = generateAccessToken(user._id);
     const refreshToken = generateRefreshToken(user._id);
 
+    // 7. Persist refresh token on user doc
     user.refreshToken = refreshToken;
     await user.save();
 
+    // 8. Set secure cookie
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
-      secure: true,
+      secure: process.env.NODE_ENV === "production",
       sameSite: "strict",
     });
+
+    // 9. Return response — exclude sensitive fields
+    const userObj = user.toObject();
+    delete userObj.refreshToken;
 
     res.status(201).json({
       message: "User registered successfully",
       accessToken,
-      user,
+      user: userObj,
     });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error("verifyRegisterOtpController error:", error);
+    res.status(500).json({ message: "OTP verification failed. Please try again" });
   }
 }
 
 ////////////////////////////////////////////////////////////////////
-//// LOGIN - SEND OTP
+//// LOGIN — SEND OTP
 ////////////////////////////////////////////////////////////////////
 
 async function userLoginController(req, res) {
   try {
     const { email } = req.body;
 
-    const user = await userModel.findOne({ email });
+    // 1. Find user — only fetch fields we need
+    const user = await userModel
+      .findOne({ email })
+      .select("_id email firstname")
+      .lean();
 
     if (!user) {
-      return res.status(404).json({
-        message: "User not found",
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // 2. Rate-limit: block resend if a fresh OTP already exists
+    const existing = await redisClient.get(OTP_KEY(email));
+    if (existing) {
+      return res.status(429).json({
+        message: "OTP already sent. Please wait before requesting again",
       });
     }
 
-    const otp = generateOTP();
+    // 3. Generate OTP and session token
+    const otp          = generateOTP();
+    const sessionToken = crypto.randomUUID();
 
-    otpStore.set(email, {
-      otp,
-      userId: user._id,
-      email: user.email,
-      expires: Date.now() + 5 * 60 * 1000,
-    });
+    // 4. Store OTP + session mapping in Redis in parallel
+    await Promise.all([
+      redisClient.setEx(
+        OTP_KEY(email),
+        OTP_TTL_SECONDS,
+        JSON.stringify({ otp, userId: user._id.toString() })
+      ),
+      redisClient.setEx(
+        LOGIN_SESSION_KEY(sessionToken),
+        OTP_TTL_SECONDS,
+        email
+      ),
+    ]);
 
+    // 5. Send OTP email
     await emailService.sendLoginEmail(user.email, otp);
 
     res.status(200).json({
       message: "OTP sent to your email",
+      sessionToken,
     });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error("userLoginController error:", error);
+    res.status(500).json({ message: "Login failed. Please try again" });
   }
 }
 
 ////////////////////////////////////////////////////////////////////
-//// VERIFY LOGIN OTP
+//// VERIFY LOGIN OTP  — user only types OTP
 ////////////////////////////////////////////////////////////////////
 
 async function verifyLoginOtpController(req, res) {
   try {
-    const { email, otp } = req.body;
+    const { otp, sessionToken } = req.body;
 
-    const record = otpStore.get(email);
-
-    if (!record || record.expires < Date.now()) {
+    // 1. Resolve email from session token
+    const email = await redisClient.get(LOGIN_SESSION_KEY(sessionToken));
+    if (!email) {
       return res.status(400).json({
-        message: "OTP expired",
+        message: "Session expired. Please login again",
       });
     }
 
+    // 2. Fetch OTP record from Redis
+    const raw = await redisClient.get(OTP_KEY(email));
+    if (!raw) {
+      return res.status(400).json({
+        message: "OTP expired or not found. Please login again",
+      });
+    }
+
+    const record = JSON.parse(raw);
+
+    // 3. Validate OTP
     if (record.otp !== otp) {
-      return res.status(400).json({
-        message: "Invalid OTP",
-      });
+      return res.status(400).json({ message: "Invalid OTP" });
     }
 
+    // 4. Fetch user
     const user = await userModel.findById(record.userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
 
-    otpStore.delete(email);
+    // 5. Cleanup both Redis keys in parallel
+    await Promise.all([
+      redisClient.del(OTP_KEY(email)),
+      redisClient.del(LOGIN_SESSION_KEY(sessionToken)),
+    ]);
 
-    const accessToken = generateAccessToken(user._id);
+    // 6. Generate tokens
+    const accessToken  = generateAccessToken(user._id);
     const refreshToken = generateRefreshToken(user._id);
 
+    // 7. Persist refresh token
     user.refreshToken = refreshToken;
     await user.save();
 
+    // 8. Set secure cookie
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
-      secure: true,
+      secure: process.env.NODE_ENV === "production",
       sameSite: "strict",
     });
+
+    // 9. Return response — exclude sensitive fields
+    const userObj = user.toObject();
+    delete userObj.refreshToken;
 
     res.status(200).json({
       message: "Login successful",
       accessToken,
-      user,
+      user: userObj,
     });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error("verifyLoginOtpController error:", error);
+    res.status(500).json({ message: "OTP verification failed. Please try again" });
   }
 }
 
@@ -180,61 +293,103 @@ async function verifyLoginOtpController(req, res) {
 ////////////////////////////////////////////////////////////////////
 
 async function userLogoutController(req, res) {
-  const token =
-    req.cookies.refreshToken || req.headers.authorization?.split(" ")[1];
+  try {
+    const accessToken  = req.token;
+    const refreshToken = req.cookies.refreshToken;
 
-  if (!token) {
-    return res.status(200).json({
-      message: "User logged out successfully",
+    const blacklistPromises = [];
+
+    if (accessToken) {
+      const decoded = jwt.decode(accessToken);
+      const ttl = decoded?.exp
+        ? decoded.exp - Math.floor(Date.now() / 1000)
+        : 900;
+      if (ttl > 0) {
+        blacklistPromises.push(
+          redisClient.setEx(BLACKLIST_KEY(accessToken), ttl, "1")
+        );
+      }
+    }
+
+    if (refreshToken) {
+      const decoded = jwt.decode(refreshToken);
+      const ttl = decoded?.exp
+        ? decoded.exp - Math.floor(Date.now() / 1000)
+        : 60 * 60 * 24 * 7;
+      if (ttl > 0) {
+        blacklistPromises.push(
+          redisClient.setEx(BLACKLIST_KEY(refreshToken), ttl, "1")
+        );
+      }
+    }
+
+    await Promise.all(blacklistPromises);
+
+    if (req.user?._id) {
+      await userModel.findByIdAndUpdate(req.user._id, { refreshToken: null });
+    }
+
+    res.clearCookie("refreshToken", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
     });
+
+    res.status(200).json({ message: "User logged out successfully" });
+  } catch (error) {
+    console.error("userLogoutController error:", error);
+    res.status(500).json({ message: "Logout failed. Please try again" });
   }
-
-  await tokenBlackListModel.create({
-    token: token,
-  });
-
-  res.clearCookie("refreshToken");
-
-  res.status(200).json({
-    message: "User logged out successfully",
-  });
 }
 
-async function refreshAccessToken(req, res) {
+////////////////////////////////////////////////////////////////////
+//// REFRESH ACCESS TOKEN
+////////////////////////////////////////////////////////////////////
+
+async function refreshAccessTokenController(req, res) {
   try {
     const refreshToken = req.cookies.refreshToken;
 
     if (!refreshToken) {
+      return res.status(401).json({ message: "Refresh token missing" });
+    }
+
+    const isBlacklisted = await redisClient.get(BLACKLIST_KEY(refreshToken));
+    if (isBlacklisted) {
       return res.status(401).json({
-        message: "Refresh token missing"
+        message: "Refresh token has been invalidated. Please login again",
       });
     }
 
-    const decoded = jwt.verify(
-      refreshToken,
-      process.env.JWT_REFRESH_SECRET
-    );
+    const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
 
-    const user = await userModel.findById(decoded.userId);
+    const user = await userModel
+      .findById(decoded.userId)
+      .select("refreshToken");
 
     if (!user || user.refreshToken !== refreshToken) {
       return res.status(401).json({
-        message: "Invalid refresh token"
+        message: "Invalid refresh token. Please login again",
       });
     }
 
     const newAccessToken = generateAccessToken(user._id);
 
-    res.json({
-      accessToken: newAccessToken
-    });
-
+    res.status(200).json({ accessToken: newAccessToken });
   } catch (error) {
-    res.status(401).json({
-      message: "Invalid refresh token"
-    });
+    console.error("refreshAccessTokenController error:", error);
+
+    if (error.name === "TokenExpiredError") {
+      return res.status(401).json({
+        message: "Refresh token expired. Please login again",
+        code: "REFRESH_TOKEN_EXPIRED",
+      });
+    }
+
+    res.status(401).json({ message: "Invalid refresh token" });
   }
 }
+
 ////////////////////////////////////////////////////////////////////
 //// EXPORT
 ////////////////////////////////////////////////////////////////////
@@ -245,5 +400,5 @@ module.exports = {
   userLoginController,
   verifyLoginOtpController,
   userLogoutController,
-  refreshAccessToken
+  refreshAccessTokenController,
 };

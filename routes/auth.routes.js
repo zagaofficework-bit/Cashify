@@ -1,5 +1,6 @@
 const express = require("express");
 const authController = require("../controller/auth.controller");
+const authMiddleware = require("../middleware/auth.middleware");
 
 const router = express.Router();
 
@@ -30,11 +31,11 @@ router.post("/login/verify-otp", authController.verifyLoginOtpController);
 /**
  * - POST /api/auth/logout
  */
-router.post("/logout", authController.userLogoutController);
+router.post("/logout",authMiddleware.authMiddleware, authController.userLogoutController);
 
 /**
  * - POST /api/auth/refresh-token 
  */
-router.post("/refresh-token", authController.refreshAccessToken);
+router.post("/refresh-token", authController.refreshAccessTokenController);
 
 module.exports = router;
