@@ -8,10 +8,15 @@ import SellSmartWatch from "./UI/pages/SellSmartWatch";
 import SellTablet from "./UI/pages/SellTablet";
 import SellTV from "./UI/pages/SellTV";
 import ProductDetails from "./UI/pages/ProductDetails";
+import BuyAccessories from "./UI/services/NewAccessories";
+import Recycle from "./UI/services/Recycle";
+import FindNewPhone from "./UI/pages/FindNewPhone";
+import { ThemeProvider } from "@material-tailwind/react";
 
 function App() {
   return (
     <>
+    
      {/* <BrowserRouter>
       <Routes>
         <Route path="/" element={<Home/>}></Route>
@@ -31,7 +36,12 @@ function App() {
   {/* <SellSmartSpeakers/> */}
    {/* <SellTV/>  */}
    {/* <SellPhones/> */}
-<ProductDetails/>
+{/* <ProductDetails/> */}
+   {/* <BuyAccessories/> */}
+   {/* <Recycle /> */}
+   <ThemeProvider>
+   <FindNewPhone/>
+   </ThemeProvider>
     </>
    
   );

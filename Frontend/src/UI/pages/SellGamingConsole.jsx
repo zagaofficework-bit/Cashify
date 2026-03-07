@@ -8,6 +8,7 @@ import Feedback from '../components/Feedback';
 import FAQ from '../components/FAQ';
 import DownloadAppBanner from '../components/DownloadAppBanner';
 import Footer from '../components/Footer';
+import HowCashifyWorks from '../components/HowCashifyWorks';
 
 
 const SellGamingConsole = () => {
@@ -16,6 +17,7 @@ const SellGamingConsole = () => {
      <NavBar/>
         <NavMenu/>
         <SellCard title="Sell old Gaming Console"/>
+        <HowCashifyWorks />
         <DealComponent/>
         <Brands/>
         <Feedback/>

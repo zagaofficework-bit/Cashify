@@ -1,10 +1,21 @@
 import React from "react";
 import BuyRefurbishedDevices from "../components/BuyRefurbishedDevices";
 import CashifyTrust from "../components/CashifyTrust";
+import WhyCashify from "../components/WhyCashify";
+import FAQ from "../components/FAQ";
+import RatingReviews from "../components/RatingReview";
+import Footer from "../components/Footer";
 
 export default function RefurbishedPhoneCard() {
-    
+    const specs = [
+    {  label: "Screen Size", value: "17.22 cm (6.78 inch)" },
+    {  label: "Chipset", value: "MediaTek Dimensity 9200 MT6985" },
+    {  label: "Pixel Density", value: "453 ppi" },
+    {  label: "Network Support", value: "5G" },
+    {  label: "SIM Slot(s)", value: "Dual SIM, GSM+GSM" },
+  ];
   return (
+    <>
     <div className="m-10">
       <div className="flex flex-col md:flex-row gap-8">
         <div  className="max-w-100 h-100 mx-30 bg-white rounded-lg shadow-lg p-6">
@@ -126,8 +137,8 @@ export default function RefurbishedPhoneCard() {
       <BuyRefurbishedDevices title="You May Also Like"/>
       <CashifyTrust/>
 
-    <section className="bg-gray-50 px-6 py-12">
-      <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-lg p-6 space-y-8">
+     
+      <div className="max-w-5xl mx-auto p-6 space-y-8">
         
         {/* Grade Tabs */}
         <div>
@@ -145,7 +156,7 @@ export default function RefurbishedPhoneCard() {
           </div>
 
           {/* Checklist */}
-          <ul className="space-y-4 text-gray-700 text-sm">
+          <ul>
             <li className="flex items-start gap-2">
               <span className="text-green-600 font-bold">✔</span>
               <span><strong>Overall</strong> – No functional defects</span>
@@ -154,20 +165,25 @@ export default function RefurbishedPhoneCard() {
               <span className="text-green-600 font-bold">✔</span>
               <span>
                 <strong>Screen Glass</strong> – Minimal scratches, barely noticeable when screen is off
-                <img
-              src="/images/device-back.png" // replace with actual image
+                <li/>
+                <li>
+                  <img
+              src="./assets/img/ScreenGlass.png" // replace with actual image
               alt="Back view"
-              className="w-28 h-28 object-cover rounded border"
+              className="w-70 h-70 object-contain"
             />
+            </li>
               </span>
             </li>
             <li className="flex items-start gap-2">
               <span className="text-green-600 font-bold">✔</span>
               <span><strong>Display</strong> – Perfect condition</span>
+              </li>
+              <li>
               <img
-              src="/images/device-back.png" // replace with actual image
+              src="./assets/img/Display.png" // replace with actual image
               alt="Back view"
-              className="w-28 h-28 object-cover rounded border"
+              className="w-70 h-70 object-contain"
             />
             </li>
           </ul>
@@ -184,20 +200,52 @@ export default function RefurbishedPhoneCard() {
           <div className="flex gap-4">
             
             <img
-              src="/images/device-side.png" // replace with actual image
+              src="./assets/img/Cosmetic1.png" // replace with actual image
               alt="Side view"
-              className="w-28 h-28 object-cover rounded border"
+              className="w-70 h-70 object-contain"
             />
             <img
-              src="/images/device-bottom.png" // replace with actual image
+              src="./assets/img/Cosmetic2.png" // replace with actual image
               alt="Bottom view"
-              className="w-28 h-28 object-cover rounded border"
+              className="w-70 h-70 object-contain"
             />
           </div>
         </div>
       </div>
+    
+    <WhyCashify/>
+    
+    <section className="bg-gray-50 px-6 py-12">
+      <div className="max-w-6xl mx-auto">
+        <h2 className="text-3xl font-bold mb-8 text-center">Top Specs</h2>
+
+        <div className="grid md:grid-cols-3 gap-6">
+          {specs.map((spec, index) => (
+            <div
+              key={index}
+              className="bg-white rounded-lg shadow p-6 flex flex-col items-center text-center hover:shadow-lg transition"
+            >
+              {/* Icon */}
+              <div className="mb-3">{spec.icon}</div>
+              {/* Label */}
+              <h3 className="text-lg font-semibold mb-1">{spec.label}</h3>
+              {/* Value */}
+              <p className="text-gray-700 text-sm">{spec.value}</p>
+            </div>
+          ))}
+        </div>
+      </div>
     </section>
 
+    <FAQ/>
+
     </div>
+    <RatingReviews/>
+    <img src="./assets/img/NewVsRefurbished.png" className="w-full h-auto" alt="" />
+
+<Footer/>
+
+
+    </>
   );
 }
