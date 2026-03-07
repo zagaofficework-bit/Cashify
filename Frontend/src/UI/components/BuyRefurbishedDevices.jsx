@@ -1,7 +1,7 @@
 import React from "react";
 import { useState } from "react";
 
-export default function BuyRefurbishedDevices() {
+export default function BuyRefurbishedDevices({title}) {
     const [currentIndex, setCurrentIndex] = useState(0);
 
   const products = [
@@ -91,7 +91,7 @@ export default function BuyRefurbishedDevices() {
    <section className="bg-gray-50 py-10">
   <div className="max-w-7xl mx-auto px-6">
     <h2 className="text-2xl font-bold mb-6 text-gray-800">
-      Buy Refurbished Devices
+      {title || "Buy Refurbished Devices"}
     </h2>
 
     {/* Slider container with relative for arrows */}

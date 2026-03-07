@@ -20,6 +20,8 @@ import ArticleSection from "../components/ArticleSection";
 import DealComponent from "../components/DealComponent";
 import TrendingSection from "../components/TrendingSection";
 import Recents from "../components/Recents";
+import SellTV from "./SellTV";
+
 import Footer from "../components/Footer";
 
 
@@ -33,7 +35,7 @@ export default function Home(){
       <ServicesSection/>
     <SellOldDevice/>
 
-    <BuyRefurbisgithedDevices/>
+    <BuyRefurbishedDevices/>
     <RefurbishedLaptops/>
     <StoreSection/>
      
@@ -45,8 +47,9 @@ export default function Home(){
       <Recents/>
     <DownloadAppBanner/>
     <Info/> */}
-    <SellCard/> 
+    {/* <SellCard/>  */}
     {/* <Footer/> */}
+    {/* <SellTV/> */}
     </>)
 }
 
