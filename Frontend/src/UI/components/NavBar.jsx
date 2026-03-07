@@ -1,7 +1,7 @@
 import React from "react";
 import {useNavigate} from "react-router-dom"
 
-export default function Header() {
+export default function NavBar() {
     // const navigate = useNavigate()
     
     const onclick = () => {

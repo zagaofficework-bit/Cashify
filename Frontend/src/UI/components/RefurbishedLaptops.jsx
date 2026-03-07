@@ -248,7 +248,7 @@ export default function RefurbishedLaptops() {
         <h2 className="text-2xl font-bold mb-6 text-gray-800">Refurbished Laptops</h2>
 
         {/* Slider container relative for absolute arrows */}
-        <div className="relative overflow-hidden">
+        <div className="relative overflow-hidden ">
 
           {/* Slider flex container */}
           <div

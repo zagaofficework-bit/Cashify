@@ -3,7 +3,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useNavigate } from "react-router-dom";
 
-export const Signup = () => {
+const Signup = () => {
 
   const navigate = useNavigate();
 
@@ -139,16 +139,23 @@ export const Signup = () => {
             <div className="mt-auto">
               <button
                 type="submit"
-                className="w-full bg-blue-600 text-white py-3 rounded-md hover:bg-blue-700"
+                className="w-full bg-blue-600 text-white py-3 rounded-md hover:bg-blue-700 mb-3"
               >
                 Submit
               </button>
             </div>
 
           </form>
+           <div>
+            <p>If Already have an Account?<a className="text-green-500 cursor-pointer" onClick={()=>{
+              navigate("/login")
+            }}>Login</a></p>
+          </div>
 
         </div>
       </div>
     </div>
   );
 };
+
+export default Signup;

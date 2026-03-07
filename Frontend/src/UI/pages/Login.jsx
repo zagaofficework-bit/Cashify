@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import Header from "../components/NavBar";
+import { useNavigate } from "react-router-dom";
+
 export default function Login() {
   const [email, setEmail] = useState("");
   const [isValid, setIsValid] = useState(false);
-
+const navigate = useNavigate();
   const validateEmail = (value) => {
     // Basic email regex
     const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -18,7 +20,7 @@ export default function Login() {
 
   return (
     <>
-    <Header/>
+    {/* <Header/> */}
     <div className="flex min-h-screen items-center justify-center bg-gray-100">
       <div className="flex w-full max-w-3xl h-[450px] bg-white shadow-lg rounded-lg overflow-hidden">
         {/* Left side illustration */}
@@ -76,6 +78,11 @@ export default function Login() {
           >
             CONTINUE
           </button>
+          <div>
+            <p>New User?<a className="text-green-500 cursor-pointer" onClick={()=>{
+              navigate("/signup")
+            }}>Signup</a></p>
+          </div>
         </div>
       </div>
     </div>

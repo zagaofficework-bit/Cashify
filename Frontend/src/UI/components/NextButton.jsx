@@ -1,6 +1,7 @@
 import React from "react";
 
 const NextButton = ({ onClick, disabled }) => {
+  
   return (
     <button
       onClick={onClick}

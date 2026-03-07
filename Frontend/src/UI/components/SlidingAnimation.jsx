@@ -60,7 +60,7 @@ const SlidingAnimation = () => {
     };
 
     return (
-        <div className="relative w-full max-w-7xl mx-auto overflow-hidden rounded-lg select-none mt-15 h-[400px]">
+        <div className="relative w-full max-w-7xl mx-auto overflow-hidden rounded-lg select-none mt-10 mb-10 h-[400px]">
             <div
                 className="flex transition-transform duration-700 ease-in-out h-full"
                 style={{ transform: `translateX(-${currentIndex * 100}%)` }}
