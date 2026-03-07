@@ -8,7 +8,7 @@ const {
   getOrderById,
   cancelOrder,
   updateOrderStatus,
-} = require("../controllers/order.controller");
+} = require("../controller/order.controller");
 
 router.post("/place", authMiddleware, placeOrder);
 router.get("/my-orders", authMiddleware, getMyOrders);
