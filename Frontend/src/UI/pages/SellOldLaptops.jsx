@@ -8,6 +8,7 @@ import Feedback from '../components/Feedback';
 import FAQ from '../components/FAQ';
 import DownloadAppBanner from '../components/DownloadAppBanner';
 import Footer from '../components/Footer';
+import HowCashifyWorks from '../components/HowCashifyWorks';
 
 const SellOldLaptops = () => {
   return (
@@ -15,7 +16,7 @@ const SellOldLaptops = () => {
         <NavBar/>
         <NavMenu/>
         <SellCard title="Sell old laptops"/>
-        <DealComponent/>
+        <HowCashifyWorks />
         <Brands/>
         <Feedback/>
         <FAQ/>

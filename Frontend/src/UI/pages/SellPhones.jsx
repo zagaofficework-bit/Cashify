@@ -8,6 +8,7 @@ import Feedback from "../components/Feedback";
 import FAQ from "../components/FAQ";
 import DownloadAppBanner from "../components/DownloadAppBanner";
 import Footer from "../components/Footer";
+import HowCashifyWorks from "../components/HowCashifyWorks";
 
 const SellPhones = () => {
   const phones = [
@@ -22,6 +23,7 @@ const SellPhones = () => {
       <NavBar />
       <NavMenu />
       <SellCard title="Sell Old Mobile Phone for Instant Cash" />
+      <HowCashifyWorks/>
       <DealComponent />
       <Brands />
       <section className="bg-gray-50 px-6 py-12">

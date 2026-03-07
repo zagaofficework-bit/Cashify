@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import NewsList from "./NewsList";
 import ReviewsList from "./ReviewList";
 
-const Recents = () => {
+const Recents = ({title}) => {
 
   const [newsIndex, setNewsIndex] = useState(0);
   const [reviewIndex, setReviewIndex] = useState(0);
@@ -17,7 +17,7 @@ const Recents = () => {
 
   return (
     <div className="max-w-7xl mx-auto p-6 font-sans">
-      <h1 className="text-3xl font-bold text-gray-900 mb-6">Tech Updates</h1>
+      <h1 className="text-3xl font-bold text-gray-900 mb-6">{title || "Tech Updates"}</h1>
 
       {/* Recent Views */}
       <div className="mb-10 relative">

@@ -118,7 +118,7 @@ const brands = [
   { name: "HP/Compaq", img: "https://upload.wikimedia.org/wikipedia/commons/3/3a/HP_logo_2012.svg" },
 ];
 
-export default function Brands() {
+export default function Brands({title}) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const visibleCount = 5;
 
@@ -149,7 +149,7 @@ export default function Brands() {
 
       {/* Brands Section */}
       <section className="max-w-full mx-auto px-20 py-8 mt-10 mb-10 bg-gray-100">
-        <h3 className="font-bold text-lg mb-6">Top Selling Brands</h3>
+        <h3 className="font-bold text-lg mb-6">{title || "Top Selling Brands"}</h3>
         <div className="relative">
           {/* Carousel */}
           <div className="overflow-hidden">

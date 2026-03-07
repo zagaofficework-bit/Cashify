@@ -8,6 +8,7 @@ import Feedback from '../components/Feedback';
 import FAQ from '../components/FAQ';
 import DownloadAppBanner from '../components/DownloadAppBanner';
 import Footer from '../components/Footer';
+import HowCashifyWorks from '../components/HowCashifyWorks';
 
 const SellTV = () => {
   return (
@@ -15,6 +16,7 @@ const SellTV = () => {
         <NavBar/>
         <NavMenu/>
         <SellCard title="Sell Old TVs"/>
+        <HowCashifyWorks />
         <DealComponent/>
         <Brands/>
         <Feedback/>
