@@ -4,7 +4,7 @@ import NavMenu from "../../components/NavMenu";
 import BuyRefurbishedDevices from "../../components/BuyRefurbishedDevices";
 import Footer from "../../components/Footer";
 
-export default function BuyAccessories() {
+export default function NewAccessories() {
   return (
     <>
       <NavBar />

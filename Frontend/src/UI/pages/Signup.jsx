@@ -33,7 +33,7 @@ const Signup = () => {
   });
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-opacity-70 z-50 p-4">
+   <div className="fixed inset-0 flex items-center justify-center bg-black/60 backdrop-blur-sm z-50 p-4">
 
       <div className="flex bg-white rounded-lg shadow-lg overflow-hidden max-w-3xl w-full max-h-[600px]">
 

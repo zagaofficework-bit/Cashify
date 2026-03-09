@@ -1,8 +1,10 @@
 import React, { useState, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 
 const OtpGeneration = () => {
   const [otp, setOtp] = useState(["", "", "", ""]);
   const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   const inputs = useRef([]);
 
@@ -36,7 +38,7 @@ const OtpGeneration = () => {
   };
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-opacity-70 z-50 p-4">
+   <div className="fixed inset-0 flex items-center justify-center bg-black/60 backdrop-blur-sm z-50 p-4">
       
       <div className="flex bg-white rounded-lg shadow-lg overflow-hidden max-w-3xl w-full max-h-[600px]">
 
@@ -57,7 +59,8 @@ const OtpGeneration = () => {
       <div className="flex flex-col p-8 w-1/2 ">
 
     {/* Back */}
-    <button className="text-sm text-gray-600 mb-6 hover:text-black self-start">
+    <button className="text-sm text-gray-600 mb-6 hover:text-black self-start" >
+
     ← Back
         </button>
 
@@ -99,6 +102,7 @@ const OtpGeneration = () => {
             <button
               type="submit"
               className="w-full bg-blue-600 text-white py-3 rounded-md hover:bg-blue-700 transition"
+              onClick={()=>navigate("/home")}
             >
               Verify OTP
             </button>

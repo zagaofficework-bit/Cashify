@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Header from "../components/NavBar";
 import { useNavigate } from "react-router-dom";
+import OtpGeneration from "./OtpGeneration";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -21,7 +22,7 @@ const navigate = useNavigate();
   return (
     <>
     {/* <Header/> */}
-    <div className="flex min-h-screen items-center justify-center bg-gray-100">
+   <div className="fixed inset-0 flex items-center justify-center bg-black/60 backdrop-blur-sm z-50 p-4">
       <div className="flex w-full max-w-3xl h-[450px] bg-white shadow-lg rounded-lg overflow-hidden">
         {/* Left side illustration */}
         <div className="flex w-1/2 bg-black items-center justify-center p-6">
@@ -75,6 +76,7 @@ const navigate = useNavigate();
                 ? "bg-blue-600 text-white hover:bg-blue-700"
                 : "bg-gray-300 text-gray-500 cursor-not-allowed"
             }`}
+            onClick={()=>navigate('/otp')}
           >
             CONTINUE
           </button>
