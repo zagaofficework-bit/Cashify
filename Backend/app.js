@@ -2,6 +2,15 @@ const express = require("express")
 const cookieParser = require("cookie-parser")
 const app = express()
 
+const { stripeWebhook } = require("./controllers/order.controller");
+
+// ⚠️ STRIPE WEBHOOK — must be raw body, registered BEFORE express.json()
+app.post(
+  "/api/orders/webhook/stripe",
+  express.raw({ type: "application/json" }),
+  stripeWebhook
+);
+
 
 app.use(express.json())
 app.use(cookieParser())
