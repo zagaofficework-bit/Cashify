@@ -2,11 +2,11 @@ import React from "react";
 import {useNavigate} from "react-router-dom"
 
 export default function NavBar() {
-    // const navigate = useNavigate()
+     const navigate = useNavigate()
     
     const onclick = () => {
         console.log("Clicked")
-        // navigate("/login")
+        navigate("/login")
         
     }
   return (

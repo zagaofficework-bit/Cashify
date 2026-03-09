@@ -6,6 +6,11 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [isValid, setIsValid] = useState(false);
 const navigate = useNavigate();
+
+const click=()=>{
+  navigate("/otp")
+}
+
   const validateEmail = (value) => {
     // Basic email regex
     const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -52,7 +57,7 @@ const navigate = useNavigate();
           <div className="flex items-center mb-6">
             <input
               type="checkbox"
-              checked
+              
               readOnly
               className="mr-2 accent-blue-600"
             />
@@ -70,6 +75,7 @@ const navigate = useNavigate();
 
           <button
             disabled={!isValid}
+            onClick={click}
             className={`w-full py-2 rounded-lg font-semibold transition ${
               isValid
                 ? "bg-blue-600 text-white hover:bg-blue-700"
