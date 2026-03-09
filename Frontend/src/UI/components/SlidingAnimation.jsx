@@ -10,15 +10,15 @@ const SlidingAnimation = () => {
             alt: "Samsung Galaxy S26 Ultra 1",
         },
         {
-            src: "https://external-preview.redd.it/samsung-galaxy-s26-ultra-first-official-promotional-poster-v0-tL7dNLnE8quh_1Dd_6Gh1vfWKNMZWqSisbF-oR-NziA.jpeg?width=1080&crop=smart&auto=webp&s=129da99e1a72d8e73acd76cbea38d0a736fdc877",
+            src: "https://s3ng.cashify.in/cashify/web/28cbc449993444b5b353c2f7bf59783a.webp?w=1300",
             alt: "Samsung Galaxy S26 Ultra 2",
         },
         {
-            src:"https://external-preview.redd.it/samsung-galaxy-s26-ultra-first-official-promotional-poster-v0-tL7dNLnE8quh_1Dd_6Gh1vfWKNMZWqSisbF-oR-NziA.jpeg?width=1080&crop=smart&auto=webp&s=129da99e1a72d8e73acd76cbea38d0a736fdc877",
+            src:"https://s3ng.cashify.in/cashify/web/7da72ed7785f44c4a28c3530e5dc4025.webp?w=1300",
             alt: "Samsung Galaxy S26 Ultra 3",
         },
         {
-            src:"https://external-preview.redd.it/samsung-galaxy-s26-ultra-first-official-promotional-poster-v0-tL7dNLnE8quh_1Dd_6Gh1vfWKNMZWqSisbF-oR-NziA.jpeg?width=1080&crop=smart&auto=webp&s=129da99e1a72d8e73acd76cbea38d0a736fdc877",
+            src:"https://s3ng.cashify.in/cashify/web/47309969bbbe4c0d858943e7839e37da.webp?w=1300",
             alt: "Samsung Galaxy S26 Ultra 4",
         },
     ];

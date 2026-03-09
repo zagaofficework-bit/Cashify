@@ -12,7 +12,7 @@ const OfferSection = () => {
         <div className="flex items-center gap-5 bg-purple-100 border-2 border-purple-300 rounded-xl p-5">
 
           <img
-            src="/s25.png"
+           src="../assets/phone.png"
             alt="phone"
             className="w-28"
           />
@@ -45,7 +45,7 @@ const OfferSection = () => {
         <div className="flex items-center gap-5 bg-purple-100 border-2 border-purple-300 rounded-xl p-5">
 
           <img
-            src="/zflip.png"
+            src="../assets/phone.png"
             alt="phone"
             className="w-28"
           />
@@ -78,7 +78,7 @@ const OfferSection = () => {
         <div className="flex items-center gap-5 bg-purple-100 border-2 border-purple-300 rounded-xl p-5">
 
           <img
-            src="/iphone12.png"
+            src="../assets/phone.png"
             alt="phone"
             className="w-28"
           />

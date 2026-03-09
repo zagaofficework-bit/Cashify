@@ -1,12 +1,12 @@
 import React from "react";
 import {useNavigate} from "react-router-dom"
 
-export default function NavBar() {
-    const navigate = useNavigate()
+export default function NavBar({location}) {
+    // const navigate = useNavigate()
     
     const onclick = () => {
         console.log("Clicked")
-        navigate("/login")
+        // navigate("/login")
         
     }
   return (
@@ -17,6 +17,7 @@ export default function NavBar() {
       <div className="flex items-center space-x-2">
         <img
           src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ7-kMUpk3knKvstr4FF-v4BGDqvVFJ3xxCbQ&s" // replace with actual logo path
+          onClick={()=>navigate("/")}
           alt="Cashify Logo"
           className="h-10 w-15"
         />
@@ -72,7 +73,7 @@ export default function NavBar() {
               d="M12 22s8-4.5 8-11a8 8 0 10-16 0c0 6.5 8 11 8 11z"
             />
           </svg>
-          <span>Gurgaon</span>
+          <span>{location}</span>
         </div>
 
         {/* Login Button */}

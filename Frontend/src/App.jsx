@@ -16,24 +16,27 @@ import Recycle from "./UI/pages/services/Recycle";
 import FindNewPhone from "./UI/pages/FindNewPhone";
 import Login from "./UI/pages/Login";
 import NavBar from "./UI/components/NavBar";
+import BuyPhone from "./UI/pages/services/BuyPhone";
+import BuyWatches from "./UI/pages/services/BuyWatches";
+import BuyGadgets from "./UI/pages/services/BuyGadgets";
 
 
 function App() {
   return (
     <>
 
-{/* <BuyLaptops/> */}
- <BrowserRouter>
-      <NavBar/>
+<BuyGadgets/>
+ {/* <BrowserRouter>
+      <NavBar location="mumbai"/>
      <Routes>
- 
         <Route path="/" element={<Home />} />
+        <Route path="/home" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/otp" element={<OtpGeneration />} />
       </Routes> 
-    </BrowserRouter>
-<Home/>
+    </BrowserRouter> */}
+
  
   
 

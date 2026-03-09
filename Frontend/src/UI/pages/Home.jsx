@@ -18,7 +18,7 @@ import ArticleSection from "../components/ArticleSection";
 import DealComponent from "../components/DealComponent";
 import TrendingSection from "../components/TrendingSection";
 import Recents from "../components/Recents";
-
+import Footer from "../components/Footer";
 import Login from "./Login"
 import Signup from "./Signup";
 import OtpGeneration from "./OtpGeneration"
@@ -50,9 +50,9 @@ export default function Home(){
       <Recents/>
     <DownloadAppBanner/>
     <Info/> 
-    {/* <SellCard/>  */}
-    {/* <Footer/> */}
-    {/* <SellTV/> */}
+   
+    <Footer/> 
+   
      
 
     

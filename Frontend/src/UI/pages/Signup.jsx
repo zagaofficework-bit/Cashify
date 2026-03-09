@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 
 const Signup = () => {
 
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   const formik = useFormik({
     initialValues: {
@@ -28,12 +28,12 @@ const Signup = () => {
       console.log(values);
 
       // Navigate to OTP page
-      navigate("/otp");
+      //navigate("/otp");
     },
   });
 
   return (
-   <div className="fixed inset-0 flex items-center justify-center bg-black/60 backdrop-blur-sm z-50 p-4">
+    <div className="fixed inset-0 flex items-center justify-center bg-black/60 backdrop-blur-sm z-50 p-4">
 
       <div className="flex bg-white rounded-lg shadow-lg overflow-hidden max-w-3xl w-full max-h-[600px]">
 
@@ -49,11 +49,30 @@ const Signup = () => {
         </div>
 
         {/* Right panel */}
+
         <div className="flex flex-col p-8 w-1/2">
+          <div className="flex justify-between items-center mb-4">
+
+            <button
+              className="text-sm text-gray-600 hover:text-black"
+              //onClick={() => navigate(-1)}
+            >
+              ← Back
+            </button>
+
+            <button
+              className="text-gray-500 hover:text-black text-xl font-bold"
+             // onClick={() => navigate("/")}
+            >
+              ✕
+            </button>
+
+          </div>
+
 
           <form
             onSubmit={formik.handleSubmit}
-            className="space-y-6 flex flex-col h-full mt-10"
+            className="space-y-6 flex flex-col h-full mt-5"
           >
 
             <div className="flex gap-4">
@@ -146,10 +165,10 @@ const Signup = () => {
             </div>
 
           </form>
-           <div>
-            <p>If Already have an Account?<a className="text-green-500 cursor-pointer" onClick={()=>{
-              navigate("/login")
-            }}>Login</a></p>
+          <div>
+            <p>If Already have an Account?<a className="text-green-500 cursor-pointer" 
+           // onClick={() => navigate("/login")}
+            >Login</a></p>
           </div>
 
         </div>

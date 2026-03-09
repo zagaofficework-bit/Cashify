@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 const OtpGeneration = () => {
   const [otp, setOtp] = useState(["", "", "", ""]);
   const [error, setError] = useState("");
-  const navigate = useNavigate();
+  //const navigate = useNavigate();
 
   const inputs = useRef([]);
 
@@ -38,8 +38,8 @@ const OtpGeneration = () => {
   };
 
   return (
-   <div className="fixed inset-0 flex items-center justify-center bg-black/60 backdrop-blur-sm z-50 p-4">
-      
+    <div className="fixed inset-0 flex items-center justify-center bg-black/60 backdrop-blur-sm z-50 p-4">
+
       <div className="flex bg-white rounded-lg shadow-lg overflow-hidden max-w-3xl w-full max-h-[600px]">
 
         {/* Left panel */}
@@ -56,13 +56,26 @@ const OtpGeneration = () => {
         </div>
         {/*right panel*/}
 
-      <div className="flex flex-col p-8 w-1/2 ">
+        <div className="flex flex-col p-8 w-1/2 ">
 
-    {/* Back */}
-    <button className="text-sm text-gray-600 mb-6 hover:text-black self-start" >
+          {/* Back */}
+          <div className="flex justify-between items-center mb-4">
 
-    ← Back
-        </button>
+            <button
+              className="text-sm text-gray-600 hover:text-black"
+             // onClick={() => navigate(-1)}
+            >
+              ← Back
+            </button>
+
+            <button
+              className="text-gray-500 hover:text-black text-xl font-bold"
+             // onClick={() => navigate("/")}
+            >
+              ✕
+            </button>
+
+          </div>
 
 
           <form onSubmit={handleSubmit} className="flex flex-col text-center">
@@ -73,7 +86,7 @@ const OtpGeneration = () => {
 
             <div className="flex items-center gap-2 mt-2 text-sm text-gray-500">
               <span>
-                 The verification code has been send to your <span className="font-medium">xx@gmail.com</span>
+                The verification code has been send to your <span className="font-medium">xx@gmail.com</span>
               </span>
               <span className="cursor-pointer">✏️</span>
             </div>
@@ -102,7 +115,7 @@ const OtpGeneration = () => {
             <button
               type="submit"
               className="w-full bg-blue-600 text-white py-3 rounded-md hover:bg-blue-700 transition"
-              onClick={()=>navigate("/home")}
+              //onClick={() => navigate("/home")}
             >
               Verify OTP
             </button>
