@@ -1,39 +1,192 @@
-const express           = require("express");
-const router            = express.Router();
+const express = require("express");
+const router  = express.Router();
+
 const ProductController = require("../controller/product.controller");
-const adminOnly         = require("../middleware/Adminonly.middleware");
-const { productUpload, validateProductFiles } = require("../middleware/multer.middleware");
+
+const {
+  authMiddleware,
+  authorize,
+  blockAdmin,
+  requireActiveSubscription,
+  checkListingLimit,
+  checkDeviceTypePermission,
+  optionalAuthenticate,
+} = require("../middleware/auth.middleware");
+
+const {
+  productUpload,
+  validateProductFiles,
+} = require("../middleware/multer.middleware");
 
 ////////////////////////////////////////////////////////////////////
-//// PUBLIC ROUTES — anyone can view products
+//// PUBLIC ROUTES
 ////////////////////////////////////////////////////////////////////
 
-router.get("/",    ProductController.getProducts);
-router.get("/:id", ProductController.getProductById);
-
-////////////////////////////////////////////////////////////////////
-//// ADMIN ONLY ROUTES — create, update, delete
-////////////////////////////////////////////////////////////////////
-
-router.post(
+/**
+ * @route   GET /api/products
+ * @desc    Get all products (supports location filter)
+ * @access  Public
+ * @query   ?latitude=28.6&longitude=77.2&radius=5&category=mobile&minPrice=5000
+ */
+router.get(
   "/",
-  ...adminOnly,              
-  productUpload,             
-  validateProductFiles,      
+  optionalAuthenticate,
+  ProductController.getProducts
+);
+
+/**
+ * @route   GET /api/products/:id
+ * @desc    Get single product by ID
+ * @access  Public
+ */
+router.get(
+  "/:id",
+  optionalAuthenticate,
+  ProductController.getProductById
+);
+
+////////////////////////////////////////////////////////////////////
+//// SELLER ROUTES — requires active subscription
+////////////////////////////////////////////////////////////////////
+
+/**
+ * @route   POST /api/products/seller/create
+ * @desc    Seller creates a new product listing (new/refurbished/old)
+ * @access  Private (Seller only)
+ */
+router.post(
+  "/seller/create",
+  authMiddleware,
+  authorize("seller"),
+  blockAdmin,
+  productUpload,               // ✅ multer FIRST — parses req.body
+  validateProductFiles,
+  requireActiveSubscription,
+  checkListingLimit,
+  checkDeviceTypePermission,
   ProductController.createProduct
 );
 
+////////////////////////////////////////////////////////////////////
+//// USER ROUTES — old devices only
+////////////////////////////////////////////////////////////////////
+
+/**
+ * @route   POST /api/products/user/create
+ * @desc    User lists an old device
+ * @access  Private (User only)
+ */
+router.post(
+  "/user/create",
+  authMiddleware,
+  authorize("user"),
+  blockAdmin,
+  productUpload,               // ✅ multer FIRST
+  validateProductFiles,
+  checkDeviceTypePermission,   // enforces deviceType = "old"
+  ProductController.createProduct
+);
+
+////////////////////////////////////////////////////////////////////
+//// BUY & SELL ROUTES
+////////////////////////////////////////////////////////////////////
+
+/**
+ * @route   POST /api/products/:id/buy
+ * @desc    Buy a product
+ *          - user  → can only buy from seller
+ *          - seller → can buy from seller or user
+ * @access  Private (Seller, User)
+ */
+router.post(
+  "/:id/buy",
+  authMiddleware,
+  authorize("seller", "user"),
+  blockAdmin,
+  ProductController.buyProduct
+);
+
+/**
+ * @route   POST /api/products/sell-request
+ * @desc    User submits a sell request to a specific seller
+ * @access  Private (User only)
+ */
+router.post(
+  "/sell-request",
+  authMiddleware,
+  authorize("user"),
+  ProductController.sellDeviceToSeller
+);
+
+/**
+ * @route   PATCH /api/products/sell-request/:orderId/confirm
+ * @desc    Seller confirms a user's sell request
+ * @access  Private (Seller only)
+ */
+router.patch(
+  "/sell-request/:orderId/confirm",
+  authMiddleware,
+  authorize("seller"),
+  ProductController.confirmSellRequest
+);
+
+////////////////////////////////////////////////////////////////////
+//// MY LISTINGS & ORDERS
+////////////////////////////////////////////////////////////////////
+
+/**
+ * @route   GET /api/products/my/listings
+ * @desc    Get own product listings
+ * @access  Private (Seller, User)
+ */
+router.get(
+  "/my/listings",
+  authMiddleware,
+  authorize("seller", "user"),
+  ProductController.getMyProducts
+);
+
+/**
+ * @route   GET /api/products/my/orders
+ * @desc    Get own orders (buy + sell history)
+ * @access  Private (Seller, User)
+ */
+router.get(
+  "/my/orders",
+  authMiddleware,
+  authorize("seller", "user"),
+  ProductController.getMyOrders
+);
+
+////////////////////////////////////////////////////////////////////
+//// UPDATE & DELETE — owner only
+////////////////////////////////////////////////////////////////////
+
+/**
+ * @route   PUT /api/products/:id
+ * @desc    Update own product listing
+ * @access  Private (Seller, User — owner only)
+ */
 router.put(
   "/:id",
-  ...adminOnly,
+  authMiddleware,
+  authorize("seller", "user"),
+  blockAdmin,
   productUpload,
   validateProductFiles,
   ProductController.updateProduct
 );
 
+/**
+ * @route   DELETE /api/products/:id
+ * @desc    Delete own product listing
+ * @access  Private (Seller, User — owner only)
+ */
 router.delete(
   "/:id",
-  ...adminOnly,
+  authMiddleware,
+  authorize("seller", "user"),
+  blockAdmin,
   ProductController.deleteProduct
 );
 

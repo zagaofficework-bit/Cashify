@@ -9,20 +9,20 @@ const {
 const emailService = require("../service/email.service");
 const redisClient = require("../config/redis.client");
 
-////////////////////////////////////////////////////////////////////
-//// REDIS KEY HELPERS  — keeps key format consistent everywhere
-////////////////////////////////////////////////////////////////////
-
+// Redis key generators
 const OTP_KEY              = (email) => `otp:${email}`;
 const BLACKLIST_KEY        = (token) => `blacklist:${token}`;
 const REGISTER_SESSION_KEY = (token) => `register_session:${token}`;
 const LOGIN_SESSION_KEY    = (token) => `login_session:${token}`;
 
-const OTP_TTL_SECONDS = 5 * 60; // 5 minutes
+const OTP_TTL_SECONDS = 1 * 60;
 
-////////////////////////////////////////////////////////////////////
-//// REGISTER — SEND OTP
-////////////////////////////////////////////////////////////////////
+/**
+ * @name userRegisterController
+ * @description Handles user registration by generating an OTP, storing it in Redis, and sending it via email. Implements rate-limiting to prevent abuse.
+ * @route POST /api/auth/register
+ * @access Public
+ */
 
 async function userRegisterController(req, res) {
   try {
@@ -85,10 +85,13 @@ async function userRegisterController(req, res) {
   }
 }
 
-////////////////////////////////////////////////////////////////////
-//// VERIFY REGISTER OTP  — user only types OTP
-////////////////////////////////////////////////////////////////////
 
+/**
+ * @name verifyRegisterOtpController
+ * @description Verify OTP and create user
+ * @route POST /api/auth/register/verify-otp
+ * @access Public
+ */
 async function verifyRegisterOtpController(req, res) {
   try {
     const { otp, sessionToken } = req.body;
@@ -158,10 +161,13 @@ async function verifyRegisterOtpController(req, res) {
   }
 }
 
-////////////////////////////////////////////////////////////////////
-//// LOGIN — SEND OTP
-////////////////////////////////////////////////////////////////////
 
+/**
+ * @name userLoginController
+ * @description Initiate user login by sending an OTP to the provided email
+ * @route POST /api/auth/login
+ * @access Public
+ */
 async function userLoginController(req, res) {
   try {
     const { email } = req.body;
@@ -215,10 +221,13 @@ async function userLoginController(req, res) {
   }
 }
 
-////////////////////////////////////////////////////////////////////
-//// VERIFY LOGIN OTP  — user only types OTP
-////////////////////////////////////////////////////////////////////
 
+/**
+ * @name verifyLoginOtpController
+ * @description Verify OTP and login user
+ * @route POST /api/auth/login/verify-otp
+ * @access Public
+ */
 async function verifyLoginOtpController(req, res) {
   try {
     const { otp, sessionToken } = req.body;
@@ -288,10 +297,13 @@ async function verifyLoginOtpController(req, res) {
   }
 }
 
-////////////////////////////////////////////////////////////////////
-//// LOGOUT
-////////////////////////////////////////////////////////////////////
 
+/**
+ * @name userLogoutController
+ * @description Logout user and invalidate refresh token
+ * @route POST /api/auth/logout
+ * @access Private
+ */
 async function userLogoutController(req, res) {
   try {
     const accessToken  = req.token;
@@ -342,10 +354,13 @@ async function userLogoutController(req, res) {
   }
 }
 
-////////////////////////////////////////////////////////////////////
-//// REFRESH ACCESS TOKEN
-////////////////////////////////////////////////////////////////////
 
+/**
+ * @name refreshAccessTokenController
+ * @description Refresh access token using refresh token
+ * @route POST /api/auth/refresh-token
+ * @access Private
+ */
 async function refreshAccessTokenController(req, res) {
   try {
     const refreshToken = req.cookies.refreshToken;
@@ -390,9 +405,25 @@ async function refreshAccessTokenController(req, res) {
   }
 }
 
-////////////////////////////////////////////////////////////////////
-//// EXPORT
-////////////////////////////////////////////////////////////////////
+
+async function getMeController(req, res) {
+  try {
+    // req.user is set by authMiddleware
+    const user = await userModel
+      .findById(req.user._id)
+      .select("-refreshToken")
+      .lean();
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.status(200).json({ user });
+  } catch (error) {
+    console.error("getMeController error:", error);
+    res.status(500).json({ message: "Failed to fetch user" });
+  }
+}
 
 module.exports = {
   userRegisterController,
@@ -401,4 +432,5 @@ module.exports = {
   verifyLoginOtpController,
   userLogoutController,
   refreshAccessTokenController,
+  getMeController,
 };

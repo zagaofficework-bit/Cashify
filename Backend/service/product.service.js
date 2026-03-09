@@ -1,17 +1,17 @@
 const Product = require("../models/product.model");
 const redisClient = require("../config/redis.client");
 
-
-// REDIS KEY HELPERS
-
+////////////////////////////////////////////////////////////////////
+//// REDIS KEY HELPERS
+////////////////////////////////////////////////////////////////////
 
 const PRODUCT_CACHE_TTL = 60 * 5;
 const PRODUCT_KEY       = (id)    => `product:${id}`;
 const PRODUCTS_LIST_KEY = (query) => `products:${JSON.stringify(query)}`;
 
-
-// CREATE PRODUCT — admin only
-
+////////////////////////////////////////////////////////////////////
+//// CREATE PRODUCT
+////////////////////////////////////////////////////////////////////
 
 exports.createProduct = async (data) => {
   const product = await Product.create(data);
@@ -19,118 +19,198 @@ exports.createProduct = async (data) => {
   return product;
 };
 
-
-// GET ALL PRODUCTS — public, paginated + cached + filterable
-
+////////////////////////////////////////////////////////////////////
+//// GET ALL PRODUCTS — location-aware, paginated + cached
+////////////////////////////////////////////////////////////////////
 
 exports.getProducts = async (query) => {
   const {
-    category,
-    subcategory,
-    condition,
-    color,
-    storage,
-    minPrice,
-    maxPrice,
-    search,
-    inStock,
-    page   = 1,
-    limit  = 20,
-    sortBy = "createdAt",
-    order  = "desc",
+    category, subcategory, condition, deviceType,
+    color, storage, brand, minPrice, maxPrice, search,
+    longitude, latitude, radius = 5,
+    page = 1, limit = 20, sortBy = "createdAt", order = "desc",
   } = query;
 
-  // 1. Check Redis cache first
-  const cacheKey = PRODUCTS_LIST_KEY(query);
-  const cached   = await redisClient.get(cacheKey).catch(() => null);
-  if (cached) return JSON.parse(cached);
+  const isLocationQuery = longitude && latitude;
+  const cacheKey        = !isLocationQuery ? PRODUCTS_LIST_KEY(query) : null;
 
-  // 2. Build filter dynamically
-  const filter = {};
-
-  if (category)    filter.category    = category;
-  if (subcategory) filter.subcategory = subcategory;
-  if (condition)   filter.condition   = condition;
-  if (color)       filter.color       = new RegExp(color, "i");
-  if (storage)     filter.storage     = storage;
-  if (inStock !== undefined) filter.inStock = inStock === "true";
-
-  if (minPrice || maxPrice) {
-    filter.price = {};
-    if (minPrice) filter.price.$gte = Number(minPrice);
-    if (maxPrice) filter.price.$lte = Number(maxPrice);
+  if (cacheKey) {
+    const cached = await redisClient.get(cacheKey).catch(() => null);
+    if (cached) return JSON.parse(cached);
   }
 
-  // Full-text search on title + description
-  if (search) filter.$text = { $search: search };
+  // Base filter — no location field here
+  const baseFilter = { status: "available" };
+  if (category)    baseFilter.category    = category;
+  if (subcategory) baseFilter.subcategory = subcategory;
+  if (condition)   baseFilter.condition   = condition;
+  if (deviceType)  baseFilter.deviceType  = deviceType;
+  if (color)       baseFilter.color       = new RegExp(color, "i");
+  if (storage)     baseFilter.storage     = storage;
+  if (brand)       baseFilter.brand       = new RegExp(brand, "i");
+  if (search)      baseFilter.$text       = { $search: search };
+  if (minPrice || maxPrice) {
+    baseFilter.price = {};
+    if (minPrice) baseFilter.price.$gte = Number(minPrice);
+    if (maxPrice) baseFilter.price.$lte = Number(maxPrice);
+  }
 
-  // 3. Pagination
   const pageNum  = Math.max(1, parseInt(page));
   const limitNum = Math.min(50, Math.max(1, parseInt(limit)));
   const skip     = (pageNum - 1) * limitNum;
 
-  // 4. Sort
+  ////////////////////////////////////////////////////////////////////
+  //// LOCATION QUERY
+  //// $geoNear MUST be first stage — filters go inside its "query" field
+  ////////////////////////////////////////////////////////////////////
+
+  if (isLocationQuery) {
+    const lng     = Number(longitude);
+    const lat     = Number(latitude);
+    const radiusM = Number(radius) * 1000; // km → meters
+
+    const aggregatePipeline = [
+      {
+        // ✅ $geoNear is FIRST stage — no $match before it
+        $geoNear: {
+          near:               { type: "Point", coordinates: [lng, lat] },
+          distanceField:      "distance",
+          maxDistance:        radiusM,
+          spherical:          true,
+          distanceMultiplier: 0.001,      // meters → km
+          query:              baseFilter, // ✅ all filters go inside query
+        },
+      },
+      { $sort:  { distance: 1 } },        // nearest first
+      { $skip:  skip },
+      { $limit: limitNum },
+      {
+        $lookup: {
+          from:         "users",
+          localField:   "listedBy",
+          foreignField: "_id",
+          as:           "listedBy",
+          pipeline: [
+            { $project: { firstname: 1, lastname: 1, role: 1, address: 1 } },
+          ],
+        },
+      },
+      { $unwind: { path: "$listedBy", preserveNullAndEmptyArrays: true } },
+    ];
+
+    // Count uses $geoWithin — compatible with countDocuments
+    const countFilter = {
+      ...baseFilter,
+      location: {
+        $geoWithin: {
+          $centerSphere: [[lng, lat], Number(radius) / 6378.1],
+        },
+      },
+    };
+
+    const [products, total] = await Promise.all([
+      Product.aggregate(aggregatePipeline),
+      Product.countDocuments(countFilter),
+    ]);
+
+    return {
+      products,
+      pagination: {
+        total,
+        page: pageNum, limit: limitNum,
+        totalPages: Math.ceil(total / limitNum),
+        hasNext: pageNum < Math.ceil(total / limitNum),
+        hasPrev: pageNum > 1,
+      },
+    };
+  }
+
+  ////////////////////////////////////////////////////////////////////
+  //// NORMAL QUERY
+  ////////////////////////////////////////////////////////////////////
+
   const sortObj = { [sortBy]: order === "asc" ? 1 : -1 };
 
-  // 5. Run query + count in parallel
   const [products, total] = await Promise.all([
-    Product.find(filter)
-      .sort(sortObj)
-      .skip(skip)
-      .limit(limitNum)
-      .populate("listedBy", "firstname lastname")
+    Product.find(baseFilter)
+      .sort(sortObj).skip(skip).limit(limitNum)
+      .populate("listedBy", "firstname lastname role address")
       .lean(),
-    Product.countDocuments(filter),
+    Product.countDocuments(baseFilter),
   ]);
 
   const result = {
     products,
     pagination: {
       total,
-      page:       pageNum,
-      limit:      limitNum,
+      page: pageNum, limit: limitNum,
       totalPages: Math.ceil(total / limitNum),
-      hasNext:    pageNum < Math.ceil(total / limitNum),
-      hasPrev:    pageNum > 1,
+      hasNext: pageNum < Math.ceil(total / limitNum),
+      hasPrev: pageNum > 1,
     },
   };
 
-  // 6. Cache result
-  await redisClient
-    .setEx(cacheKey, PRODUCT_CACHE_TTL, JSON.stringify(result))
-    .catch(() => null);
+  if (cacheKey) {
+    await redisClient.setEx(cacheKey, PRODUCT_CACHE_TTL, JSON.stringify(result)).catch(() => null);
+  }
 
   return result;
 };
 
-
-// GET PRODUCT BY ID — cached
-
+////////////////////////////////////////////////////////////////////
+//// GET PRODUCT BY ID
+////////////////////////////////////////////////////////////////////
 
 exports.getProductById = async (id) => {
   const cached = await redisClient.get(PRODUCT_KEY(id)).catch(() => null);
   if (cached) return JSON.parse(cached);
 
   const product = await Product.findById(id)
-    .populate("listedBy", "firstname lastname")
+    .populate("listedBy", "firstname lastname role address")
     .lean();
 
   if (!product) return null;
 
-  await redisClient
-    .setEx(PRODUCT_KEY(id), PRODUCT_CACHE_TTL, JSON.stringify(product))
-    .catch(() => null);
-
+  await redisClient.setEx(PRODUCT_KEY(id), PRODUCT_CACHE_TTL, JSON.stringify(product)).catch(() => null);
   return product;
 };
 
+////////////////////////////////////////////////////////////////////
+//// GET MY LISTINGS
+////////////////////////////////////////////////////////////////////
 
-// UPDATE PRODUCT — admin only
+exports.getMyProducts = async (userId, query) => {
+  const { status, page = 1, limit = 20 } = query;
+  const filter = { listedBy: userId };
+  if (status) filter.status = status;
 
+  const pageNum  = Math.max(1, parseInt(page));
+  const limitNum = Math.min(50, Math.max(1, parseInt(limit)));
+  const skip     = (pageNum - 1) * limitNum;
 
-exports.updateProduct = async (id, data) => {
-  const product = await Product.findByIdAndUpdate(
-    id,
+  const [products, total] = await Promise.all([
+    Product.find(filter).sort({ createdAt: -1 }).skip(skip).limit(limitNum).lean(),
+    Product.countDocuments(filter),
+  ]);
+
+  return {
+    products,
+    pagination: {
+      total, page: pageNum, limit: limitNum,
+      totalPages: Math.ceil(total / limitNum),
+      hasNext: pageNum < Math.ceil(total / limitNum),
+      hasPrev: pageNum > 1,
+    },
+  };
+};
+
+////////////////////////////////////////////////////////////////////
+//// UPDATE PRODUCT — owner only
+////////////////////////////////////////////////////////////////////
+
+exports.updateProduct = async (id, userId, data) => {
+  const product = await Product.findOneAndUpdate(
+    { _id: id, listedBy: userId },
     { $set: data },
     { new: true, runValidators: true }
   ).lean();
@@ -145,13 +225,16 @@ exports.updateProduct = async (id, data) => {
   return product;
 };
 
+////////////////////////////////////////////////////////////////////
+//// DELETE PRODUCT — owner or admin
+////////////////////////////////////////////////////////////////////
 
-// DELETE PRODUCT — admin only
+exports.deleteProduct = async (id, userId, userRole) => {
+  const filter = userRole === "admin"
+    ? { _id: id }
+    : { _id: id, listedBy: userId };
 
-
-exports.deleteProduct = async (id) => {
-  const product = await Product.findByIdAndDelete(id).lean();
-
+  const product = await Product.findOneAndDelete(filter).lean();
   if (!product) return null;
 
   await Promise.all([
@@ -162,15 +245,21 @@ exports.deleteProduct = async (id) => {
   return product;
 };
 
+////////////////////////////////////////////////////////////////////
+//// MARK AS SOLD
+////////////////////////////////////////////////////////////////////
 
-// HELPER — Invalidate all product list caches
+exports.markAsSold = async (id) => {
+  return await Product.findByIdAndUpdate(id, { status: "sold" }, { new: true }).lean();
+};
 
+////////////////////////////////////////////////////////////////////
+//// HELPER
+////////////////////////////////////////////////////////////////////
 
 async function invalidateListCache() {
   try {
     const keys = await redisClient.keys("products:*");
     if (keys.length > 0) await redisClient.del(keys);
-  } catch {
-    // Cache failure should never crash the app
-  }
+  } catch { }
 }
