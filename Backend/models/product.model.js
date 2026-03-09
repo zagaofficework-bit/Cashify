@@ -1,7 +1,9 @@
 const mongoose = require("mongoose");
 
-const ProductSchema = new mongoose.Schema(
+const productSchema = new mongoose.Schema(
   {
+    
+    // BASIC INFO
     title: {
       type:     String,
       required: [true, "Product title is required"],
@@ -9,8 +11,8 @@ const ProductSchema = new mongoose.Schema(
     },
 
     description: {
-      type: String,
-      trim: true,
+      type:  String,
+      trim:  true,
     },
 
     category: {
@@ -20,44 +22,49 @@ const ProductSchema = new mongoose.Schema(
     },
 
     subcategory: {
+      type:  String,
+      trim:  true,
+    },
+
+    brand: {
+      type:  String,
+      trim:  true,
+    },
+
+    
+    // DEVICE TYPE
+    deviceType: {
       type:     String,
-      required: [true, "Subcategory is required"],
-      trim:     true,
+      enum:     ["new", "refurbished", "old"],
+      required: [true, "Device type is required"],
     },
 
     
     // DEVICE SPECS
-    
-
     condition: {
       type:     String,
-      required: [true, "Condition is required"],
       enum:     ["Fair", "Good", "Superb"],
+      required: [true, "Condition is required"],
     },
 
     storage: {
-      type:     String,
-      required: [true, "Storage is required"],
-      trim:     true,
+      type:  String,
+      trim:  true,
     },
 
     color: {
-      type:     String,
-      required: [true, "Color is required"],
-      trim:     true,
+      type:  String,
+      trim:  true,
     },
 
     
     // PRICING & PAYMENT
-    
-
     price: {
       type:     Number,
       required: [true, "Price is required"],
       min:      [0, "Price cannot be negative"],
     },
 
-    // Original retail price — for showing "you save X%" on frontend
     originalPrice: {
       type:    Number,
       default: null,
@@ -71,8 +78,6 @@ const ProductSchema = new mongoose.Schema(
 
     
     // MEDIA
-    
-
     images: {
       type:     [String],
       required: [true, "At least one image is required"],
@@ -82,15 +87,58 @@ const ProductSchema = new mongoose.Schema(
       },
     },
 
-    // Optional product demo video
     video: {
       type:    String,
       default: null,
     },
 
     
-    // RATINGS
-    
+    // LOCATION — GeoJSON Point (copied from seller/user at listing time)
+    location: {
+      type: {
+        type:    String,
+        enum:    ["Point"],
+        default: "Point",
+      },
+      coordinates: {
+        type:     [Number], // [longitude, latitude]
+        required: true,
+      },
+    },
+
+    // Human readable location
+    address: {
+      city:    { type: String },
+      state:   { type: String },
+      pincode: { type: String },
+      full:    { type: String },
+    },
+
+    // OWNERSHIP
+    listedBy: {
+      type:     mongoose.Schema.Types.ObjectId,
+      ref:      "User",
+      required: [true, "listedBy is required"],
+    },
+
+    listedByRole: {
+      type:  String,
+      enum:  ["seller", "user"],
+    },
+
+    // COMMISSION
+    // Admin takes commission on every transaction
+    commissionRate: {
+      type:    Number,
+      default: 5, 
+    },
+
+    // STATUS
+    status: {
+      type:    String,
+      enum:    ["available", "sold", "inactive"],
+      default: "available",
+    },
 
     rating: {
       type:    Number,
@@ -98,24 +146,10 @@ const ProductSchema = new mongoose.Schema(
       min:     0,
       max:     5,
     },
-
-    
-    // TRACEABILITY — only admin who listed it
-    
-
-    listedBy: {
-      type:     mongoose.Schema.Types.ObjectId,
-      ref:      "User",
-      required: [true, "listedBy (admin) is required"],
-    },
-
-    
-    // STATUS
-    
-
-    inStock: {
-      type:    Boolean,
-      default: true,
+    quantity: {
+      type:    Number,
+      default: 1,
+      min:     1,
     },
   },
   {
@@ -123,14 +157,15 @@ const ProductSchema = new mongoose.Schema(
   }
 );
 
-// Text search across title and description
-ProductSchema.index({ title: "text", description: "text" });
 
-// Compound indexes for common filter combinations
-ProductSchema.index({ category: 1, condition: 1, price: 1 });
-ProductSchema.index({ category: 1, createdAt: -1 });
-ProductSchema.index({ inStock: 1 });
-ProductSchema.index({ price: 1 });
-ProductSchema.index({ condition: 1 });
+// INDEXES
+// Geospatial index — REQUIRED for $near / $geoWithin queries
+productSchema.index({ location: "2dsphere" });
+productSchema.index({ title: "text", description: "text", brand: "text" });
+productSchema.index({ category: 1, condition: 1, price: 1 });
+productSchema.index({ category: 1, createdAt: -1 });
+productSchema.index({ status: 1 });
+productSchema.index({ listedBy: 1 });
+productSchema.index({ deviceType: 1 });
 
-module.exports = mongoose.model("Product", ProductSchema);
+module.exports = mongoose.model("Product", productSchema);

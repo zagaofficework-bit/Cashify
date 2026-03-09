@@ -1,107 +1,147 @@
 const mongoose = require("mongoose");
 
+////////////////////////////////////////////////////////////////////
+//// COMMISSION RATES
+////////////////////////////////////////////////////////////////////
+
+const COMMISSION_RATES = {
+  seller: { min: 1, max: 1.5 }, // 1–1.5%
+  user:   { min: 2, max: 2.5 }, // 2–2.5%
+};
+
+////////////////////////////////////////////////////////////////////
+//// SCHEMA
+////////////////////////////////////////////////////////////////////
+
 const orderSchema = new mongoose.Schema(
   {
-    // ─── Parties ──────────────────────────────────────────
+    ////////////////////////////////////////////////////////////////////
+    //// PARTIES
+    ////////////////////////////////////////////////////////////////////
+
     buyer: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+      type:     mongoose.Schema.Types.ObjectId,
+      ref:      "User",
       required: true,
     },
+
+    buyerRole: {
+      type: String,
+      enum: ["seller", "user"],
+    },
+
     seller: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+      type:     mongoose.Schema.Types.ObjectId,
+      ref:      "User",
       required: true,
     },
 
-    // ─── Product ──────────────────────────────────────────
+    sellerRole: {
+      type: String,
+      enum: ["seller", "user", "admin"],
+    },
+
+    ////////////////////////////////////////////////////////////////////
+    //// PRODUCT
+    ////////////////////////////////////////////////////////////////////
+
     product: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Product",
+      type:     mongoose.Schema.Types.ObjectId,
+      ref:      "Product",
       required: true,
     },
 
-    // Snapshot of product at time of order (in case product is deleted later)
-    productSnapshot: {
-      title: String,
-      price: Number,
-      condition: String,
-      storage: String,
-      color: String,
-      category: String,
-      subcategory: String,
-      image: String,       // store only first image
-    },
+    ////////////////////////////////////////////////////////////////////
+    //// TRANSACTION TYPE
+    //// buy  → buyer purchases product from seller
+    //// sell → user sells their device to a seller
+    ////////////////////////////////////////////////////////////////////
 
-    // ─── Pricing ──────────────────────────────────────────
-    amount: {
-      type: Number,
+    transactionType: {
+      type:     String,
+      enum:     ["buy", "sell"],
       required: true,
     },
 
-    // ─── Payment ──────────────────────────────────────────
+    ////////////////////////////////////////////////////////////////////
+    //// PRICING + COMMISSION
+    ////////////////////////////////////////////////////////////////////
+
+    salePrice: {
+      type:     Number,
+      required: true,
+    },
+
+    // Commission rate applied (1-2.5% depending on buyer role)
+    commissionRate: {
+      type:     Number,
+      required: true,
+    },
+
+    // Actual commission amount paid to admin
+    commissionAmount: {
+      type:     Number,
+      required: true,
+    },
+
+    // What the seller receives after commission deduction
+    sellerEarnings: {
+      type:     Number,
+      required: true,
+    },
+
+    ////////////////////////////////////////////////////////////////////
+    //// PAYMENT
+    ////////////////////////////////////////////////////////////////////
+
     paymentMethod: {
-      type: String,
-      enum: ["Cash", "UPI", "Card", "NetBanking", "Stripe"],
-      required: true,
-    },
-    paymentStatus: {
-      type: String,
-      enum: ["Pending", "Paid", "Failed", "Refunded"],
-      default: "Pending",
-    },
-    stripePaymentIntentId: {
-      type: String,
-      default: null,        // filled when Stripe is integrated
-    },
-
-    // ─── Shipping Address ─────────────────────────────────
-    shippingAddress: {
-      addressId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Address",
-      },
-      street: String,
-      city: String,
-      state: String,
-      zipcode: String,
-      country: String,
-      phone: String,
-      email: String,
-    },
-
-    // ─── Order Status ─────────────────────────────────────
-    orderStatus: {
-      type: String,
-      enum: [
-        "Placed",
-        "Confirmed",
-        "Shipped",
-        "Delivered",
-        "Cancelled",
-        "Returned",
-      ],
-      default: "Placed",
-    },
-
-    // ─── Cancellation ─────────────────────────────────────
-    cancelledBy: {
-      type: String,
-      enum: ["Buyer", "Seller", "Admin", null],
+      type:    String,
+      enum:    ["Cash", "UPI", "Card", "NetBanking"],
       default: null,
     },
-    cancellationReason: {
-      type: String,
+
+    paymentStatus: {
+      type:    String,
+      enum:    ["pending", "completed", "failed", "refunded"],
+      default: "pending",
+    },
+
+    paymentId: {
+      type:    String,
+      default: null,
+    },
+
+    ////////////////////////////////////////////////////////////////////
+    //// ORDER STATUS
+    ////////////////////////////////////////////////////////////////////
+
+    status: {
+      type:    String,
+      enum:    ["pending", "confirmed", "completed", "cancelled"],
+      default: "pending",
+    },
+
+    // For sell requests — seller notes about the device
+    sellerNote: {
+      type:    String,
       default: null,
     },
   },
   { timestamps: true }
 );
 
-// Indexes for common queries
+////////////////////////////////////////////////////////////////////
+//// INDEXES
+////////////////////////////////////////////////////////////////////
+
 orderSchema.index({ buyer: 1, createdAt: -1 });
 orderSchema.index({ seller: 1, createdAt: -1 });
-orderSchema.index({ orderStatus: 1 });
-orderSchema.index({ paymentStatus: 1 });
+orderSchema.index({ product: 1 });
+orderSchema.index({ status: 1 });
+orderSchema.index({ transactionType: 1 });
 
-module.exports = mongoose.models.Order || mongoose.model("Order", orderSchema);
+const OrderModel = mongoose.model("Order", orderSchema);
+
+OrderModel.COMMISSION_RATES = COMMISSION_RATES;
+
+module.exports = OrderModel;
