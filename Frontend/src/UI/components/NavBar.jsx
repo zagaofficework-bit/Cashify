@@ -1,9 +1,13 @@
 import React from "react";
 import {useNavigate} from "react-router-dom"
-
+import { BrowserRouter, Routes, Route, ServerRouter } from "react-router-dom";
+import Login from "../pages/Login";
+import Signup from "../pages/Signup";
+import OtpGeneration from "../pages/OtpGeneration"
 export default function NavBar() {
      const navigate = useNavigate()
-    
+   
+  
     const onclick = () => {
         console.log("Clicked")
         navigate("/login")

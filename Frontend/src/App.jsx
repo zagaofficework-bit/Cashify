@@ -3,32 +3,42 @@ import Login from "./UI/pages/Login";
 import Signup from "./UI/pages/Signup";
 import OtpGeneration from "./UI/pages/OtpGeneration"
 import { BrowserRouter, Routes, Route, ServerRouter } from "react-router-dom";
+import BuyLaptops from "./UI/pages/services/BuyLaptops";
 
+import SellOldLaptops from "./UI/pages/SellOldLaptops";
+import SellPhones from "./UI/pages/SellPhones";
+import SellSmartSpeakers from "./UI/pages/SellSmartSpeakers";
+import SellSmartWatch from "./UI/pages/SellSmartWatch";
+import SellTablet from "./UI/pages/SellTablet";
+import SellTV from "./UI/pages/SellTV";
+import ProductDetails from "./UI/pages/ProductDetails";
+
+import Recycle from "./UI/pages/services/Recycle";
+
+import NavBar from "./UI/components/NavBar";
 
 
 function App() {
   return (
     <>
 
-    
-
-    
-
-    
-     <BrowserRouter>
-
-      <Routes>
-        <Route path="/" element={<Home/>}></Route>
-        <Route path="/login" element={<Login/>}></Route>
-     
-     
-     <Route path="/signup" element={<Signup />} />
-      <Route path="/otp" element={<OtpGeneration />} />
-  </Routes>
-  </BrowserRouter>
+   <BrowserRouter>
+      <NavBar/>
+     <Routes>
  
-   </>
-);
+        <Route path="/" element={<Home />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
+        <Route path="/otp" element={<OtpGeneration />} />
+      </Routes> 
+    </BrowserRouter>
+
+ 
+  
+
+</>
+   
+  );
 }
 
 export default App;
