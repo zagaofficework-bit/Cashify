@@ -1,13 +1,13 @@
 import React, { useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleLeft, faAngleRight } from "@fortawesome/free-solid-svg-icons";
-import Brands from "../../components/Brands";
-import HowCashifyWorks from "../../components/HowCashifyWorks";
-import Feedback from "../../components/Feedback";
-import FAQ from "../../components/FAQ";
-import StoreSection from "../../components/StoreSection";
-import DownloadAppBanner from "../../components/DownloadAppBanner";
-import Footer from "../../components/Footer";
+import Brands from "../components/Brands";
+import HowCashifyWorks from "../components/HowCashifyWorks";
+import Feedback from "../components/Feedback";
+import FAQ from "../components/FAQ";
+import StoreSection from "../components/StoreSection";
+import DownloadAppBanner from "../components/DownloadAppBanner";
+import Footer from "../components/Footer";
 
 export default function RepairPhone() {
   const scrollRef = useRef(null);

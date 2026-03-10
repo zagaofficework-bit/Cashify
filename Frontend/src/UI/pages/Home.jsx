@@ -18,14 +18,16 @@ import ArticleSection from "../components/ArticleSection";
 import DealComponent from "../components/DealComponent";
 import TrendingSection from "../components/TrendingSection";
 import Recents from "../components/Recents";
-
+import Footer from "../components/Footer";
 import Login from "./Login"
 import Signup from "./Signup";
 import OtpGeneration from "./OtpGeneration"
 import { BrowserRouter, Routes, Route, ServerRouter } from "react-router-dom";
-import RepairPhone from "./services/RepairPhone";
+import RepairPhone from "./RepairPhone";
+import RepairLaptop from "./RepairLaptop";
+import AddProduct from "./AddProduct";
+import Chatbot from "../components/ChatBot";
 
-// import Footer from "../components/Footer";
 
 
 
@@ -59,9 +61,11 @@ export default function Home(){
       <NavMenu/>
       <SlidingAnimation/>
     
-    <RepairPhone/>
+    {/* <RepairPhone/> */}
     
-     
+     {/* <RepairLaptop/> */}
+     <AddProduct/>
+     <Chatbot/>
     </>)
 }
 
