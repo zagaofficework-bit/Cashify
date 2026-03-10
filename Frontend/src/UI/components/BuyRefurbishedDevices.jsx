@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 
-export default function BuyRefurbishedDevices({ title, products }) {
+export default function BuyRefurbishedDevices({ title, products=[
+  
+] }) {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const visibleItems = 5;

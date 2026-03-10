@@ -1,10 +1,11 @@
 import ServiceCard from "./ServiceCard";
-import { services, sellDevices } from "../../res/js/Data.js"
+import { sellDevices } from "../../res/js/Data.js";
 
 const SellOldDevice = () => {
   return (
-     <div className="max-w-7xl mx-auto px-6 py-6">
-    <h2 className="text-2xl font-semibold mb-6">
+    <div className="max-w-7xl mx-auto px-6 py-6">
+
+      <h2 className="text-2xl font-semibold mb-6">
         Sell Your Old Device
       </h2>
 
@@ -14,12 +15,13 @@ const SellOldDevice = () => {
             key={index}
             image={item.image}
             title={item.title}
+            path={item.path}
           />
         ))}
       </div>
-      </div>
 
-  )
-}
+    </div>
+  );
+};
 
-export default SellOldDevice
+export default SellOldDevice;

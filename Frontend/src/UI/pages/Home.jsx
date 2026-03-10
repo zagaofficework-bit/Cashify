@@ -31,7 +31,7 @@ import { BrowserRouter, Routes, Route, ServerRouter } from "react-router-dom";
 export default function Home(){
     return (
     <>
-     {/* <NavBar/> */}
+     <NavBar/>
     <NavMenu/>
    
      <SlidingAnimation/>

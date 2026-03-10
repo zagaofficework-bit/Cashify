@@ -12,14 +12,14 @@ export const services = [
   { title: "Recycle", image: "/assets/recycle.png", path: "/recycle" },
 ];
 export const sellDevices = [
-  { title: "Sell Phone", image:" ../assets/phone.png" },
-  { title: "Sell Laptop", image: "../assets/laptop.png" },
-  { title: "Sell TV", image:  "../assets/tv.png" },
-  { title: "Sell Tablet", image:  "../assets/tablet.png" },
-  { title: "Sell Gaming Consoles", image: "../assets/game.png" },
-  { title: "Sell Smartwatch", image: "../assets/watch.png" },
-  { title: "Sell Smart Speakers", image: "../assets/speaker.png" },
-  { title: "Sell More", image: "../assets/more.png" },
+  { title: "Sell Phone", image: "/assets/phone.png", path: "/sell-phone" },
+  { title: "Sell Laptop", image: "/assets/laptop.png", path: "/sell-laptop" },
+  { title: "Sell TV", image: "/assets/tv.png", path: "/sell-tv" },
+  { title: "Sell Tablet", image: "/assets/tablet.png", path: "/sell-tablet" },
+  { title: "Sell Gaming Consoles", image: "/assets/game.png", path: "/sell-gaming" },
+  { title: "Sell Smartwatch", image: "/assets/watch.png", path: "/sell-smartwatch" },
+  { title: "Sell Smart Speakers", image: "/assets/speaker.png", path: "/sell-speaker" },
+  { title: "Sell More", image: "/assets/more.png", path: "/sell-more" },
 ];
 
 export const devices = [

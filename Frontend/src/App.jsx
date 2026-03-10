@@ -31,9 +31,12 @@ function App() {
     <>
 
 
-
-
+<BrowserRouter>
 <Home/>
+
+</BrowserRouter>
+
+
     </>
     
 
