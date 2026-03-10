@@ -19,29 +19,24 @@ import NavBar from "./UI/components/NavBar";
 import BuyPhone from "./UI/pages/services/BuyPhone";
 import BuyWatches from "./UI/pages/services/BuyWatches";
 import BuyGadgets from "./UI/pages/services/BuyGadgets";
+import BuyTablets from "./UI/pages/services/BuyTablets";
+import BuyGamingConsole from "./UI/pages/services/BuyGamingConsole";
+import BuyCamera from "./UI/pages/services/BuyCamera";
+import BuyAudioDevices from "./UI/pages/services/BuyAudioDevices";
+import SearchByModel from "./UI/components/SearchByModel";
 
 
 function App() {
   return (
     <>
 
-<BuyGadgets/>
- {/* <BrowserRouter>
-      <NavBar location="mumbai"/>
-     <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/home" element={<Home />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<Signup />} />
-        <Route path="/otp" element={<OtpGeneration />} />
-      </Routes> 
-    </BrowserRouter> */}
 
- 
-  
 
-</>
-   
+
+<Home/>
+    </>
+    
+
   );
 }
 

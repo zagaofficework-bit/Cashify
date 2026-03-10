@@ -134,7 +134,7 @@ export default function RefurbishedPhoneCard() {
       </div>
       
       
-      <BuyRefurbishedDevices title="You May Also Like"/>
+      <BuyRefurbishedDevices title="You May Also Like" products={audioDevices} />
       <CashifyTrust/>
 
      

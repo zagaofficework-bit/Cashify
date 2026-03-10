@@ -9,17 +9,19 @@ import { bestSelling, Mobilecategories } from '../../../res/js/Categorydata';
 import BestSellingcomponent from '../../components/BestSellingcomponent';
 import ConditionsExplained from '../../components/ConditionalExplained';
 import Footer from '../../components/Footer';
+import {smartwatches } from '../../../res/js/DevicesData';
 
 const BuyWatches = () => {
   return (
-    <div><NavBar/>
+    <div>
+        <NavBar/>
         <NavMenu/>
         <Devices/>
         <SlidingAnimation/>
         <Shopbuy title="Shop buy series"/>
-        <BuyRefurbishedDevices title="BestSeller Devices"/>
+        <BuyRefurbishedDevices title="BestSeller Devices" products={smartwatches}/>
         <BestSellingcomponent bestSelling={bestSelling}/>
-        <BuyRefurbishedDevices title="Limited Stock"/>
+        <BuyRefurbishedDevices title="Limited Stock" products={smartwatches}/>
         <BestSellingcomponent bestSelling={bestSelling}/>
         <ConditionsExplained/>
         <div className='m-12'>

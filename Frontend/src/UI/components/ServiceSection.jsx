@@ -13,12 +13,13 @@ const ServicesSection = () => {
             key={index}
             image={item.image}
             title={item.title}
+            path={item.path}
           />
         ))}
       </div>
 
       {/* Sell Devices */}
-      
+
     </div>
   );
 };
