@@ -39,9 +39,7 @@ const OtpGeneration = () => {
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black/60 backdrop-blur-sm z-50 p-4">
-
       <div className="flex bg-white rounded-lg shadow-lg overflow-hidden max-w-3xl w-full max-h-[600px]">
-
         {/* Left panel */}
         <div className="bg-black text-white flex flex-col justify-between p-8 w-1/2 min-w-[280px]">
           <h2 className="text-3xl font-bold mb-10 text-center">
@@ -57,36 +55,32 @@ const OtpGeneration = () => {
         {/*right panel*/}
 
         <div className="flex flex-col p-8 w-1/2 ">
-
           {/* Back */}
           <div className="flex justify-between items-center mb-4">
-
             <button
               className="text-sm text-gray-600 hover:text-black"
-             onClick={() => navigate(-1)}
+              onClick={() => navigate(-1)}
             >
               ← Back
             </button>
 
             <button
               className="text-gray-500 hover:text-black text-xl font-bold"
-             onClick={() => navigate("/")}
+              onClick={() => navigate("/")}
             >
               ✕
             </button>
-
           </div>
 
-
           <form onSubmit={handleSubmit} className="flex flex-col text-center">
-
             <h3 className="text-xl font-semibold text-gray-800">
               Verify Your Email
             </h3>
 
             <div className="flex items-center gap-2 mt-2 text-sm text-gray-500">
               <span>
-                The verification code has been send to your <span className="font-medium">xx@gmail.com</span>
+                The verification code has been send to your{" "}
+                <span className="font-medium">xx@gmail.com</span>
               </span>
               <span className="cursor-pointer">✏️</span>
             </div>
@@ -107,9 +101,7 @@ const OtpGeneration = () => {
             </div>
 
             {/* Error */}
-            {error && (
-              <p className="text-red-500 text-sm mb-3">{error}</p>
-            )}
+            {error && <p className="text-red-500 text-sm mb-3">{error}</p>}
 
             {/* Verify button */}
             <button
@@ -127,7 +119,6 @@ const OtpGeneration = () => {
                 Resend
               </span>
             </p>
-
           </form>
         </div>
       </div>

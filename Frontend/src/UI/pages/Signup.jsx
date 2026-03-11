@@ -4,7 +4,6 @@ import * as Yup from "yup";
 import { useNavigate } from "react-router-dom";
 
 const Signup = () => {
-
   const navigate = useNavigate();
 
   const formik = useFormik({
@@ -16,7 +15,9 @@ const Signup = () => {
     },
 
     validationSchema: Yup.object({
-      firstname: Yup.string().min(2, "Too short").required("First name required"),
+      firstname: Yup.string()
+        .min(2, "Too short")
+        .required("First name required"),
       lastname: Yup.string().min(2, "Too short").required("Last name required"),
       email: Yup.string().email("Invalid email").required("Email required"),
       phone: Yup.string()
@@ -34,9 +35,7 @@ const Signup = () => {
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black/60 backdrop-blur-sm z-50 p-4">
-
       <div className="flex bg-white rounded-lg shadow-lg overflow-hidden max-w-3xl w-full max-h-[600px]">
-
         {/* Left panel */}
         <div className="bg-black text-white flex flex-col justify-between p-8 w-1/2 min-w-[280px]">
           <h2 className="text-3xl font-bold mb-10 text-center">Signup Form</h2>
@@ -52,7 +51,6 @@ const Signup = () => {
 
         <div className="flex flex-col p-8 w-1/2">
           <div className="flex justify-between items-center mb-4">
-
             <button
               className="text-sm text-gray-600 hover:text-black"
               onClick={() => navigate(-1)}
@@ -62,21 +60,17 @@ const Signup = () => {
 
             <button
               className="text-gray-500 hover:text-black text-xl font-bold"
-             onClick={() => navigate("/")}
+              onClick={() => navigate("/")}
             >
               ✕
             </button>
-
           </div>
-
 
           <form
             onSubmit={formik.handleSubmit}
             className="space-y-6 flex flex-col h-full mt-5"
           >
-
             <div className="flex gap-4">
-
               <div className="flex-1">
                 <label className="block mb-1 text-sm font-medium text-gray-700">
                   First Name
@@ -92,7 +86,9 @@ const Signup = () => {
                 />
 
                 {formik.touched.firstname && formik.errors.firstname && (
-                  <p className="text-red-500 text-sm">{formik.errors.firstname}</p>
+                  <p className="text-red-500 text-sm">
+                    {formik.errors.firstname}
+                  </p>
                 )}
               </div>
 
@@ -111,10 +107,11 @@ const Signup = () => {
                 />
 
                 {formik.touched.lastname && formik.errors.lastname && (
-                  <p className="text-red-500 text-sm">{formik.errors.lastname}</p>
+                  <p className="text-red-500 text-sm">
+                    {formik.errors.lastname}
+                  </p>
                 )}
               </div>
-
             </div>
 
             <div>
@@ -163,14 +160,18 @@ const Signup = () => {
                 Submit
               </button>
             </div>
-
           </form>
           <div>
-            <p>If Already have an Account?<a className="text-green-500 cursor-pointer" 
-           onClick={() => navigate("/login")}
-            >Login</a></p>
+            <p>
+              If Already have an Account?
+              <a
+                className="text-green-500 cursor-pointer"
+                onClick={() => navigate("/login")}
+              >
+                Login
+              </a>
+            </p>
           </div>
-
         </div>
       </div>
     </div>

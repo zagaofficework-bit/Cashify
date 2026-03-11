@@ -1,28 +1,82 @@
 import { useState, useEffect } from "react";
-import { Save, Send, Trash2, Banknote, Smartphone, CreditCard, Upload, X } from "lucide-react";
+import {
+  Save,
+  Send,
+  Trash2,
+  Banknote,
+  Smartphone,
+  CreditCard,
+  Upload,
+  X,
+} from "lucide-react";
 import { toast, Toaster } from "sonner";
 
 // Categories with subcategories
 const categories = {
   phones: {
     label: "Mobile Phones",
-    subcategories: ["iPhone", "Samsung", "Xiaomi / Redmi", "OnePlus", "Realme", "Oppo", "Vivo", "Google Pixel", "Motorola", "Nokia", "Asus", "Nothing", "Other Smartphones"],
+    subcategories: [
+      "iPhone",
+      "Samsung",
+      "Xiaomi / Redmi",
+      "OnePlus",
+      "Realme",
+      "Oppo",
+      "Vivo",
+      "Google Pixel",
+      "Motorola",
+      "Nokia",
+      "Asus",
+      "Nothing",
+      "Other Smartphones",
+    ],
   },
   laptops: {
     label: "Laptops",
-    subcategories: ["MacBook", "Dell", "HP", "Lenovo", "Asus", "Acer", "MSI", "Microsoft Surface", "Samsung", "Other Laptops"],
+    subcategories: [
+      "MacBook",
+      "Dell",
+      "HP",
+      "Lenovo",
+      "Asus",
+      "Acer",
+      "MSI",
+      "Microsoft Surface",
+      "Samsung",
+      "Other Laptops",
+    ],
   },
   tablets: {
     label: "Tablets",
-    subcategories: ["Apple iPad", "Samsung Tablets", "Lenovo Tablets", "Xiaomi Tablets", "Huawei Tablets", "Other Tablets"],
+    subcategories: [
+      "Apple iPad",
+      "Samsung Tablets",
+      "Lenovo Tablets",
+      "Xiaomi Tablets",
+      "Huawei Tablets",
+      "Other Tablets",
+    ],
   },
   consoles: {
     label: "Gaming Consoles",
-    subcategories: ["PlayStation 4", "PlayStation 5", "Xbox One", "Xbox Series X / S", "Nintendo Switch"],
+    subcategories: [
+      "PlayStation 4",
+      "PlayStation 5",
+      "Xbox One",
+      "Xbox Series X / S",
+      "Nintendo Switch",
+    ],
   },
   desktop: {
     label: "Desktop / PC Components",
-    subcategories: ["CPU / Desktop", "Graphics Card (GPU)", "RAM", "Hard Disk / SSD", "Motherboard", "Monitor"],
+    subcategories: [
+      "CPU / Desktop",
+      "Graphics Card (GPU)",
+      "RAM",
+      "Hard Disk / SSD",
+      "Motherboard",
+      "Monitor",
+    ],
   },
 };
 
@@ -88,16 +142,19 @@ function FileUpload({ label, accept, type, onFileSelect }) {
   return (
     <div className="space-y-2">
       <label className="block text-sm font-medium text-gray-700">{label}</label>
-      
+
       {!preview ? (
         <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 transition-colors">
           <div className="flex flex-col items-center justify-center pt-5 pb-6">
             <Upload className="w-8 h-8 mb-2 text-gray-400" />
             <p className="mb-1 text-sm text-gray-500">
-              <span className="font-semibold">Click to upload</span> or drag and drop
+              <span className="font-semibold">Click to upload</span> or drag and
+              drop
             </p>
             <p className="text-xs text-gray-500">
-              {type === "image" ? "PNG, JPG, GIF up to 10MB" : "MP4, MOV, AVI up to 100MB"}
+              {type === "image"
+                ? "PNG, JPG, GIF up to 10MB"
+                : "MP4, MOV, AVI up to 100MB"}
             </p>
           </div>
           <input
@@ -110,7 +167,11 @@ function FileUpload({ label, accept, type, onFileSelect }) {
       ) : (
         <div className="relative w-full h-32 border-2 border-gray-300 rounded-lg overflow-hidden">
           {type === "image" ? (
-            <img src={preview} alt="Preview" className="w-full h-full object-cover" />
+            <img
+              src={preview}
+              alt="Preview"
+              className="w-full h-full object-cover"
+            />
           ) : (
             <video src={preview} className="w-full h-full object-cover" />
           )}
@@ -190,7 +251,7 @@ export default function App() {
       paymentMethod,
       savedAt: new Date().toISOString(),
     };
-    
+
     localStorage.setItem("formDraft", JSON.stringify(draftData));
     toast.success("Draft saved successfully!");
   };
@@ -204,7 +265,11 @@ export default function App() {
   // Validate price
   const handlePriceChange = (value) => {
     setPrice(value);
-    if (originalPrice && value && parseFloat(value) > parseFloat(originalPrice)) {
+    if (
+      originalPrice &&
+      value &&
+      parseFloat(value) > parseFloat(originalPrice)
+    ) {
       setPriceError("Price cannot be greater than original price");
     } else {
       setPriceError("");
@@ -223,12 +288,12 @@ export default function App() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    
+
     if (priceError) {
       alert("Please fix the price validation error");
       return;
     }
-    
+
     console.log({
       title,
       description,
@@ -270,12 +335,17 @@ export default function App() {
     <div className="min-h-screen bg-gray-50 py-8 px-4">
       <div className="max-w-2xl mx-auto">
         <div className="bg-white rounded-lg shadow-md p-6 md:p-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-6">Add Your Product</h1>
-          
+          <h1 className="text-3xl font-bold text-gray-900 mb-6">
+            Add Your Product
+          </h1>
+
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Title Input */}
             <div className="space-y-2">
-              <label htmlFor="title" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="title"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Product Name
               </label>
               <input
@@ -291,7 +361,10 @@ export default function App() {
 
             {/* Description Input */}
             <div className="space-y-2">
-              <label htmlFor="description" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="description"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Product Description
               </label>
               <textarea
@@ -307,7 +380,10 @@ export default function App() {
 
             {/* Category Dropdown */}
             <div className="space-y-2">
-              <label htmlFor="category" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="category"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Product Category
               </label>
               <select
@@ -329,7 +405,10 @@ export default function App() {
             {/* Sub-Category Dropdown */}
             {category && (
               <div className="space-y-2">
-                <label htmlFor="subcategory" className="block text-sm font-medium text-gray-700">
+                <label
+                  htmlFor="subcategory"
+                  className="block text-sm font-medium text-gray-700"
+                >
                   Sub-Category
                 </label>
                 <select
@@ -351,7 +430,10 @@ export default function App() {
 
             {/* Brand Name Input */}
             <div className="space-y-2">
-              <label htmlFor="brandName" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="brandName"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Brand Name
               </label>
               <input
@@ -395,7 +477,10 @@ export default function App() {
 
             {/* Colour Input */}
             <div className="space-y-2">
-              <label htmlFor="colour" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="colour"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Colour
               </label>
               <input
@@ -411,7 +496,10 @@ export default function App() {
 
             {/* Price Input */}
             <div className="space-y-2">
-              <label htmlFor="price" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="price"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Expected Price
               </label>
               <input
@@ -424,12 +512,17 @@ export default function App() {
                 required
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
-              {priceError && <p className="text-sm text-red-600 mt-1">{priceError}</p>}
+              {priceError && (
+                <p className="text-sm text-red-600 mt-1">{priceError}</p>
+              )}
             </div>
 
             {/* Original Price Input */}
             <div className="space-y-2">
-              <label htmlFor="originalPrice" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="originalPrice"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Original Price
               </label>
               <input
@@ -448,9 +541,21 @@ export default function App() {
             <ButtonGroup
               label="Payment Method"
               options={[
-                { value: "cash", label: "Cash", icon: <Banknote className="w-5 h-5" /> },
-                { value: "upi", label: "UPI", icon: <Smartphone className="w-5 h-5" /> },
-                { value: "stripe", label: "Stripe", icon: <CreditCard className="w-5 h-5" /> },
+                {
+                  value: "cash",
+                  label: "Cash",
+                  icon: <Banknote className="w-5 h-5" />,
+                },
+                {
+                  value: "upi",
+                  label: "UPI",
+                  icon: <Smartphone className="w-5 h-5" />,
+                },
+                {
+                  value: "stripe",
+                  label: "Stripe",
+                  icon: <CreditCard className="w-5 h-5" />,
+                },
               ]}
               value={paymentMethod}
               onChange={setPaymentMethod}

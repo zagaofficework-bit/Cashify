@@ -37,10 +37,9 @@ export default function Login() {
           {/* Right side form */}
           <div className="w-full md:w-1/2 p-8">
             <div className="flex justify-between items-center mb-4">
-
               <button
                 className="text-sm text-gray-600 hover:text-black"
-               onClick={() => navigate(-1)}
+                onClick={() => navigate(-1)}
               >
                 ← Back
               </button>
@@ -51,12 +50,13 @@ export default function Login() {
               >
                 ✕
               </button>
-
             </div>
 
             <h2 className="text-2xl font-bold mb-2">Login</h2>
 
-            <label className="block text-gray-700 mt-8 mb-5 font-bold">Enter your email</label>
+            <label className="block text-gray-700 mt-8 mb-5 font-bold">
+              Enter your email
+            </label>
             <input
               type="email"
               value={email}
@@ -65,7 +65,9 @@ export default function Login() {
               className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 mb-2"
             />
             {!isValid && email && (
-              <p className="text-red-500 text-sm mb-4">Please enter a valid email address.</p>
+              <p className="text-red-500 text-sm mb-4">
+                Please enter a valid email address.
+              </p>
             )}
 
             <div className="flex items-center mb-6">
@@ -89,19 +91,25 @@ export default function Login() {
 
             <button
               disabled={!isValid}
-              className={`w-full py-2 rounded-lg font-semibold transition ${isValid
-                ? "bg-blue-600 text-white hover:bg-blue-700"
-                : "bg-gray-300 text-gray-500 cursor-not-allowed"
-                }`}
-              onClick={() => navigate('/otp')}
+              className={`w-full py-2 rounded-lg font-semibold transition ${
+                isValid
+                  ? "bg-blue-600 text-white hover:bg-blue-700"
+                  : "bg-gray-300 text-gray-500 cursor-not-allowed"
+              }`}
+              onClick={() => navigate("/otp")}
             >
               CONTINUE
             </button>
             <div>
-              <p>New User?<a className="text-green-500 cursor-pointer" 
-              onClick={() => navigate("/signup")}
-              >
-                Signup</a></p>
+              <p>
+                New User?
+                <a
+                  className="text-green-500 cursor-pointer"
+                  onClick={() => navigate("/signup")}
+                >
+                  Signup
+                </a>
+              </p>
             </div>
           </div>
         </div>

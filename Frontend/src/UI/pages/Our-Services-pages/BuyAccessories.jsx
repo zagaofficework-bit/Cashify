@@ -1,5 +1,4 @@
 import React from "react";
-import NavBar from "../../components/NavBar";
 import NavMenu from "../../components/NavMenu";
 import BuyRefurbishedDevices from "../../components/Home-page/BuyRefurbishedDevices";
 import Footer from "../../components/Home-page/Footer";
@@ -7,7 +6,6 @@ import Footer from "../../components/Home-page/Footer";
 export default function NewAccessories() {
   return (
     <>
-      <NavBar />
       <NavMenu />
 
       <section className="text-white px-6 py-12">
@@ -47,14 +45,21 @@ export default function NewAccessories() {
             ></img>
           </div>
         </section>
-        <img alt="-infographics" class="h-auto w-full gm-added gm-lazy" 
-        loading="lazy" fetchpriority="low" width="400" height="100" data-gumlet="false" 
-        src="https://s3ng.Phonify.in/estore/3ee66265f9a84ab68507a931dd01b8ea.webp"></img>
+        <img
+          alt="-infographics"
+          class="h-auto w-full gm-added gm-lazy"
+          loading="lazy"
+          fetchpriority="low"
+          width="400"
+          height="100"
+          data-gumlet="false"
+          src="https://s3ng.Phonify.in/estore/3ee66265f9a84ab68507a931dd01b8ea.webp"
+        ></img>
 
-        <BuyRefurbishedDevices title="Best Selling"/>
+        <BuyRefurbishedDevices title="Best Selling" />
       </section>
-       <img src="./assets/img/WhySugato.png" alt="why sugato" />
-       <Footer />
+      <img src="./assets/img/WhySugato.png" alt="why sugato" />
+      <Footer />
     </>
   );
 }
