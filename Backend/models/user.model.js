@@ -55,17 +55,6 @@ const userSchema = new mongoose.Schema(
       },
     },
 
-    address: {
-      city: { type: String, trim: true },
-      state: { type: String, trim: true },
-      pincode: { type: String, trim: true },
-      full: { type: String, trim: true },
-      isDefault: {
-        type: Boolean,
-        default: false,
-      },
-    },
-
     // ─── SUBSCRIPTION — only relevant for sellers ───────────────────────────────
 
     subscription: {

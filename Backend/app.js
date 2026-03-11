@@ -15,9 +15,9 @@ const authRouter         = require("./routes/auth.routes");
 const productRouter      = require("./routes/product.routes");
 const subscriptionRouter = require("./routes/subscription.routes");
 const adminRouter        = require("./routes/admin.routes");
-const addressRouter      = require("./routes/address.routes");
 const orderRouter        = require("./routes/order.routes");
 const messageRouter      = require("./routes/message.routes");
+const profileRouter      = require("./routes/profile.routes");
 
 
 // API routes
@@ -25,8 +25,8 @@ app.use("/api/auth",          authRouter);
 app.use("/api/products",      productRouter);
 app.use("/api/subscriptions", subscriptionRouter);
 app.use("/api/admin",         adminRouter);
-app.use("/api/address",       addressRouter);
 app.use("/api/orders",        orderRouter);
 app.use("/api/messages",      messageRouter);
+app.use("/api/profile",       profileRouter);
 
 module.exports = app;
