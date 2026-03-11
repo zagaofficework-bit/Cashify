@@ -1,9 +1,5 @@
 const mongoose = require("mongoose");
 
-////////////////////////////////////////////////////////////////////
-//// PLAN CONFIG — single source of truth
-////////////////////////////////////////////////////////////////////
-
 const PLANS = {
   basic: {
     name:            "Basic",
@@ -22,15 +18,11 @@ const PLANS = {
   premium: {
     name:            "Premium",
     price:           11999,
-    activeListings:  -1,       // -1 = unlimited
+    activeListings:  -1,
     prioritySupport: true,
     supportType:     "chat+call",
   },
 };
-
-////////////////////////////////////////////////////////////////////
-//// SCHEMA
-////////////////////////////////////////////////////////////////////
 
 const subscriptionSchema = new mongoose.Schema(
   {
@@ -53,7 +45,7 @@ const subscriptionSchema = new mongoose.Schema(
 
     activeListingsLimit: {
       type:    Number,
-      default: 20, // -1 = unlimited
+      default: 20,  // -1 = unlimited
     },
 
     prioritySupport: {
@@ -77,6 +69,10 @@ const subscriptionSchema = new mongoose.Schema(
       required: true,
     },
 
+    // ─── isActive ──────────────────────────────────────────────────────────
+    // true  → subscription is active (admin has NOT revoked it)
+    // false → admin revoked it OR user cancelled
+    // Note: even if isActive=true, check endDate to know if it's expired
     isActive: {
       type:    Boolean,
       default: true,
@@ -93,14 +89,34 @@ const subscriptionSchema = new mongoose.Schema(
       default: null,
     },
   },
-  { timestamps: true }
+  {
+    timestamps: true,
+    toJSON:   { virtuals: true },
+    toObject: { virtuals: true },
+  }
 );
+
+// ─── VIRTUAL: subscriptionStatus ──────────────────────────────────────────
+// Gives a clean readable status purely based on subscription fields
+// "active"   → isActive=true AND not yet expired
+// "expired"  → isActive=true BUT endDate has passed
+// "revoked"  → isActive=false (admin revoked or user cancelled)
+subscriptionSchema.virtual("subscriptionStatus").get(function () {
+  if (!this.isActive) return "revoked";
+  if (this.endDate < new Date()) return "expired";
+  return "active";
+});
+
+// ─── VIRTUAL: daysRemaining ────────────────────────────────────────────────
+subscriptionSchema.virtual("daysRemaining").get(function () {
+  if (!this.isActive || this.endDate < new Date()) return 0;
+  return Math.ceil((new Date(this.endDate) - new Date()) / (1000 * 60 * 60 * 24));
+});
 
 subscriptionSchema.index({ seller: 1 });
 subscriptionSchema.index({ isActive: 1, endDate: 1 });
 
 const SubscriptionModel = mongoose.model("Subscription", subscriptionSchema);
-
 SubscriptionModel.PLANS = PLANS;
 
 module.exports = SubscriptionModel;

@@ -55,17 +55,19 @@ const userSchema = new mongoose.Schema(
       },
     },
 
-    address: {
-      city: { type: String, trim: true },
-      state: { type: String, trim: true },
-      pincode: { type: String, trim: true },
-      full: { type: String, trim: true },
-      isDefault: {
-        type: Boolean,
-        default: false,
-      },
-    },
-
+    address: [
+  {
+    street:    { type: String, trim: true },
+    city:      { type: String, trim: true },
+    state:     { type: String, trim: true },
+    pincode:   { type: String, trim: true },
+    country:   { type: String, trim: true },
+    email:     { type: String, trim: true, lowercase: true },
+    mobile:    { type: String, trim: true },
+    isDefault: { type: Boolean, default: false },
+    createdAt: { type: Date, default: Date.now },
+  }
+],
     // ─── SUBSCRIPTION — only relevant for sellers ───────────────────────────────
 
     subscription: {
