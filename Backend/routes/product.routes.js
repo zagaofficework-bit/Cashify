@@ -46,12 +46,29 @@ router.get(
 );
 
 ////////////////////////////////////////////////////////////////////
+//// MY LISTINGS
+////////////////////////////////////////////////////////////////////
+
+/**
+ * @route   GET /api/products/my/listings
+ * @desc    Get own product listings
+ * @access  Private (Seller, User)
+ * @query   ?status=available
+ */
+router.get(
+  "/my/listings",
+  authMiddleware,
+  authorize("seller", "user"),
+  ProductController.getMyProducts
+);
+
+////////////////////////////////////////////////////////////////////
 //// SELLER ROUTES — requires active subscription
 ////////////////////////////////////////////////////////////////////
 
 /**
  * @route   POST /api/products/seller/create
- * @desc    Seller creates a new product listing (new/refurbished/old)
+ * @desc    Seller creates a new listing (new / refurbished / old)
  * @access  Private (Seller only)
  */
 router.post(
@@ -59,7 +76,7 @@ router.post(
   authMiddleware,
   authorize("seller"),
   blockAdmin,
-  productUpload,               // ✅ multer FIRST — parses req.body
+  productUpload,              // multer FIRST — parses multipart req.body
   validateProductFiles,
   requireActiveSubscription,
   checkListingLimit,
@@ -81,81 +98,10 @@ router.post(
   authMiddleware,
   authorize("user"),
   blockAdmin,
-  productUpload,               // ✅ multer FIRST
+  productUpload,              // multer FIRST
   validateProductFiles,
-  checkDeviceTypePermission,   // enforces deviceType = "old"
+  checkDeviceTypePermission,  // enforces deviceType = "old"
   ProductController.createProduct
-);
-
-////////////////////////////////////////////////////////////////////
-//// BUY & SELL ROUTES
-////////////////////////////////////////////////////////////////////
-
-/**
- * @route   POST /api/products/:id/buy
- * @desc    Buy a product
- *          - user  → can only buy from seller
- *          - seller → can buy from seller or user
- * @access  Private (Seller, User)
- */
-router.post(
-  "/:id/buy",
-  authMiddleware,
-  authorize("seller", "user"),
-  blockAdmin,
-  ProductController.buyProduct
-);
-
-/**
- * @route   POST /api/products/sell-request
- * @desc    User submits a sell request to a specific seller
- * @access  Private (User only)
- */
-router.post(
-  "/sell-request",
-  authMiddleware,
-  authorize("user"),
-  ProductController.sellDeviceToSeller
-);
-
-/**
- * @route   PATCH /api/products/sell-request/:orderId/confirm
- * @desc    Seller confirms a user's sell request
- * @access  Private (Seller only)
- */
-router.patch(
-  "/sell-request/:orderId/confirm",
-  authMiddleware,
-  authorize("seller"),
-  ProductController.confirmSellRequest
-);
-
-////////////////////////////////////////////////////////////////////
-//// MY LISTINGS & ORDERS
-////////////////////////////////////////////////////////////////////
-
-/**
- * @route   GET /api/products/my/listings
- * @desc    Get own product listings
- * @access  Private (Seller, User)
- */
-router.get(
-  "/my/listings",
-  authMiddleware,
-  authorize("seller", "user"),
-  ProductController.getMyProducts
-);
-
-/**
- * @route   GET /api/products/my/orders
- * @desc    Get own orders (buy + sell history)
- * @access  Private (Seller, User)
- */
-router.get(
-  "/my/orders",
-  authMiddleware,
-  authorize("seller", "user"),
-  ProductController.getMyOrders
 );
 
 ////////////////////////////////////////////////////////////////////

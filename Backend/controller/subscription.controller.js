@@ -3,10 +3,8 @@ const userModel         = require("../models/user.model");
 
 const PLANS = SubscriptionModel.PLANS;
 
-////////////////////////////////////////////////////////////////////
-//// GET ALL PLANS — public
-////////////////////////////////////////////////////////////////////
 
+// GET ALL PLANS — public
 exports.getPlans = async (req, res) => {
   try {
     res.status(200).json({
@@ -47,10 +45,8 @@ exports.getPlans = async (req, res) => {
   }
 };
 
-////////////////////////////////////////////////////////////////////
-//// SUBSCRIBE — any user can subscribe and auto-become a seller
-////////////////////////////////////////////////////////////////////
 
+// SUBSCRIBE — any user can subscribe and auto-become a seller
 exports.subscribe = async (req, res) => {
   try {
     const { plan, paymentMethod, paymentId } = req.body;
@@ -115,10 +111,8 @@ exports.subscribe = async (req, res) => {
   }
 };
 
-////////////////////////////////////////////////////////////////////
-//// GET MY SUBSCRIPTION — logged in user/seller
-////////////////////////////////////////////////////////////////////
 
+// GET MY SUBSCRIPTION — logged in user/seller
 exports.getMySubscription = async (req, res) => {
   try {
     const subscription = await SubscriptionModel.findOne({
@@ -153,10 +147,8 @@ exports.getMySubscription = async (req, res) => {
   }
 };
 
-////////////////////////////////////////////////////////////////////
-//// UPGRADE PLAN — seller upgrades to higher plan
-////////////////////////////////////////////////////////////////////
 
+// UPGRADE PLAN — seller upgrades to higher plan
 exports.upgradePlan = async (req, res) => {
   try {
     const { plan, paymentMethod, paymentId } = req.body;
@@ -224,10 +216,8 @@ exports.upgradePlan = async (req, res) => {
   }
 };
 
-////////////////////////////////////////////////////////////////////
-//// ADMIN — GET ALL SUBSCRIPTIONS
-////////////////////////////////////////////////////////////////////
 
+// ADMIN — GET ALL SUBSCRIPTIONS
 exports.getAllSubscriptions = async (req, res) => {
   try {
     const { plan, isActive, page = 1, limit = 20 } = req.query;
@@ -268,10 +258,8 @@ exports.getAllSubscriptions = async (req, res) => {
   }
 };
 
-////////////////////////////////////////////////////////////////////
-//// ADMIN — REVOKE SUBSCRIPTION (downgrade seller back to user)
-////////////////////////////////////////////////////////////////////
 
+// ADMIN — REVOKE SUBSCRIPTION (downgrade seller back to user)
 exports.revokeSubscription = async (req, res) => {
   try {
     const { userId } = req.params;

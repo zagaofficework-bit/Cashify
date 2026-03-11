@@ -2,95 +2,155 @@ const mongoose = require("mongoose");
 
 const userSchema = new mongoose.Schema(
   {
+    // ─── BASIC INFO ────────────────────────────────────────────────────────────
+
     firstname: {
-      type:     String,
+      type: String,
       required: [true, "First name is required"],
-      trim:     true,
+      trim: true,
     },
 
     lastname: {
-      type:  String,
-      trim:  true,
+      type: String,
+      trim: true,
     },
 
     email: {
-      type:     String,
+      type: String,
       required: [true, "Email is required"],
-      unique:   true,
+      unique: true,
       lowercase: true,
-      trim:     true,
+      trim: true,
     },
 
     mobile: {
-      type:     String,
+      type: String,
       required: [true, "Mobile is required"],
-      unique:   true,
-      trim:     true,
+      unique: true,
+      trim: true,
     },
 
     profilePic: {
-      type:    String,
+      type: String,
       default: null,
-    }, 
+    },
 
     role: {
-      type:    String,
-      enum:    ["admin", "seller", "user"],
+      type: String,
+      enum: ["admin", "seller", "user"],
       default: "user",
     },
-    // LOCATION — GeoJSON Point for proximity search
+
+    // ─── LOCATION — GeoJSON Point for proximity search ─────────────────────────
+
     location: {
       type: {
-        type:    String,
-        enum:    ["Point"],
+        type: String,
+        enum: ["Point"],
         default: "Point",
       },
       coordinates: {
-        type:    [Number], // [longitude, latitude]
+        type: [Number], // [longitude, latitude]
         default: [0, 0],
       },
     },
 
     address: {
-      city:    { type: String, trim: true },
-      state:   { type: String, trim: true },
+      city: { type: String, trim: true },
+      state: { type: String, trim: true },
       pincode: { type: String, trim: true },
-      full:    { type: String, trim: true },
+      full: { type: String, trim: true },
+      isDefault: {
+        type: Boolean,
+        default: false,
+      },
     },
 
-    // SUBSCRIPTION — only relevant for sellers
+    // ─── SUBSCRIPTION — only relevant for sellers ───────────────────────────────
+
     subscription: {
-      type:    mongoose.Schema.Types.ObjectId,
-      ref:     "Subscription",
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Subscription",
       default: null,
     },
 
-    // AUTH
+    // ─── ACCOUNT STATUS ────────────────────────────────────────────────────────
+    // active     → normal, full access
+    // suspended  → temporarily paused by admin (subscription paused)
+    // banned     → permanently banned by admin (all access revoked)
+
+    accountStatus: {
+      type: String,
+      enum: ["active", "suspended", "banned"],
+      default: "active",
+    },
+
+    // ─── SUSPENSION DETAILS — set when admin pauses a seller ───────────────────
+
+    suspendedAt: {
+      type: Date,
+      default: null,
+    },
+
+    suspendedBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      default: null,
+    },
+
+    suspensionReason: {
+      type: String,
+      trim: true,
+      default: null,
+    },
+
+    // ─── BAN DETAILS — set when admin permanently bans a seller ────────────────
+
+    bannedAt: {
+      type: Date,
+      default: null,
+    },
+
+    bannedBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      default: null,
+    },
+
+    banReason: {
+      type: String,
+      trim: true,
+      default: null,
+    },
+
+    // ─── AUTH ──────────────────────────────────────────────────────────────────
+
     refreshToken: {
-      type:    String,
+      type: String,
       default: null,
     },
 
     isVerified: {
-      type:    Boolean,
+      type: Boolean,
       default: false,
     },
 
     isActive: {
-      type:    Boolean,
+      type: Boolean,
       default: true,
     },
   },
   {
     timestamps: true,
-  }
+  },
 );
 
-// INDEXES
-// Geospatial index for location-based queries
+// ─── INDEXES ───────────────────────────────────────────────────────────────────
+
 userSchema.index({ location: "2dsphere" });
 userSchema.index({ role: 1 });
 userSchema.index({ email: 1 });
 userSchema.index({ mobile: 1 });
+userSchema.index({ accountStatus: 1 }); // for admin queries filtering by status
 
 module.exports = mongoose.model("User", userSchema);

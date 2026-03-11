@@ -1,6 +1,6 @@
-const Address = require("../models/address.model");
+const Address = require("../models/user.model");
 
-// ─── ADD ADDRESS ────────────────────────────────────────────────
+// ADD ADDRESS 
 exports.addAddress = async (req, res) => {
   try {
     const userId = req.user._id;
@@ -39,7 +39,7 @@ exports.addAddress = async (req, res) => {
   }
 };
 
-// ─── GET ALL ADDRESSES ──────────────────────────────────────────
+// GET ALL ADDRESSES
 exports.getAddresses = async (req, res) => {
   try {
     const userId = req.user._id;
@@ -52,7 +52,7 @@ exports.getAddresses = async (req, res) => {
     res.status(200).json({
       success: true,
       data: {
-        name: `${firstname} ${lastname}`,   // ← attached at response level
+        name: `${firstname} ${lastname}`, 
         addresses,
       },
     });
@@ -61,7 +61,7 @@ exports.getAddresses = async (req, res) => {
   }
 };
 
-// ─── UPDATE ADDRESS ─────────────────────────────────────────────
+// UPDATE ADDRESS
 exports.updateAddress = async (req, res) => {
   try {
     const userId = req.user._id;
@@ -90,7 +90,7 @@ exports.updateAddress = async (req, res) => {
   }
 };
 
-// ─── DELETE ADDRESS ─────────────────────────────────────────────
+// DELETE ADDRESS 
 exports.deleteAddress = async (req, res) => {
   try {
     const userId = req.user._id;
@@ -123,7 +123,7 @@ exports.deleteAddress = async (req, res) => {
   }
 };
 
-// ─── SET DEFAULT ADDRESS ─────────────────────────────────────────
+// SET DEFAULT ADDRESS 
 exports.setDefaultAddress = async (req, res) => {
   try {
     const userId = req.user._id;

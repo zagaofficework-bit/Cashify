@@ -71,14 +71,14 @@ exports.getProducts = async (query) => {
 
     const aggregatePipeline = [
       {
-        // ✅ $geoNear is FIRST stage — no $match before it
+        // $geoNear is FIRST stage — no $match before it
         $geoNear: {
           near:               { type: "Point", coordinates: [lng, lat] },
           distanceField:      "distance",
           maxDistance:        radiusM,
           spherical:          true,
           distanceMultiplier: 0.001,      // meters → km
-          query:              baseFilter, // ✅ all filters go inside query
+          query:              baseFilter, // all filters go inside query
         },
       },
       { $sort:  { distance: 1 } },        // nearest first
@@ -250,7 +250,88 @@ exports.deleteProduct = async (id, userId, userRole) => {
 ////////////////////////////////////////////////////////////////////
 
 exports.markAsSold = async (id) => {
-  return await Product.findByIdAndUpdate(id, { status: "sold" }, { new: true }).lean();
+  const product = await Product.findByIdAndUpdate(
+    id,
+    { status: "sold" },
+    { new: true }
+  ).lean();
+
+  await redisClient.del(PRODUCT_KEY(id)).catch(() => null);
+  return product;
+};
+
+////////////////////////////////////////////////////////////////////
+//// MARK AS RESERVED
+//// Called when a buyer places an order (status: pending)
+//// Prevents other buyers from ordering the same product
+////////////////////////////////////////////////////////////////////
+
+exports.markAsReserved = async (id) => {
+  const product = await Product.findByIdAndUpdate(
+    id,
+    { status: "reserved" },
+    { new: true }
+  ).lean();
+
+  await redisClient.del(PRODUCT_KEY(id)).catch(() => null);
+  return product;
+};
+
+////////////////////////////////////////////////////////////////////
+//// MARK AS AVAILABLE
+//// Called when an order is rejected or cancelled
+//// Puts the product back on the market
+////////////////////////////////////////////////////////////////////
+
+exports.markAsAvailable = async (id) => {
+  const product = await Product.findByIdAndUpdate(
+    id,
+    { status: "available" },
+    { new: true }
+  ).lean();
+
+  // Bust both the single product cache and all list caches
+  await Promise.all([
+    redisClient.del(PRODUCT_KEY(id)).catch(() => null),
+    invalidateListCache(),
+  ]);
+
+  return product;
+};
+
+////////////////////////////////////////////////////////////////////
+//// HIDE ALL PRODUCTS BY SELLER — used when seller is banned
+////////////////////////////////////////////////////////////////////
+
+exports.hideAllProductsBySeller = async (sellerId) => {
+  const result = await Product.updateMany(
+    { listedBy: sellerId, status: { $in: ["available", "reserved"] } },
+    { $set: { status: "hidden" } }
+  );
+
+  await invalidateListCache();
+  return result;
+};
+
+////////////////////////////////////////////////////////////////////
+//// COUNT PRODUCTS BY MULTIPLE SELLERS — used in admin dashboard
+////////////////////////////////////////////////////////////////////
+
+exports.countProductsBySellers = async (sellerIds) => {
+  return await Product.aggregate([
+    { $match: { listedBy: { $in: sellerIds } } },
+    { $group: { _id: "$listedBy", count: { $sum: 1 } } },
+  ]);
+};
+
+////////////////////////////////////////////////////////////////////
+//// GET ALL PRODUCTS BY A SINGLE SELLER — used in admin detail view
+////////////////////////////////////////////////////////////////////
+
+exports.getProductsBySeller = async (sellerId) => {
+  return await Product.find({ listedBy: sellerId })
+    .sort({ createdAt: -1 })
+    .lean();
 };
 
 ////////////////////////////////////////////////////////////////////
