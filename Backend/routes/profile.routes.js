@@ -2,7 +2,7 @@ const express = require("express");
 const router  = express.Router();
 
 const { authMiddleware }  = require("../middleware/auth.middleware");
-const { productUpload, validateProductFiles } = require("../middleware/multer.middleware"); // single file upload
+const { profileUpload } = require("../middleware/multer.middleware"); // single file upload
 const ProfileController   = require("../controller/profile.controller");
 
 // All profile routes require auth
@@ -35,7 +35,7 @@ router.put("/", ProfileController.updateProfile);
  */
 router.patch(
   "/picture",
-  productUpload, validateProductFiles,
+  profileUpload,
   ProfileController.updateProfilePic
 );
 

@@ -158,7 +158,7 @@ exports.deleteProfilePic = async (req, res) => {
 async function syncUserAddress(userId) {
   const def = await Address.findOne({ userId, isDefault: true }).lean();
   await UserModel.findByIdAndUpdate(userId, {
-    address: def
+    defaultAddress: def
       ? {
           city:    def.city,
           state:   def.state,
@@ -168,7 +168,6 @@ async function syncUserAddress(userId) {
       : { city: null, state: null, pincode: null, full: null },
   });
 }
-
 
 // ─── ADD ADDRESS ──────────────────────────────────────────────────────────────
 // POST /api/profile/address

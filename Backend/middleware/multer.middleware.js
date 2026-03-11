@@ -74,8 +74,25 @@ function validateProductFiles(req, res, next) {
   next();
 }
 
+// PROFILE PIC UPLOAD — single image only
+const profileUpload = multer({
+  storage,
+  fileFilter,
+  limits: {
+    fileSize: MAX_IMAGE_SIZE,  // 5MB max
+    files: 1,
+  },
+}).single("profilePic");      // ← field name must be "profilePic" in Postman
+
+module.exports = {
+  productUpload,
+  validateProductFiles,
+  profileUpload,              // ← export it
+};
+
 // EXPORT
 module.exports = {
   productUpload,
   validateProductFiles,
+  profileUpload,
 };

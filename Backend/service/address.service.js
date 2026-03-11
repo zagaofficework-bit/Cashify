@@ -11,7 +11,7 @@ exports.createAddress = async (addressData) => {
  * Get User Addresses
  */
 exports.getUserAddresses = async (userId) => {
-  return await Address.find({ user: userId }).sort({ createdAt: -1 });
+  return await Address.find({ userId }).sort({ createdAt: -1 });
 };
 
 /**
