@@ -1,42 +1,55 @@
-
-import Signup from "./UI/pages/Signup";
-import OtpGeneration from "./UI/pages/OtpGeneration"
-import { BrowserRouter, Routes, Route, ServerRouter } from "react-router-dom";
-import BuyLaptops from "./UI/pages/services/BuyLaptops";
-
-import SellOldLaptops from "./UI/pages/SellOldLaptops";
-import SellPhones from "./UI/pages/SellPhones";
-import SellSmartSpeakers from "./UI/pages/SellSmartSpeakers";
-import SellSmartWatch from "./UI/pages/SellSmartWatch";
-import SellTablet from "./UI/pages/SellTablet";
-import SellTV from "./UI/pages/SellTV";
-import ProductDetails from "./UI/pages/ProductDetails";
 import Home from "./UI/pages/Home";
-import Recycle from "./UI/pages/services/Recycle";
-import FindNewPhone from "./UI/pages/FindNewPhone";
-import Login from "./UI/pages/Login";
 import NavBar from "./UI/components/NavBar";
-import BuyPhone from "./UI/pages/services/BuyPhone";
-import BuyWatches from "./UI/pages/services/BuyWatches";
-import BuyGadgets from "./UI/pages/services/BuyGadgets";
-import BuyTablets from "./UI/pages/services/BuyTablets";
-import BuyGamingConsole from "./UI/pages/services/BuyGamingConsole";
-import BuyCamera from "./UI/pages/services/BuyCamera";
-import BuyAudioDevices from "./UI/pages/services/BuyAudioDevices";
-import SearchByModel from "./UI/components/SearchByModel";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import SellPhones from "./UI/pages/SellDevices-pages/SellPhones";
+import BuyPhone from "./UI/pages/Our-Services-pages/BuyPhone";
+import BuyGadgets from "./UI/pages/Our-Services-pages/BuyGadgets";
+import BuyLaptops from "./UI/pages/Our-Services-pages/BuyLaptops";
+import FindNewPhone from "./UI/pages/Our-Services-pages/FindNewPhone"
+import BuyWatches from "./UI/pages/Our-Services-pages/BuyWatches"
+import BuyAccessories from "./UI/pages/Our-Services-pages/BuyAccessories"
+
+import SellLaptops from "./UI/pages/SellDevices-pages/SellOldLaptops"
+import SellTV from "./UI/pages/SellDevices-pages/SellTV"
+import SellTablet from "./UI/pages/SellDevices-pages/SellTablet"
+import SellGamingConsole from "./UI/pages/SellDevices-pages/SellGamingConsole"
+import SellLSmartWatch from "./UI/pages/SellDevices-pages/SellSmartWatch"
+import SellSmartSpeaker from "./UI/pages/SellDevices-pages/SellSmartSpeakers"
+
 
 
 function App() {
   return (
     <>
+     <BrowserRouter>
+    <NavBar/>
+      <Routes>
+        {/* Our Services Routes */}
+        <Route path="/" element={<Home />} />
+        <Route path="/sell-phone" element={<SellPhones/>} />
+        <Route path="/buy-gadgets" element={<BuyGadgets/>} />
+        <Route path="/buy-phone" element={<BuyPhone/>} />
+        <Route path="/buy-laptops" element={<BuyLaptops/>} />
+        <Route path="/find-phone" element={<FindNewPhone/>} />
+        <Route path="/smartwatch" element={<BuyWatches/>} />
+        <Route path="/accessories" element={<BuyAccessories/>} />
 
+        {/* Sell Devices Routes */}
+        <Route path="/sell-phone" element={<SellPhones/>} />
+        <Route path="/sell-laptop" element={<SellLaptops/>} />
+        <Route path="/sell-tv" element={<SellTV/>} />
+        <Route path="/sell-tablet" element={<SellTablet/>} />
+        <Route path="/sell-gaming" element={<SellGamingConsole/>} />
+        <Route path="/sell-smartwatch" element={<SellLSmartWatch/>} />
+        <Route path="/sell-speaker" element={<SellSmartSpeaker/>} />
+  
+      
+      </Routes>
+        
+      </BrowserRouter>
+    
 
-<BrowserRouter>
-<Home/>
-
-</BrowserRouter>
-
-
+    
     </>
     
 

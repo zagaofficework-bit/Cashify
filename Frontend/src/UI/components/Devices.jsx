@@ -1,5 +1,5 @@
 import React from 'react'
-import { devices } from "../../res/js/Data.js"
+import { devices } from "../../res/Data/Data.js"
 
 const Devices = () => {
   return (

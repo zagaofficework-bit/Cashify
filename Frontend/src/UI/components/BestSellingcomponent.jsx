@@ -1,6 +1,6 @@
 import React from "react";
 import { FaArrowRight } from "react-icons/fa";
-import { bestSelling } from "../../res/js/Categorydata";
+import { bestSelling } from "../../res/Data/Categorydata";
 
 const BestSellingcomponent = ({bestSelling}) => {
   return (

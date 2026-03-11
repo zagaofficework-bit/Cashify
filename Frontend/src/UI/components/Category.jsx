@@ -1,5 +1,5 @@
 import React from "react";
-import { Mobilecategories } from "../../res/js/Categorydata"
+import { Mobilecategories } from "../../res/Data/Categorydata"
 
 const Category = ({data,title}) => {
   return (
