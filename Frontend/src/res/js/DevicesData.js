@@ -289,3 +289,61 @@ export const gamingConsole = [
     gold: "₹8,299 with GOLD",
   }
 ];
+
+export const audioDevices = [
+  {
+    img: "/assets/Airpods.png",
+    name: "Apple AirPods (2nd Generation) - Refurbished",
+    discount: "₹4,000 OFF",
+    rating: "4.6 ★",
+    saleTag: "Best Seller",
+    percent: "-35%",
+    price: "₹7,999",
+    original: "₹11,999",
+    gold: "₹7,499 with GOLD",
+  },
+  {
+    img: "/assets/Airpods.png",
+    name: "Samsung Galaxy Buds Live - Refurbished",
+    discount: "₹3,500 OFF",
+    rating: "4.4 ★",
+    saleTag: "Hot Deal",
+    percent: "-32%",
+    price: "₹6,499",
+    original: "₹9,999",
+    gold: "₹5,999 with GOLD",
+  },
+  {
+    img: "/assets/Airpods.png",
+    name: "Sony WH-CH510 Wireless Headphones",
+    discount: "₹2,000 OFF",
+    rating: "4.5 ★",
+    saleTag: "Best Seller",
+    percent: "-28%",
+    price: "₹4,999",
+    original: "₹6,999",
+    gold: "₹4,599 with GOLD",
+  },
+  {
+    img: "/assets/Airpods.png",
+    name: "Apple AirPods Pro (1st Gen) - Refurbished",
+    discount: "₹7,000 OFF",
+    rating: "4.7 ★",
+    saleTag: "Top Rated",
+    percent: "-33%",
+    price: "₹13,999",
+    original: "₹20,999",
+    gold: "₹13,199 with GOLD",
+  },
+  {
+    img: "/assets/boat.png",
+    name: "boAt Airdopes 441 Bluetooth Earbuds",
+    discount: "₹1,500 OFF",
+    rating: "4.3 ★",
+    saleTag: "Best Seller",
+    percent: "-30%",
+    price: "₹3,499",
+    original: "₹4,999",
+    gold: "₹3,199 with GOLD",
+  }
+];

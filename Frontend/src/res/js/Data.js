@@ -1,17 +1,13 @@
 export const services = [
-  { title: "Sell Phone", image: "../assets/phone.png" },
-  { title: "Buy Gadgets", image: "../assets/gadget.png" },
-  { title: "Buy Phone", image: "../assets/mobile.png" },
-  { title: "Buy Laptops", image: "../assets/laptop.png" },
-  { title: "Repair Phone", image: "../assets/phone.png" },
-  { title: "Repair Laptop", image: "../assets/laptop.png"  },
-  { title: "Find New Phone", image: "../assets/mobile.png"  },
-  { title: "Nearby Stores", image: "../assets/store.png" },
-  { title: "Buy Smartwatches", image: "../assets/watch.png" },
-  { title: "New Accessories", image: "../assets/acc.png" },
-  { title: "Recycle", image:"../assets/recycle.png"},
+  { title: "Sell Phone", image: "/assets/phone.png", path: "/sell-phone" },
+  { title: "Buy Gadgets", image: "/assets/gadget.png", path: "/buy-gadgets" },
+  { title: "Buy Phone", image: "/assets/mobile.png", path: "/buy-phone" },
+  { title: "Buy Laptops", image: "/assets/laptop.png", path: "/buy-laptops" },
+  { title: "Find New Phone", image: "/assets/mobile.png", path: "/find-phone" },
+   { title: "Buy Smartwatches", image: "/assets/watch.png", path: "/smartwatch" },
+  { title: "New Accessories", image: "/assets/acc.png", path: "/accessories" },
+ 
 ];
-
 export const sellDevices = [
   { title: "Sell Phone", image:" ../assets/phone.png" },
   { title: "Sell Laptop", image: "../assets/laptop.png" },

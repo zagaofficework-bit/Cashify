@@ -1,9 +1,10 @@
 import React from "react";
 import { Mobilecategories } from "../../res/js/Categorydata"
 
-const Category = ({data}) => {
+const Category = ({data,title}) => {
   return (
     <div className="max-w-7xl mx-auto px-6 py-10 my-10 bg-gray-100">
+      {title}
       <div className="grid md:grid-cols-4 gap-6">
 
         {data.map((item, index) => (

@@ -1,46 +1,31 @@
 import Home from "./UI/pages/Home";
-import Login from "./UI/pages/Login";
-import Signup from "./UI/pages/Signup";
-import OtpGeneration from "./UI/pages/OtpGeneration"
-import { BrowserRouter, Routes, Route, ServerRouter } from "react-router-dom";
-import BuyLaptops from "./UI/pages/services/BuyLaptops";
-
-import SellOldLaptops from "./UI/pages/SellOldLaptops";
-import SellPhones from "./UI/pages/SellPhones";
-import SellSmartSpeakers from "./UI/pages/SellSmartSpeakers";
-import SellSmartWatch from "./UI/pages/SellSmartWatch";
-import SellTablet from "./UI/pages/SellTablet";
-import SellTV from "./UI/pages/SellTV";
-import ProductDetails from "./UI/pages/ProductDetails";
-
-import Recycle from "./UI/pages/services/Recycle";
-
 import NavBar from "./UI/components/NavBar";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import SellPhones from "./UI/pages/sellDevice/SellPhones";
 import BuyPhone from "./UI/pages/services/BuyPhone";
-import BuyWatches from "./UI/pages/services/BuyWatches";
 import BuyGadgets from "./UI/pages/services/BuyGadgets";
-
+import BuyLaptops from "./UI/pages/services/BuyLaptops";
 
 function App() {
   return (
     <>
-
-   <BrowserRouter>
-      <NavBar/>
-     <Routes>
+     <BrowserRouter>
+    <NavBar/>
+      <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/home" element={<Home />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<Signup />} />
-        <Route path="/otp" element={<OtpGeneration />} />
-      </Routes> 
-    </BrowserRouter>
+        <Route path="/sell-phone" element={<SellPhones/>} />
+        <Route path="/buy-gadgets" element={<BuyGadgets/>} />
+        <Route path="/buy-phone" element={<BuyPhone/>} />
+        <Route path="/buy-laptops" element={<BuyLaptops/>} />
+      </Routes>
+        
+      </BrowserRouter>
+    
 
- 
-  
+    
+    </>
+    
 
-</>
-   
   );
 }
 

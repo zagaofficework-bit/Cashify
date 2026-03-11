@@ -1,6 +1,6 @@
 import ServiceCard from "./ServiceCard";
 import { services, sellDevices } from "../../res/js/Data.js"
-const ServicesSection = () => {
+const ServiceSection = () => {
   return (
     <div className="max-w-7xl mx-auto px-6 py-6">
 
@@ -13,14 +13,15 @@ const ServicesSection = () => {
             key={index}
             image={item.image}
             title={item.title}
+            path={item.path}
           />
         ))}
       </div>
 
       {/* Sell Devices */}
-      
+
     </div>
   );
 };
 
-export default ServicesSection;
+export default ServiceSection;

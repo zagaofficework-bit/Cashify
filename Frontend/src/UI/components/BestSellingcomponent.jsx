@@ -15,7 +15,7 @@ const BestSellingcomponent = ({bestSelling}) => {
           >
             {/* Text */}
             <div>
-              <p className="text-lg text-gray-700">{item.subtitle}</p>
+              <p className="text-lg text-black ">{item.subtitle}</p>
 
               <h2 className="text-3xl font-bold text-gray-900">
                 {item.title}

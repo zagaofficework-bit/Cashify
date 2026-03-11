@@ -20,7 +20,6 @@ const SellPhones = () => {
   ];
   return (
     <>
-      <NavBar />
       <NavMenu />
       <SellCard title="Sell Old Mobile Phone for Instant Cash" />
       <HowCashifyWorks/>
