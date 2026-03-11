@@ -2,70 +2,70 @@ const mongoose = require("mongoose");
 
 const PLANS = {
   basic: {
-    name:            "Basic",
-    price:           2999,
-    activeListings:  20,
+    name: "Basic",
+    price: 2999,
+    activeListings: 20,
     prioritySupport: false,
-    supportType:     "none",
+    supportType: "none",
   },
   standard: {
-    name:            "Standard",
-    price:           5999,
-    activeListings:  100,
+    name: "Standard",
+    price: 5999,
+    activeListings: 100,
     prioritySupport: true,
-    supportType:     "email",
+    supportType: "email",
   },
   premium: {
-    name:            "Premium",
-    price:           11999,
-    activeListings:  -1,
+    name: "Premium",
+    price: 11999,
+    activeListings: -1,
     prioritySupport: true,
-    supportType:     "chat+call",
+    supportType: "chat+call",
   },
 };
 
 const subscriptionSchema = new mongoose.Schema(
   {
     seller: {
-      type:     mongoose.Schema.Types.ObjectId,
-      ref:      "User",
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
       required: true,
     },
 
     plan: {
-      type:     String,
-      enum:     ["basic", "standard", "premium"],
+      type: String,
+      enum: ["basic", "standard", "premium"],
       required: true,
     },
 
     price: {
-      type:     Number,
+      type: Number,
       required: true,
     },
 
     activeListingsLimit: {
-      type:    Number,
-      default: 20,  // -1 = unlimited
+      type: Number,
+      default: 20, // -1 = unlimited
     },
 
     prioritySupport: {
-      type:    Boolean,
+      type: Boolean,
       default: false,
     },
 
     supportType: {
-      type:    String,
-      enum:    ["none", "email", "chat+call"],
+      type: String,
+      enum: ["none", "email", "chat+call"],
       default: "none",
     },
 
     startDate: {
-      type:    Date,
+      type: Date,
       default: Date.now,
     },
 
     endDate: {
-      type:     Date,
+      type: Date,
       required: true,
     },
 
@@ -74,26 +74,26 @@ const subscriptionSchema = new mongoose.Schema(
     // false → admin revoked it OR user cancelled
     // Note: even if isActive=true, check endDate to know if it's expired
     isActive: {
-      type:    Boolean,
+      type: Boolean,
       default: true,
     },
 
     paymentId: {
-      type:    String,
+      type: String,
       default: null,
     },
 
     paymentMethod: {
-      type:    String,
-      enum:    ["UPI", "Card", "NetBanking", "Cash"],
+      type: String,
+      enum: ["UPI", "Card", "NetBanking", "Cash"],
       default: null,
     },
   },
   {
     timestamps: true,
-    toJSON:   { virtuals: true },
+    toJSON: { virtuals: true },
     toObject: { virtuals: true },
-  }
+  },
 );
 
 // ─── VIRTUAL: subscriptionStatus ──────────────────────────────────────────
@@ -110,7 +110,9 @@ subscriptionSchema.virtual("subscriptionStatus").get(function () {
 // ─── VIRTUAL: daysRemaining ────────────────────────────────────────────────
 subscriptionSchema.virtual("daysRemaining").get(function () {
   if (!this.isActive || this.endDate < new Date()) return 0;
-  return Math.ceil((new Date(this.endDate) - new Date()) / (1000 * 60 * 60 * 24));
+  return Math.ceil(
+    (new Date(this.endDate) - new Date()) / (1000 * 60 * 60 * 24),
+  );
 });
 
 subscriptionSchema.index({ seller: 1 });
