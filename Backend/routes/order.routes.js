@@ -10,7 +10,7 @@ const {
   getOrderById,
   cancelOrder,
   updateOrderStatus,
-} = require("../controllers/order.controller");
+} = require("../controller/order.controller");
 
 // ⚠️ Webhook MUST use raw body — registered BEFORE express.json()
 // Handle this in app.js (see below)

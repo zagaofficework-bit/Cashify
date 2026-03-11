@@ -3,24 +3,12 @@ const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const app          = express();
 
-<<<<<<< HEAD
-const { stripeWebhook } = require("./controllers/order.controller");
-
-// ⚠️ STRIPE WEBHOOK — must be raw body, registered BEFORE express.json()
-app.post(
-  "/api/orders/webhook/stripe",
-  express.raw({ type: "application/json" }),
-  stripeWebhook
-);
-
-=======
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors({
   origin: "http://localhost:5173",
   credentials: true
 }));
->>>>>>> 22920d66eb19a7c71f402d6da516a675ec8a3947
 
 // Import route handlers
 const authRouter         = require("./routes/auth.routes");
