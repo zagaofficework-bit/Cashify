@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 export default function NavBar() {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   const [locationLabel, setLocationLabel] = useState("Set Location");
   const [showDropdown, setShowDropdown] = useState(false);
@@ -316,7 +316,7 @@ export default function NavBar() {
           {/* Login Button */}
           <button
             className="bg-teal-600 text-white px-4 py-2 rounded-lg hover:bg-teal-700 transition"
-            onClick={() => navigate("/login")}
+            // onClick={() => navigate("/login")}
           >
             Login
           </button>

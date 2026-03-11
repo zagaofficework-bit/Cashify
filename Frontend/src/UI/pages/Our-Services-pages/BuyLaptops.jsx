@@ -15,6 +15,8 @@ import Footer from "../../components/Home-page/Footer";
 import RefurbishedLaptops from "../../components/Home-page/RefurbishedLaptops";
 import ConditionsExplained from '../../components/ConditionalExplained';
 import LaptopSection from '../../components/LaptopSection';
+import { bestSelling } from '../../../res/Data/Categorydata';
+import { refurbishedlaptops } from '../../../res/Data/DevicesData';
 
 const BuyLaptops = () => {
   return (
@@ -25,14 +27,14 @@ const BuyLaptops = () => {
         <SlidingAnimation/>
         {/* <FavouriteBrands/> */}
         <RefurbishedLaptops/>
-        <Category/>
-         <RefurbishedLaptops/>
-         <RefurbishedLaptops/>
-          <Category/>
-           <Category/>
-           <BestSellingcomponent/>
+        <Category data={bestSelling} title="laptops"/>
+         <RefurbishedLaptops products={refurbishedlaptops}/>
+         <RefurbishedLaptops  products={refurbishedlaptops}/>
+          <Category data={bestSelling} title="laptops"/>
+           <Category data={bestSelling} title="laptops"/>
+           <BestSellingcomponent bestSelling={bestSelling}/>
            <LaptopSection/>
-           <Category/>
+           <Category data={bestSelling} title="laptops"/>
          <ConditionsExplained/>
          <div className='m-12'>
     <img src="https://s3ng.Phonify.in/estore/d826a39ef9c043248bb22378b414e82a.png"/>
