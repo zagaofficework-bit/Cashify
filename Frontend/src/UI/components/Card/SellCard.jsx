@@ -42,8 +42,8 @@ export default function SellCard({title}) {
         {/* Right: Image */}
         <div className="flex-1 flex justify-center">
           <img
-            src="/images/cashify-banner.png" // replace with actual banner image
-            alt="Cashify Banner"
+            src="/images/Phonify-banner.png" // replace with actual banner image
+            alt="Phonify Banner"
             className="w-80 h-auto object-contain"
           />
         </div>

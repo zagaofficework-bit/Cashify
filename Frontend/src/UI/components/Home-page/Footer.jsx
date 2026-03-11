@@ -10,7 +10,7 @@ export default function Footer() {
         {/* Logo + Social */}
         <div>
           <a href="/" className="text-3xl font-bold text-teal-500 mb-6 block">
-            CASHIFY
+            Phonify
           </a>
 
           <p className="mb-3 text-sm font-medium">Follow us on</p>
@@ -53,7 +53,7 @@ export default function Footer() {
           <ul className="space-y-2 text-sm">
             {[
               "About Us","Careers","Articles","Press Releases",
-              "Become Cashify Partner","Become Supersale Partner","Corporate Information"
+              "Become Phonify Partner","Become Supersale Partner","Corporate Information"
             ].map((item) => (
               <li key={item}>
                 <a href="#" className="hover:text-teal-500">{item}</a>
@@ -129,7 +129,7 @@ export default function Footer() {
             Manak Waste Management Pvt Ltd. is ISO 27001 & 27701 Compliance
             Certified. Person who may be contacted in case of any compliance
             related queries or grievances: Manoj Kumar
-            (grievanceofficer@cashify.in)
+            (grievanceofficer@Phonify.in)
           </p>
 
           <p className="text-xs">
@@ -161,7 +161,7 @@ export default function Footer() {
 
       {/* Copyright */}
       <div className="border-t border-gray-300 py-4 text-center text-sm text-gray-600">
-        Copyright © 2026 Cashify All rights reserved
+        Copyright © 2026 Phonify All rights reserved
       </div>
 
     </footer>

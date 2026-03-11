@@ -1,10 +1,10 @@
 import React from "react";
 
-export default function WhyCashify() {
+export default function WhyPhonify() {
   return (
     <section className="bg-gray-50 px-6 py-12">
       <div className="max-w-6xl mx-auto text-center">
-        <h2 className="text-3xl font-bold mb-10">Why Choose Cashify?</h2>
+        <h2 className="text-3xl font-bold mb-10">Why Choose Phonify?</h2>
 
         <div className="grid md:grid-cols-3 gap-8">
           {/* Video 1 */}
@@ -16,7 +16,7 @@ export default function WhyCashify() {
               className="w-full rounded-lg"
             />
             <p className="mt-3 text-sm font-medium text-gray-700">
-              All About Cashify's Refurbished Phones
+              All About Phonify's Refurbished Phones
             </p>
           </div>
 
@@ -42,7 +42,7 @@ export default function WhyCashify() {
               className="w-full rounded-lg"
             />
             <p className="mt-3 text-sm font-medium text-gray-700">
-              Used iPhone 13 from Cashify
+              Used iPhone 13 from Phonify
             </p>
           </div>
         </div>

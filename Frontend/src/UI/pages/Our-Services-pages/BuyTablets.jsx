@@ -73,7 +73,7 @@ const BuyTablets = () => {
                 </div>
             </div>
             <div className="m-12" >
-                <img src="https://s3ng.cashify.in/estore/a5e70db4d8c34f25979cb2395f25c117.webp" />
+                <img src="https://s3ng.Phonify.in/estore/a5e70db4d8c34f25979cb2395f25c117.webp" />
             </div>
             <Footer/>
         </div>

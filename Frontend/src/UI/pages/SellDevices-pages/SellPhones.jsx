@@ -8,7 +8,7 @@ import Feedback from "../../components/Home-page/Feedback";
 import FAQ from "../../components/Home-page/FAQ";
 import DownloadAppBanner from "../../components/Home-page/DownloadAppBanner";
 import Footer from "../../components/Home-page/Footer";
-import HowCashifyWorks from "../../components/HowCashifyWorks";
+import HowPhonifyWorks from "../../components/HowPhonifyWorks";
 
 const SellPhones = () => {
   const phones = [
@@ -22,7 +22,7 @@ const SellPhones = () => {
     <>
       <NavMenu />
       <SellCard title="Sell Old Mobile Phone for Instant Cash" />
-      <HowCashifyWorks/>
+      <HowPhonifyWorks/>
       <DealComponent />
       <Brands />
       <section className="bg-gray-50 px-6 py-12">

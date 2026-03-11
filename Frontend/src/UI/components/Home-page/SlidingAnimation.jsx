@@ -10,15 +10,15 @@ const SlidingAnimation = () => {
             alt: "Samsung Galaxy S26 Ultra 1",
         },
         {
-            src: "https://s3ng.cashify.in/cashify/web/28cbc449993444b5b353c2f7bf59783a.webp?w=1300",
+            src: "https://s3ng.Cashify.in/Phonify/web/28cbc449993444b5b353c2f7bf59783a.webp?w=1300",
             alt: "Samsung Galaxy S26 Ultra 2",
         },
         {
-            src:"https://s3ng.cashify.in/cashify/web/7da72ed7785f44c4a28c3530e5dc4025.webp?w=1300",
+            src:"https://s3ng.Phonify.in/Phonify/web/7da72ed7785f44c4a28c3530e5dc4025.webp?w=1300",
             alt: "Samsung Galaxy S26 Ultra 3",
         },
         {
-            src:"https://s3ng.cashify.in/cashify/web/47309969bbbe4c0d858943e7839e37da.webp?w=1300",
+            src:"https://s3ng.Phonify.in/Phonify/web/47309969bbbe4c0d858943e7839e37da.webp?w=1300",
             alt: "Samsung Galaxy S26 Ultra 4",
         },
     ];

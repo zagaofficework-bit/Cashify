@@ -10,7 +10,7 @@ export default function Feedback() {
     {
       name: "Karan Sharma",
       location: "Delhi NCR",
-      text: "Well trained staff. Overall a positive experience in selling my phone at Cashify.",
+      text: "Well trained staff. Overall a positive experience in selling my phone at Phonify.",
     },
     {
       name: "Abhiyash",
@@ -25,7 +25,7 @@ export default function Feedback() {
     {
       name: "Satheesh Kumaram",
       location: "Bengaluru",
-      text: "It was a wonderful experience with Cashify. I got a reasonable price for my product and their response was very quick! Good to see such a service available.",
+      text: "It was a wonderful experience with Phonify. I got a reasonable price for my product and their response was very quick! Good to see such a service available.",
     },
   ];
 

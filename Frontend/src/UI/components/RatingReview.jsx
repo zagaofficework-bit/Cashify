@@ -26,7 +26,7 @@ export default function RatingReviews() {
     {
       title: "No ORIGNAL CHARGER, THEY GAVE FAKE CHINESE CHARGER WHICH IS CHARGING MY D...",
       rating: 1,
-      comment: "FRAUD CASHIFY",
+      comment: "FRAUD Phonify",
       reviewer: "BHAVESH KHILARE (verified user)",
       date: "16/4/2024",
     },

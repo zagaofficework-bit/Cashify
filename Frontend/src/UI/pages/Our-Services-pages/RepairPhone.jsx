@@ -2,7 +2,7 @@ import React, { useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleLeft, faAngleRight } from "@fortawesome/free-solid-svg-icons";
 import Brands from "../../components/Brands";
-import HowCashifyWorks from "../../components/HowCashifyWorks";
+import HowPhonifyWorks from "../../components/HowPhonifyWorks";
 import Feedback from "../../components/Feedback";
 import FAQ from "../../components/FAQ";
 import StoreSection from "../../components/StoreSection";
@@ -90,7 +90,7 @@ export default function RepairPhone() {
       </section>
       <Brands title="Top Selling Brands" />
 
-      <HowCashifyWorks />
+      <HowPhonifyWorks />
       <img src="./assets/img/WhyUs.png" alt="Why Us" />
       <Feedback />
       <FAQ />

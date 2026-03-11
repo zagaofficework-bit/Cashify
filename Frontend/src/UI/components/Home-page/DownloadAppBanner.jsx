@@ -15,7 +15,7 @@ export default function DownloadAppBanner() {
           <div className="flex gap-4">
             {/* Google Play */}
             <a
-              href="https://play.google.com/store/apps/details?id=com.cashify"
+              href="https://play.google.com/store/apps/details?id=com.Phonify"
               target="_blank"
               rel="noopener noreferrer"
               className="block"
@@ -29,7 +29,7 @@ export default function DownloadAppBanner() {
 
             {/* App Store */}
             <a
-              href="https://apps.apple.com/in/app/cashify/id123456789"
+              href="https://apps.apple.com/in/app/Phonify/id123456789"
               target="_blank"
               rel="noopener noreferrer"
               className="block"

@@ -1,8 +1,8 @@
 import React, { useState, useRef, useEffect } from "react";
-// import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 export default function NavBar() {
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
 
   const [locationLabel, setLocationLabel] = useState("Set Location");
   const [showDropdown, setShowDropdown] = useState(false);
@@ -125,7 +125,7 @@ export default function NavBar() {
           <img
             src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ7-kMUpk3knKvstr4FF-v4BGDqvVFJ3xxCbQ&s"
             // onClick={() => navigate("/")}
-            alt="Cashify Logo"
+            alt="Phonify Logo"
             className="h-10 w-15 cursor-pointer"
           />
         </div>
@@ -316,7 +316,7 @@ export default function NavBar() {
           {/* Login Button */}
           <button
             className="bg-teal-600 text-white px-4 py-2 rounded-lg hover:bg-teal-700 transition"
-            onClick={() => console.log("Login clicked")}
+            onClick={() => navigate("/login")}
           >
             Login
           </button>

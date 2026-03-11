@@ -9,13 +9,13 @@ import Footer from '../../components/Home-page/Footer'
 const FindNewPhone = () => {
     const videos = [
     {
-      title: "How to sell your phone on Cashify?",
-      description: "Sell your old phone at Cashify. Check your old phone's value in just 60 seconds",
+      title: "How to sell your phone on Phonify?",
+      description: "Sell your old phone at Phonify. Check your old phone's value in just 60 seconds",
       
     },
     {
       title: "How to Change iPhone 7 Battery at Home",
-      description: "Phone broke down? Now get repair repaired at your doorstep using Cashify Repair",
+      description: "Phone broke down? Now get repair repaired at your doorstep using Phonify Repair",
       
     },
   ];

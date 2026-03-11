@@ -32,7 +32,7 @@ const BuyGadgets = () => {
             <LaptopSection />
             <BestSellingcomponent bestSelling={bestSelling} />
             <div className='mt-4 mx-20'>
-                <img src="https://s3ng.cashify.in/estore/d99e292909da415ea14150565758c2bb.webp" />
+                <img src="https://s3ng.Phonify.in/estore/d99e292909da415ea14150565758c2bb.webp" />
 
             </div>
             <BestSellingcomponent bestSelling={bestSelling} />
@@ -43,9 +43,9 @@ const BuyGadgets = () => {
             <BuyRefurbishedDevices title="Best Selling Cameras" products={cameras} />
             <BuyRefurbishedDevices title="Best selling Gaming Console" products={gamingConsole} />
             <div className='m-12 mx-20'>
-                <img src="https://s3ng.cashify.in/estore/1904efec8933435e87edb8f8bf07d374.webp" />
-                <img src="https://s3ng.cashify.in/estore/56c8430107cf4f308eebd0cc2d321ce5.webp" />
-                <img src="https://s3ng.cashify.in/estore/d601984619cc4ba0a3e07307f32a0597.webp"/>
+                <img src="https://s3ng.Phonify.in/estore/1904efec8933435e87edb8f8bf07d374.webp" />
+                <img src="https://s3ng.Phonify.in/estore/56c8430107cf4f308eebd0cc2d321ce5.webp" />
+                <img src="https://s3ng.Phonify.in/estore/d601984619cc4ba0a3e07307f32a0597.webp"/>
             </div>
             <Feedback/>
             <Footer/>

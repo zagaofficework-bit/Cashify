@@ -51,7 +51,7 @@ export default function RefurbishedLaptops({ products = [] }) {
                 <p className="text-teal-600 font-medium mt-1">{laptop.gold}</p>
                 <p className="text-xs text-gray-500 mt-1">{laptop.stock}</p>
                 <span className="mt-3 inline-block bg-yellow-100 text-yellow-700 text-xs font-semibold px-2 py-1 rounded">
-                  Cashify Assured
+                  Phonify Assured
                 </span>
               </div>
             ))}

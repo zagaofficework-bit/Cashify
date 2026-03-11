@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 const OtpGeneration = () => {
   const [otp, setOtp] = useState(["", "", "", ""]);
   const [error, setError] = useState("");
-  //const navigate = useNavigate();
+  const navigate = useNavigate();
 
   const inputs = useRef([]);
 
@@ -63,14 +63,14 @@ const OtpGeneration = () => {
 
             <button
               className="text-sm text-gray-600 hover:text-black"
-             // onClick={() => navigate(-1)}
+             onClick={() => navigate(-1)}
             >
               ← Back
             </button>
 
             <button
               className="text-gray-500 hover:text-black text-xl font-bold"
-             // onClick={() => navigate("/")}
+             onClick={() => navigate("/")}
             >
               ✕
             </button>
@@ -115,7 +115,7 @@ const OtpGeneration = () => {
             <button
               type="submit"
               className="w-full bg-blue-600 text-white py-3 rounded-md hover:bg-blue-700 transition"
-              //onClick={() => navigate("/home")}
+              onClick={() => navigate("/home")}
             >
               Verify OTP
             </button>

@@ -6,7 +6,7 @@ import OtpGeneration from "./OtpGeneration";
 export default function Login() {
   const [email, setEmail] = useState("");
   const [isValid, setIsValid] = useState(false);
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
   const validateEmail = (value) => {
     // Basic email regex
     const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -40,14 +40,14 @@ export default function Login() {
 
               <button
                 className="text-sm text-gray-600 hover:text-black"
-               // onClick={() => navigate(-1)}
+               onClick={() => navigate(-1)}
               >
                 ← Back
               </button>
 
               <button
                 className="text-gray-500 hover:text-black text-xl font-bold"
-                // onClick={() => navigate("/")}
+                onClick={() => navigate("/")}
               >
                 ✕
               </button>
@@ -99,7 +99,7 @@ export default function Login() {
             </button>
             <div>
               <p>New User?<a className="text-green-500 cursor-pointer" 
-              //onClick={() => navigate("/signup")}
+              onClick={() => navigate("/signup")}
               >
                 Signup</a></p>
             </div>

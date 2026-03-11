@@ -1,6 +1,6 @@
 import React from 'react'
 import Brands from '../../components/Brands'
-import HowCashifyWorks from '../../components/HowCashifyWorks'
+import HowPhonifyWorks from '../../components/HowPhonifyWorks'
 import Feedback from '../../components/Feedback'
 import FAQ from '../../components/FAQ'
 import StoreSection from '../../components/StoreSection'
@@ -19,7 +19,7 @@ const RepairLaptop = () => {
   return (
     <div>
       <Brands title="Top Brands"/>
-      <HowCashifyWorks/>
+      <HowPhonifyWorks/>
        <img src="./assets/img/WhyUs.png" alt="Why Us" />
        
        
@@ -54,42 +54,42 @@ const RepairLaptop = () => {
       <DownloadAppBanner />
        <div className="max-w-6xl mx-auto m-5">
         <h2 className="text-3xl font-bold mb-6 text-center">
-          Laptop Repair Services at Cashify
+          Laptop Repair Services at Phonify
         </h2>
 
         <div className="space-y-6 text-gray-700 leading-relaxed">
           <h3>
-            Cashify is a great place to get your laptop repair service easily.
-            No matter what’s wrong with your beloved laptop, Cashify makes the
+            Phonify is a great place to get your laptop repair service easily.
+            No matter what’s wrong with your beloved laptop, Phonify makes the
             repair easy and trustworthy. They have trained technicians who will
             take good care of your laptop, figure out what’s wrong, and fix it.
             If your laptop has a broken screen, a bad battery, or any other
-            problem, Cashify can help with affordable repairs. You can choose to
+            problem, Phonify can help with affordable repairs. You can choose to
             have them come to your home or visit a nearby store to get it fixed.
           </h3>
 
           <h3>
-            The best thing about Cashify is the doorstep repair service. You can
+            The best thing about Phonify is the doorstep repair service. You can
             book online to have someone pick up your laptop at a time and place
             that works best for you. After the repair, your laptop will be
             safely brought back to you. If you would like to go to a store, you
-            can visit a Cashify shop nearby. The technicians there will check
+            can visit a Phonify shop nearby. The technicians there will check
             your laptop, give you a quote, and fix it on the spot.
           </h3>
 
           <h3>
-            Cashify makes laptop repair affordable. You can save up to{" "}
+            Phonify makes laptop repair affordable. You can save up to{" "}
             <span className="font-semibold">40%</span> on repair costs compared
             to other repair services, regardless of brand. All replacements are
-            done using <span className="font-semibold">Cashify Certified Parts</span>.
+            done using <span className="font-semibold">Phonify Certified Parts</span>.
             These parts are tested for quality, so you know your laptop is in
             good hands. From laptop screen repair to battery replacement and
-            keyboard fixes, Cashify covers a wide range of services, giving a
+            keyboard fixes, Phonify covers a wide range of services, giving a
             professional touch every time.
           </h3>
 
           <h3>
-            We at Cashify are committed to giving our customers the complete
+            We at Phonify are committed to giving our customers the complete
             peace of mind they deserve with our reliable warranties. Our laptop
             screen repair comes with a <span className="font-semibold">6-month warranty</span>,
             while other spare parts are covered under a{" "}
@@ -100,15 +100,15 @@ const RepairLaptop = () => {
           </h3>
 
           <h3>
-            Your data is safe with Cashify. It is our top priority to keep your
+            Your data is safe with Phonify. It is our top priority to keep your
             data safe. You can choose to create a guest login or share a
             temporary password to make sure your information is protected during
             repairs.
           </h3>
 
           <h3>
-            Cashify is easy to find through their stores, website, or app. If
-            you need to get your laptop fixed quickly and affordably, Cashify is
+            Phonify is easy to find through their stores, website, or app. If
+            you need to get your laptop fixed quickly and affordably, Phonify is
             the way to go!
           </h3>
         </div>

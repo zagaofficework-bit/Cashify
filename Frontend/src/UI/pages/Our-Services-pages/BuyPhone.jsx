@@ -31,8 +31,8 @@ const BuyPhone = () => {
    <Category data={Mobilecategories}/>
 <VideoComponent/>
 <div className='m-12'>
-    <img src="https://s3ng.cashify.in/estore/1904efec8933435e87edb8f8bf07d374.webp"/>
-    <img src="https://s3ng.cashify.in/estore/56c8430107cf4f308eebd0cc2d321ce5.webp"/>
+    <img src="https://s3ng.Phonify.in/estore/1904efec8933435e87edb8f8bf07d374.webp"/>
+    <img src="https://s3ng.Phonify.in/estore/56c8430107cf4f308eebd0cc2d321ce5.webp"/>
 </div>
 <Feedback/>
 <Footer/>

@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 
 const Signup = () => {
 
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
 
   const formik = useFormik({
     initialValues: {
@@ -27,8 +27,8 @@ const Signup = () => {
     onSubmit: (values) => {
       console.log(values);
 
-      // Navigate to OTP page
-      //navigate("/otp");
+      //Navigate to OTP page
+      navigate("/otp");
     },
   });
 
@@ -55,14 +55,14 @@ const Signup = () => {
 
             <button
               className="text-sm text-gray-600 hover:text-black"
-              //onClick={() => navigate(-1)}
+              onClick={() => navigate(-1)}
             >
               ← Back
             </button>
 
             <button
               className="text-gray-500 hover:text-black text-xl font-bold"
-             // onClick={() => navigate("/")}
+             onClick={() => navigate("/")}
             >
               ✕
             </button>
@@ -167,7 +167,7 @@ const Signup = () => {
           </form>
           <div>
             <p>If Already have an Account?<a className="text-green-500 cursor-pointer" 
-           // onClick={() => navigate("/login")}
+           onClick={() => navigate("/login")}
             >Login</a></p>
           </div>
 

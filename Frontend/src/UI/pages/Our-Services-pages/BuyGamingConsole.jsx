@@ -23,8 +23,8 @@ const BuyGamingConsole = () => {
             <BuyRefurbishedDevices title="bestSellers" products={gamingConsole} />
             <BestSellingcomponent bestSelling={GamingConsole} />
             <div className="m-12">
-                <img src="https://s3ng.cashify.in/estore/27e0a845304d4ecdba2ecd718b911ab3.webp"/>
-                <img src="https://s3ng.cashify.in/estore/d601984619cc4ba0a3e07307f32a0597.webp"/>
+                <img src="https://s3ng.Phonify.in/estore/27e0a845304d4ecdba2ecd718b911ab3.webp"/>
+                <img src="https://s3ng.Phonify.in/estore/d601984619cc4ba0a3e07307f32a0597.webp"/>
             </div>
             <Footer/>
         </div>

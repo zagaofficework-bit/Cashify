@@ -8,7 +8,7 @@ import Feedback from '../../components/Home-page/Feedback';
 import FAQ from '../../components/Home-page/FAQ';
 import DownloadAppBanner from '../../components/Home-page/DownloadAppBanner';
 import Footer from '../../components/Home-page/Footer';
-import HowCashifyWorks from '../../components/HowCashifyWorks';
+import HowPhonifyWorks from '../../components/HowPhonifyWorks';
 
 const SellSmartWatch = () => {
   return (
@@ -16,7 +16,7 @@ const SellSmartWatch = () => {
  
         <NavMenu/>
         <SellCard title="Sell Smart Watches"/>
-        <HowCashifyWorks />
+        <HowPhonifyWorks />
         <DealComponent/>
         <Brands/>
         <Feedback/>

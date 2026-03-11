@@ -8,15 +8,15 @@ export default function FAQ() {
     SellSmart: [
       {
         question: "What should I do if my Amazon voucher shows “Already Redeemed”?",
-        answer: "If your voucher shows as already redeemed, please contact Cashify support with your voucher details. They will verify and issue a replacement if applicable.",
+        answer: "If your voucher shows as already redeemed, please contact Phonify support with your voucher details. They will verify and issue a replacement if applicable.",
       },
       {
-        question: "What documents do you need to sell old mobile phone on Cashify?",
+        question: "What documents do you need to sell old mobile phone on Phonify?",
         answer: "You typically need a valid government ID proof and address proof. These documents help verify ownership and ensure a smooth transaction.",
       },
       {
         question: "What if my pickup is delayed?",
-        answer: "If your pickup is delayed, you can reschedule through the app or website. Cashify support will also notify you of any changes.",
+        answer: "If your pickup is delayed, you can reschedule through the app or website. Phonify support will also notify you of any changes.",
       },
     ],
     SmartBuy: [
@@ -26,7 +26,7 @@ export default function FAQ() {
       },
       {
         question: "What is the Return policy?",
-        answer: "Cashify offers a return policy within a specified period. Check the product page for exact details before purchase.",
+        answer: "Phonify offers a return policy within a specified period. Check the product page for exact details before purchase.",
       },
       {
         question: "Do you have delivery in all places or only in particular locations?",
@@ -39,11 +39,11 @@ export default function FAQ() {
         answer: "Yes, you can place a new exchange order if your previous one was cancelled. Ensure your device meets the eligibility criteria.",
       },
       {
-        question: "What happens if my exchange order is cancelled by Cashify?",
-        answer: "If Cashify cancels your order, you will be notified with the reason. You can then place a new order or contact support for clarification.",
+        question: "What happens if my exchange order is cancelled by Phonify?",
+        answer: "If Phonify cancels your order, you will be notified with the reason. You can then place a new order or contact support for clarification.",
       },
       {
-        question: "Can I appeal Cashify’s decision to cancel my order?",
+        question: "Can I appeal Phonify’s decision to cancel my order?",
         answer: "Yes, you can appeal by contacting customer support. They will review your case and provide further assistance.",
       },
     ],

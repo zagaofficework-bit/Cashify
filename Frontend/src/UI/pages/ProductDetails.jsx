@@ -1,7 +1,7 @@
 import React from "react";
 import BuyRefurbishedDevices from "../components/BuyRefurbishedDevices";
-import CashifyTrust from "../components/CashifyTrust";
-import WhyCashify from "../components/WhyCashify";
+import PhonifyTrust from "../components/PhonifyTrust";
+import WhyPhonify from "../components/WhyPhonify";
 import FAQ from "../components/FAQ";
 import RatingReviews from "../components/RatingReview";
 import Footer from "../components/Footer";
@@ -33,7 +33,7 @@ export default function RefurbishedPhoneCard() {
         <div className="flex-1 space-y-4">
           <h2 className="text-2xl font-bold">Vivo X90 Pro - Refurbished</h2>
           <p className="text-gray-600 text-sm">
-            Cashify Warranty, Fair, 12 GB RAM / 256 GB, Legendary Black
+            Phonify Warranty, Fair, 12 GB RAM / 256 GB, Legendary Black
           </p>
           <p className="text-yellow-500 font-semibold">★ 4.2 (6 reviews)</p>
 
@@ -135,7 +135,7 @@ export default function RefurbishedPhoneCard() {
       
       
       <BuyRefurbishedDevices title="You May Also Like" products={audioDevices} />
-      <CashifyTrust/>
+      <PhonifyTrust/>
 
      
       <div className="max-w-5xl mx-auto p-6 space-y-8">
@@ -213,7 +213,7 @@ export default function RefurbishedPhoneCard() {
         </div>
       </div>
     
-    <WhyCashify/>
+    <WhyPhonify/>
     
     <section className="bg-gray-50 px-6 py-12">
       <div className="max-w-6xl mx-auto">

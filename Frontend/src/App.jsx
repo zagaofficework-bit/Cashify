@@ -15,6 +15,9 @@ import SellTablet from "./UI/pages/SellDevices-pages/SellTablet"
 import SellGamingConsole from "./UI/pages/SellDevices-pages/SellGamingConsole"
 import SellLSmartWatch from "./UI/pages/SellDevices-pages/SellSmartWatch"
 import SellSmartSpeaker from "./UI/pages/SellDevices-pages/SellSmartSpeakers"
+import Login from "./UI/pages/Login";
+import Signup from "./UI/pages/Signup";
+import OtpGeneration from "./UI/pages/OtpGeneration";
 
 
 
@@ -26,6 +29,10 @@ function App() {
       <Routes>
         {/* Our Services Routes */}
         <Route path="/" element={<Home />} />
+        <Route path="/home" element={<Home />} />
+        <Route path="/login" element={<Login/>}/>
+        <Route path="/signup" element={<Signup/>}/>
+          <Route path="/otp" element={<OtpGeneration/>}/>
         <Route path="/sell-phone" element={<SellPhones/>} />
         <Route path="/buy-gadgets" element={<BuyGadgets/>} />
         <Route path="/buy-phone" element={<BuyPhone/>} />

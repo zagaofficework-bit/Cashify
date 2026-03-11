@@ -21,7 +21,7 @@ const BuyCamera = () => {
             <BuyRefurbishedDevices title="bestSellers" products={cameras} />
             <div className="m-12">
              
-                <img src="https://s3ng.cashify.in/estore/d601984619cc4ba0a3e07307f32a0597.webp" />
+                <img src="https://s3ng.Phonify.in/estore/d601984619cc4ba0a3e07307f32a0597.webp" />
             </div>
             <Footer />
         </div>

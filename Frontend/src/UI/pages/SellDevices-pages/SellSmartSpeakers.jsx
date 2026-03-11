@@ -8,14 +8,14 @@ import Feedback from '../../components/Home-page/Feedback';
 import FAQ from '../../components/Home-page/FAQ';
 import DownloadAppBanner from '../../components/Home-page/DownloadAppBanner';
 import Footer from '../../components/Home-page/Footer';
-import HowCashifyWorks from '../../components/HowCashifyWorks';
+import HowPhonifyWorks from '../../components/HowPhonifyWorks';
 const SellSmartSpeakers = () => {
   return (
     <div>
      
         <NavMenu/>
         <SellCard title="Sell smart Speaker"/>
-        <HowCashifyWorks />
+        <HowPhonifyWorks />
         <DealComponent/>
         <Brands/>
         <Feedback/>

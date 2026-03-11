@@ -23,11 +23,11 @@ const BuyAudioDevices = () => {
       <BuyRefurbishedDevices title="bestSellers" products={audioDevices} />
       <BestSellingcomponent bestSelling={AudioDevices} />
       <div className="m-12">
-        <img src="https://s3ng.cashify.in/estore/0c629d99f0364a13be9fc5fdd95e1b1f.webp" />
+        <img src="https://s3ng.Phonify.in/estore/0c629d99f0364a13be9fc5fdd95e1b1f.webp" />
       </div>
       <Feedback />
       <div className="m-12">
-        <img src="https://s3ng.cashify.in/estore/d601984619cc4ba0a3e07307f32a0597.webp" alt="" />
+        <img src="https://s3ng.Phonify.in/estore/d601984619cc4ba0a3e07307f32a0597.webp" alt="" />
       </div>
     <Footer/>
     </div>

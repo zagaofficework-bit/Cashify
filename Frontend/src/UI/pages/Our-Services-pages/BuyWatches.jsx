@@ -25,8 +25,8 @@ const BuyWatches = () => {
         <BestSellingcomponent bestSelling={bestSelling}/>
         <ConditionsExplained/>
         <div className='m-12'>
-             <img src="https://s3ng.cashify.in/estore/dda211268d134db59793803c70488dae.webp"/>
-             <img src="https://s3ng.cashify.in/estore/a5e70db4d8c34f25979cb2395f25c117.webp"/>
+             <img src="https://s3ng.Phonify.in/estore/dda211268d134db59793803c70488dae.webp"/>
+             <img src="https://s3ng.Phonify.in/estore/a5e70db4d8c34f25979cb2395f25c117.webp"/>
         </div>
        <div className="max-w-7xl mx-auto px-6 py-10 text-gray-800">
 
@@ -37,7 +37,7 @@ const BuyWatches = () => {
   <p className="mb-6 leading-relaxed">
     If you get a smartwatch, it will help you stay fit, connected, and organised every day. 
     But buying a brand-new smartwatch can be expensive. That’s why refurbished smartwatches 
-    from Cashify are becoming very popular. They offer great quality at a much lower price 
+    from Phonify are becoming very popular. They offer great quality at a much lower price 
     and are also better for the environment.
   </p>
 
@@ -47,7 +47,7 @@ const BuyWatches = () => {
 
   <p className="mb-6 leading-relaxed">
     Refurbished smartwatches are pre-owned devices that are carefully checked, tested, 
-    and repaired if needed. At Cashify, every smartwatch goes through a 32-point quality 
+    and repaired if needed. At Phonify, every smartwatch goes through a 32-point quality 
     check to make sure everything works properly. Because of these checks, you get a 
     fully functional smartwatch with advanced features for health, fitness, and daily use 
     at a much lower cost.
@@ -60,7 +60,7 @@ const BuyWatches = () => {
   <p className="mb-6 leading-relaxed">
     Buying refurbished smartwatches helps reduce electronic waste. When old devices are 
     reused, fewer new products need to be manufactured. This helps save natural resources 
-    and energy. So when you buy a refurbished smartwatch from Cashify, you save money 
+    and energy. So when you buy a refurbished smartwatch from Phonify, you save money 
     and help the environment at the same time.
   </p>
 
@@ -69,7 +69,7 @@ const BuyWatches = () => {
   </h3>
 
   <p className="mb-6 leading-relaxed">
-    Cashify offers many smartwatch brands like Apple and Samsung. You can find popular 
+    Phonify offers many smartwatch brands like Apple and Samsung. You can find popular 
     models such as Apple Watch Series 6, Series 7, Series 8, Series 9, Series 10, and 
     Apple Watch SE (2nd Gen). These smartwatches come in different sizes, styles, and 
     features to match your needs.
@@ -95,9 +95,9 @@ const BuyWatches = () => {
   </h3>
 
   <p className="leading-relaxed">
-    All refurbished smartwatches on Cashify come with free shipping and exciting 
+    All refurbished smartwatches on Phonify come with free shipping and exciting 
     offers. These include UPI discounts, card discounts, No Cost EMI options, and 
-    Cashify Gold Membership offers. Buy refurbished smartwatches from Cashify and 
+    Phonify Gold Membership offers. Buy refurbished smartwatches from Phonify and 
     enjoy advanced features, a huge collection, and great prices.
   </p>
 

@@ -35,7 +35,7 @@ const BuyLaptops = () => {
            <Category/>
          <ConditionsExplained/>
          <div className='m-12'>
-    <img src="https://s3ng.cashify.in/estore/d826a39ef9c043248bb22378b414e82a.png"/>
+    <img src="https://s3ng.Phonify.in/estore/d826a39ef9c043248bb22378b414e82a.png"/>
   </div>
         <div className="max-w-6xl mx-auto px-6 py-10 text-gray-800">
       
@@ -58,7 +58,7 @@ const BuyLaptops = () => {
 
       {/* Section Title */}
       <h3 className="text-2xl font-semibold mb-4">
-        Why Cashify Is A Great Place To Buy?
+        Why Phonify Is A Great Place To Buy?
       </h3>
 
       {/* Feature List */}
@@ -90,7 +90,7 @@ const BuyLaptops = () => {
             Free Shipping & Easy Refunds
           </h4>
           <p className="text-gray-600">
-            Cashify offers free shipping and a 15-day refund policy so you
+            Phonify offers free shipping and a 15-day refund policy so you
             can shop with confidence.
           </p>
         </div>
@@ -129,8 +129,8 @@ const BuyLaptops = () => {
             Multiple Discount Options
           </h4>
           <p className="text-gray-600">
-            Cashify offers several discount options such as UPI discounts,
-            Cashify Gold membership benefits, card offers, and No-Cost EMI
+            Phonify offers several discount options such as UPI discounts,
+            Phonify Gold membership benefits, card offers, and No-Cost EMI
             options.
           </p>
         </div>
@@ -140,7 +140,7 @@ const BuyLaptops = () => {
       {/* Conclusion */}
       <p className="mt-8 text-gray-700 font-medium">
         In short, refurbished laptops are becoming popular because they are
-        affordable and reliable. With Cashify, you get tested and trusted
+        affordable and reliable. With Phonify, you get tested and trusted
         laptops without spending too much.
       </p>
 

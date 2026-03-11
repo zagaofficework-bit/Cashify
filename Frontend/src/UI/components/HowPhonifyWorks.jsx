@@ -1,11 +1,11 @@
 import React from 'react'
 
-const HowCashifyWorks = () => {
+const HowPhonifyWorks = () => {
   return (
     <div>
       <section className="bg-gray-50 px-6 py-12">
       <div className="max-w-6xl mx-auto text-center">
-        <h2 className="text-3xl font-bold mb-10">How Cashify Works</h2>
+        <h2 className="text-3xl font-bold mb-10">How Phonify Works</h2>
 
         <div className="grid md:grid-cols-3 gap-8">
           {/* Step 1: Check Price */}
@@ -53,4 +53,4 @@ const HowCashifyWorks = () => {
   )
 }
 
-export default HowCashifyWorks
+export default HowPhonifyWorks

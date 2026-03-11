@@ -6,7 +6,7 @@ export default function NavMenu() {
   const menuItems = [
     {
       title: "All",
-      subItems: ["Sell", "Repair", "Buy Gadgets", "Recycle", "Cashify Store"],
+      subItems: ["Sell", "Repair", "Buy Gadgets", "Recycle", "Phonify Store"],
     },
     {
       title: "Sell Phone",
@@ -14,22 +14,22 @@ export default function NavMenu() {
     },
     {
       title: "Sell Gadgets",
-      subItems: ["Camera", "Headphones", "Gaming Console"],
+      subItems: ["Sell Phone", "Sell Laptops","Sell Smart Watches","Sell Tablets", "Sell Gaming Console","Sell Speakers"],
     },
     {
       title: "Buy Refurbished Devices",
-      subItems: ["Mobiles", "Laptops", "Accessories"],
+      subItems: ["Refurbished Phones", "Refurbished Laptops", "Refurbished Smart Watches", "Refurbished Tablets" ,"Refurbished Gaming Console","Refurbished Cameras","Speakers"],
     },
     {
       title: "Find New Gadget",
-      subItems: ["Mobiles", "Laptops", "Smartwatch"],
+      subItems: ["New Phones", "New Laptops", "New Smart Watches","New Tablets","Speaker"]
     },
     {
       title: "Buy Laptop",
       subItems: ["MacBook", "Windows Laptop", "Gaming Laptop"],
     },
     {
-      title: "Cashify Store",
+      title: "Phonify Store",
       subItems: ["Accessories", "Deals", "Offers"],
     },
     {
