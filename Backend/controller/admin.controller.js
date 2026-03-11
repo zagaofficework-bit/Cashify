@@ -139,7 +139,8 @@ exports.pauseSellerSubscription = async (req, res) => {
     // Find their active subscription
     const subscription = await SubscriptionModel.findOne({
       seller: sellerId,
-      status: "active",
+      isActive: true,
+      endDate: { $gte: new Date() },
     });
 
     if (!subscription) {
@@ -217,7 +218,7 @@ exports.banSellerSubscription = async (req, res) => {
 
     // Cancel all subscriptions (active or paused)
     const subscriptionResult = await SubscriptionModel.updateMany(
-      { seller: sellerId, status: { $in: ["active", "paused"] } },
+      { seller: sellerId, isActive: true },
       {
         $set: {
           status: "banned",
@@ -298,7 +299,7 @@ exports.reinstateSellerSubscription = async (req, res) => {
 
     // Reactivate paused subscription
     const subscription = await SubscriptionModel.findOneAndUpdate(
-      { seller: sellerId, status: "paused" },
+      { seller: sellerId, isActive: false },
       {
         $set: {
           status: "active",
