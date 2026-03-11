@@ -55,18 +55,6 @@ const userSchema = new mongoose.Schema(
       },
     },
 
-    // ─── DEFAULT ADDRESS SNAPSHOT ──────────────────────────────────────────────
-    // Mirrors the user's default Address document.
-    // Kept in sync by syncUserAddress() in profile/address controller.
-    // Used by product listings and geo queries to avoid extra joins.
-
-    address: {
-      city:    { type: String, trim: true, default: null },
-      state:   { type: String, trim: true, default: null },
-      pincode: { type: String, trim: true, default: null },
-      full:    { type: String, trim: true, default: null },
-    },
-
     // ─── SUBSCRIPTION — only relevant for sellers ───────────────────────────────
 
     subscription: {

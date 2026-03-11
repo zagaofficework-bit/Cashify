@@ -155,19 +155,19 @@ exports.deleteProfilePic = async (req, res) => {
 
 // ─── HELPER: sync user.address with current default ───────────────────────────
 
-async function syncUserAddress(userId) {
-  const def = await Address.findOne({ userId, isDefault: true }).lean();
-  await UserModel.findByIdAndUpdate(userId, {
-    address: def
-      ? {
-          city:    def.city,
-          state:   def.state,
-          pincode: def.zipcode,
-          full:    `${def.street}, ${def.city}, ${def.state} - ${def.zipcode}`,
-        }
-      : { city: null, state: null, pincode: null, full: null },
-  });
-}
+// async function syncUserAddress(userId) {
+//   const def = await Address.findOne({ userId, isDefault: true }).lean();
+//   await UserModel.findByIdAndUpdate(userId, {
+//     address: def
+//       ? {
+//           city:    def.city,
+//           state:   def.state,
+//           pincode: def.zipcode,
+//           full:    `${def.street}, ${def.city}, ${def.state} - ${def.zipcode}`,
+//         }
+//       : { city: null, state: null, pincode: null, full: null },
+//   });
+// }
 
 
 // ─── ADD ADDRESS ──────────────────────────────────────────────────────────────

@@ -15,7 +15,7 @@ const BLACKLIST_KEY        = (token) => `blacklist:${token}`;
 const REGISTER_SESSION_KEY = (token) => `register_session:${token}`;
 const LOGIN_SESSION_KEY    = (token) => `login_session:${token}`;
 
-const OTP_TTL_SECONDS = 1 * 60;
+const OTP_TTL_SECONDS = 2 * 60;
 
 /**
  * @name userRegisterController
