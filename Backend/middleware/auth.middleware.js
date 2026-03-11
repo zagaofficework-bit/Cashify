@@ -1,19 +1,18 @@
-const jwt         = require("jsonwebtoken");
-const userModel   = require("../models/user.model");
+const jwt = require("jsonwebtoken");
+const userModel = require("../models/user.model");
 const redisClient = require("../config/redis.client");
 
 const BLACKLIST_KEY = (token) => `blacklist:${token}`;
 
-////////////////////////////////////////////////////////////////////
-//// AUTHENTICATE
-////////////////////////////////////////////////////////////////////
-
+// AUTHENTICATE
 async function authMiddleware(req, res, next) {
   try {
     const authHeader = req.headers.authorization;
 
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
-      return res.status(401).json({ message: "Access token missing or malformed" });
+      return res
+        .status(401)
+        .json({ message: "Access token missing or malformed" });
     }
 
     const token = authHeader.split(" ")[1];
@@ -37,38 +36,41 @@ async function authMiddleware(req, res, next) {
     }
 
     if (!user.isActive) {
-      return res.status(403).json({ message: "Your account has been deactivated" });
+      return res
+        .status(403)
+        .json({ message: "Your account has been deactivated" });
     }
 
-    req.user  = user;
+    req.user = user;
     req.token = token;
     next();
   } catch (error) {
     if (error.name === "TokenExpiredError") {
       return res.status(401).json({
         message: "Access token expired. Please refresh your token",
-        code:    "TOKEN_EXPIRED",
+        code: "TOKEN_EXPIRED",
       });
     }
     if (error.name === "JsonWebTokenError") {
       return res.status(401).json({
         message: "Invalid access token",
-        code:    "TOKEN_INVALID",
+        code: "TOKEN_INVALID",
       });
     }
     console.error("authMiddleware error:", error);
-    res.status(500).json({ message: "Internal server error during authentication" });
+    res
+      .status(500)
+      .json({ message: "Internal server error during authentication" });
   }
 }
 
-////////////////////////////////////////////////////////////////////
-//// AUTHORIZE — Role-Based Access Control
-////////////////////////////////////////////////////////////////////
-
+// AUTHORIZE — Role-Based Access Control
 function authorize(...roles) {
   return (req, res, next) => {
     if (!req.user) {
-      return res.status(401).json({ message: "Unauthorized. Please login first" });
+      return res
+        .status(401)
+        .json({ message: "Unauthorized. Please login first" });
     }
     if (!roles.includes(req.user.role)) {
       return res.status(403).json({
@@ -79,24 +81,19 @@ function authorize(...roles) {
   };
 }
 
-////////////////////////////////////////////////////////////////////
-//// BLOCK ADMIN — prevents admin from buy/sell/list actions
-////////////////////////////////////////////////////////////////////
-
+// BLOCK ADMIN — prevents admin from buy/sell/list actions
 function blockAdmin(req, res, next) {
   if (req.user?.role === "admin") {
     return res.status(403).json({
-      message: "Admins cannot buy, sell, or list products. Admin role is for platform management only",
-      code:    "ADMIN_ACTION_NOT_ALLOWED",
+      message:
+        "Admins cannot buy, sell, or list products. Admin role is for platform management only",
+      code: "ADMIN_ACTION_NOT_ALLOWED",
     });
   }
   next();
 }
 
-////////////////////////////////////////////////////////////////////
-//// SELLER SUBSCRIPTION CHECK
-////////////////////////////////////////////////////////////////////
-
+// SELLER SUBSCRIPTION CHECK
 async function requireActiveSubscription(req, res, next) {
   try {
     if (req.user.role !== "seller") return next();
@@ -104,15 +101,16 @@ async function requireActiveSubscription(req, res, next) {
     const SubscriptionModel = require("../models/subscription.model");
 
     const subscription = await SubscriptionModel.findOne({
-      seller:   req.user._id,
+      seller: req.user._id,
       isActive: true,
-      endDate:  { $gte: new Date() },
+      endDate: { $gte: new Date() },
     }).lean();
 
     if (!subscription) {
       return res.status(403).json({
-        message: "Active subscription required. Please subscribe to a plan to list products",
-        code:    "NO_ACTIVE_SUBSCRIPTION",
+        message:
+          "Active subscription required. Please subscribe to a plan to list products",
+        code: "NO_ACTIVE_SUBSCRIPTION",
       });
     }
 
@@ -124,33 +122,53 @@ async function requireActiveSubscription(req, res, next) {
   }
 }
 
-////////////////////////////////////////////////////////////////////
-//// LISTING LIMIT CHECK
-////////////////////////////////////////////////////////////////////
-
+// LISTING LIMIT CHECK
 async function checkListingLimit(req, res, next) {
   try {
-    if (req.user.role !== "seller") return next();
-
-    const subscription = req.subscription;
-
-    // -1 = unlimited (premium plan)
-    if (subscription.activeListingsLimit === -1) return next();
-
+    const role = req.user.role;
     const ProductModel = require("../models/product.model");
 
-    const activeCount = await ProductModel.countDocuments({
-      listedBy: req.user._id,
-      status:   "available",
-    });
+    if (role === "user") {
+      const USER_LIMIT = 5;
 
-    if (activeCount >= subscription.activeListingsLimit) {
-      return res.status(403).json({
-        message: `Listing limit reached. Your ${subscription.plan} plan allows up to ${subscription.activeListingsLimit} active listings. Please upgrade your plan`,
-        code:    "LISTING_LIMIT_REACHED",
+      const activeCount = await ProductModel.countDocuments({
+        listedBy: req.user._id,
+        status: "available",
       });
+
+      if (activeCount >= USER_LIMIT) {
+        return res.status(403).json({
+          message: `Listing limit reached. Users can only have ${USER_LIMIT} active listings at a time`,
+          code: "LISTING_LIMIT_REACHED",
+        });
+      }
+
+      return next();
     }
 
+    if (role === "seller") {
+      const subscription = req.subscription;
+
+      // Premium plan — unlimited listings
+      if (subscription.activeListingsLimit === -1) return next();
+
+      const activeCount = await ProductModel.countDocuments({
+        listedBy: req.user._id,
+        status: "available",
+      });
+
+      if (activeCount >= subscription.activeListingsLimit) {
+        return res.status(403).json({
+          message: `Listing limit reached. Your ${subscription.plan} plan allows up to ${subscription.activeListingsLimit} active listings. Upgrade your plan to list more`,
+          code: "LISTING_LIMIT_REACHED",
+          currentCount: activeCount,
+          limit: subscription.activeListingsLimit,
+          plan: subscription.plan,
+        });
+      }
+
+      return next();
+    }
     next();
   } catch (error) {
     console.error("checkListingLimit error:", error);
@@ -158,30 +176,25 @@ async function checkListingLimit(req, res, next) {
   }
 }
 
-////////////////////////////////////////////////////////////////////
-//// DEVICE TYPE PERMISSION CHECK
-//// user   → old devices only
-//// seller → new, refurbished, old
-////////////////////////////////////////////////////////////////////
-
+// DEVICE TYPE PERMISSION CHECK
+// user   → old devices only
+// seller → new, refurbished, old
 function checkDeviceTypePermission(req, res, next) {
   const { deviceType } = req.body;
-  const role           = req.user.role;
+  const role = req.user.role;
 
   if (role === "user" && deviceType !== "old") {
     return res.status(403).json({
-      message: "Users can only list old/used devices. Upgrade to seller to list new or refurbished devices",
-      code:    "DEVICE_TYPE_NOT_ALLOWED",
+      message:
+        "Users can only list old/used devices. Upgrade to seller to list new or refurbished devices",
+      code: "DEVICE_TYPE_NOT_ALLOWED",
     });
   }
 
   next();
 }
 
-////////////////////////////////////////////////////////////////////
-//// OPTIONAL AUTH
-////////////////////////////////////////////////////////////////////
-
+// OPTIONAL AUTH
 async function optionalAuthenticate(req, res, next) {
   try {
     const authHeader = req.headers.authorization;
@@ -193,13 +206,13 @@ async function optionalAuthenticate(req, res, next) {
     if (isBlacklisted) return next();
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const user    = await userModel
+    const user = await userModel
       .findById(decoded.userId)
       .select("-refreshToken")
       .lean();
 
     if (user) {
-      req.user  = user;
+      req.user = user;
       req.token = token;
     }
     next();
@@ -208,10 +221,7 @@ async function optionalAuthenticate(req, res, next) {
   }
 }
 
-////////////////////////////////////////////////////////////////////
-//// EXPORT
-////////////////////////////////////////////////////////////////////
-
+// EXPORT
 module.exports = {
   authMiddleware,
   authorize,

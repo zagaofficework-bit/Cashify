@@ -1,81 +1,109 @@
 const express = require("express");
 const router  = express.Router();
 
-const ProductController      = require("../controller/product.controller");
-const SubscriptionController = require("../controller/subscription.controller");
+const AdminController = require("../controller/admin.controller");
 
 const {
   authMiddleware,
   authorize,
 } = require("../middleware/auth.middleware");
 
-// All admin routes are protected — apply authMiddleware + authorize globally
-router.use(authMiddleware);
-router.use(authorize("admin"));
-
-////////////////////////////////////////////////////////////////////
-//// SUBSCRIPTION MANAGEMENT
-////////////////////////////////////////////////////////////////////
-
-/**
- * @route   GET /api/admin/subscriptions
- * @desc    Get all subscriptions with pagination and filters
- * @access  Private (Admin only)
- * @query   ?plan=basic&isActive=true&page=1&limit=20
- */
-router.get(
-  "/subscriptions",
-  SubscriptionController.getAllSubscriptions
-);
-
-/**
- * @route   DELETE /api/admin/subscriptions/:userId/revoke
- * @desc    Revoke a seller's subscription — role reverts to user
- * @access  Private (Admin only)
- */
-router.delete(
-  "/subscriptions/:userId/revoke",
-  SubscriptionController.revokeSubscription
-);
+// All admin routes require auth + admin role
+router.use(authMiddleware, authorize("admin"));
 
 ////////////////////////////////////////////////////////////////////
 //// PRODUCT MANAGEMENT
 ////////////////////////////////////////////////////////////////////
 
 /**
- * @route   GET /api/admin/products
- * @desc    Get all product listings across all sellers and users
- * @access  Private (Admin only)
- * @query   ?status=available&category=mobile&page=1&limit=20
- */
-router.get(
-  "/products",
-  ProductController.getProducts
-);
-
-/**
  * @route   DELETE /api/admin/products/:id
- * @desc    Remove any product listing from the platform
+ * @desc    Admin removes any product listing
  * @access  Private (Admin only)
  */
 router.delete(
   "/products/:id",
-  ProductController.adminDeleteProduct
+  AdminController.adminDeleteProduct
 );
 
 ////////////////////////////////////////////////////////////////////
-//// ORDER & COMMISSION MANAGEMENT
+//// ORDER & COMMISSION OVERVIEW
 ////////////////////////////////////////////////////////////////////
 
 /**
  * @route   GET /api/admin/orders
- * @desc    Get all orders + total commission earned by admin
+ * @desc    Get all platform orders with commission summary
  * @access  Private (Admin only)
- * @query   ?type=buy&status=completed&page=1&limit=20
+ * @query   ?type=buy&status=confirmed&page=1&limit=20
  */
 router.get(
   "/orders",
-  ProductController.getAllOrders
+  AdminController.getAllOrders
+);
+
+////////////////////////////////////////////////////////////////////
+//// SELLER SUBSCRIPTION MANAGEMENT
+////////////////////////////////////////////////////////////////////
+
+/**
+ * @route   GET /api/admin/subscriptions
+ * @desc    List all subscribed sellers with plan, dates, product count
+ * @access  Private (Admin only)
+ * @query   ?status=active&plan=premium&page=1&limit=20
+ */
+router.get(
+  "/subscriptions",
+  AdminController.getSubscribedSellers
+);
+
+/**
+ * @route   GET /api/admin/subscriptions/:sellerId
+ * @desc    Full detail of a single seller — subscription + all listings
+ * @access  Private (Admin only)
+ */
+router.get(
+  "/subscriptions/:sellerId",
+  AdminController.getSellerSubscriptionDetail
+);
+
+////////////////////////////////////////////////////////////////////
+//// SELLER FRAUD / SUSPENSION CONTROLS
+////////////////////////////////////////////////////////////////////
+
+/**
+ * @route   POST /api/admin/sellers/:sellerId/pause
+ * @desc    Temporarily suspend a seller due to suspicious activity
+ *          → accountStatus: "suspended", subscription paused
+ * @access  Private (Admin only)
+ * @body    { reason } — required
+ */
+router.post(
+  "/sellers/:sellerId/pause",
+  AdminController.pauseSellerSubscription
+);
+
+/**
+ * @route   POST /api/admin/sellers/:sellerId/ban
+ * @desc    Permanently ban a seller for fraud or severe violations
+ *          → accountStatus: "banned", all subscriptions cancelled,
+ *            all listings hidden
+ * @access  Private (Admin only)
+ * @body    { reason } — required
+ */
+router.post(
+  "/sellers/:sellerId/ban",
+  AdminController.banSellerSubscription
+);
+
+/**
+ * @route   POST /api/admin/sellers/:sellerId/reinstate
+ * @desc    Reinstate a suspended seller (paused → active)
+ *          Blocked for permanently banned sellers
+ * @access  Private (Admin only)
+ * @body    { note } — optional
+ */
+router.post(
+  "/sellers/:sellerId/reinstate",
+  AdminController.reinstateSellerSubscription
 );
 
 module.exports = router;

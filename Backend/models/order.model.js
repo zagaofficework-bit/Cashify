@@ -45,11 +45,11 @@ const orderSchema = new mongoose.Schema(
     //// PRODUCT
     ////////////////////////////////////////////////////////////////////
 
-    product: {
+     product: {
       type:     mongoose.Schema.Types.ObjectId,
       ref:      "Product",
-      required: false,
-      defualt: null,
+      required: false, // null for sell requests — product created after seller confirms
+      default:  null,
     },
 
     ////////////////////////////////////////////////////////////////////
