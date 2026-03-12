@@ -14,7 +14,6 @@ import {smartwatches } from '../../../res/Data/DevicesData';
 const BuyWatches = () => {
   return (
     <div>
-        <NavBar/>
         <NavMenu/>
         <Devices/>
         <SlidingAnimation/>

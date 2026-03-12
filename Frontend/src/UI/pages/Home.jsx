@@ -2,11 +2,7 @@ import NavMenu from "../components/NavMenu";
 import ServiceSection from "../components/Home-page/ServiceSection";
 
 import SlidingAnimation from "../components/Home-page/SlidingAnimation";
-import SellPhones from "./SellDevices-pages/SellPhones";
 import Chatbot from "../components/ChatBot";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
-import SellCard from "../components/Card/SellCard";
-import ServiceCard from "../components/Card/ServiceCard";
 import SellOldDevices from "../components/SellOldDevice";
 import BuyRefurbishedDevices from "../components/Home-page/BuyRefurbishedDevices";
 import {
@@ -25,10 +21,13 @@ import DownloadAppBanner from "../components/Home-page/DownloadAppBanner";
 import Info from "../components/Home-page/Info";
 import Footer from "../components/Home-page/Footer";
 import ArticleSection from "../components/Home-page/ArticleSection";
+import ProductDetails from "./ProductDetails";
 
 export default function Home() {
   return (
     <div className="overflow-x-hidden">
+
+      <ProductDetails />
       <NavMenu />
       <Chatbot />
       <SlidingAnimation />

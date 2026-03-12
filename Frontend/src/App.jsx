@@ -18,12 +18,6 @@ import SellSmartSpeaker from "./UI/pages/SellDevices-pages/SellSmartSpeakers"
 import Login from "./UI/pages/Login";
 import Signup from "./UI/pages/Signup";
 import OtpGeneration from "./UI/pages/OtpGeneration";
-import MobileBrand from "./UI/components/MobileBrand";
-import { AudioDevices } from "./res/Data/Categorydata";
-import { google } from "./res/Data/PromoCards";
-import Google from "./UI/pages/Buy-Mobile-Brands/Google";
-import { useLocation } from "react-router-dom";
-import { useEffect } from "react";
 import ScrollToTop from "./UI/components/ScrollToTop";
 
 
@@ -59,14 +53,12 @@ function App() {
         <Route path="/sell-smartwatch" element={<SellLSmartWatch/>} />
         <Route path="/sell-speaker" element={<SellSmartSpeaker/>} />
   
-      
+       
       </Routes> 
         
       </BrowserRouter>
       
   
-          {/* <BuyLaptops/> */}
-          
     </>
     
 

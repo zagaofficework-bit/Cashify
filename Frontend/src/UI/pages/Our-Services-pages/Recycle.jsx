@@ -65,8 +65,6 @@ const Recycle = () => {
   ];
   return (
     <>
-    
-      <NavBar/>
       <NavMenu/>
       <div className="m-10 rounded rounded-lg">
       <SellCard title="Let's make the world a better place"/>

@@ -101,11 +101,11 @@ export default function NavBar() {
   );
 
   return (
-    <nav className="w-full bg-white shadow-md px-4 md:px-6 py-3">
+    <nav className="w-full bg-white shadow-md px-4 md:px-6 py-3 sticky top-0 z-50">
       <div className="flex items-center justify-between gap-3">
         {/* Logo */}
-        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ7-kMUpk3knKvstr4FF-v4BGDqvVFJ3xxCbQ&s"
-          onClick={() => navigate("/")} alt="Phonify Logo" className="h-10 w-auto cursor-pointer flex-shrink-0" />
+        <img src="./assets/img/Phonify1.png"
+          onClick={() => navigate("/")} alt="Phonify Logo" className="h-10 w-auto cursor-pointer flex-shrink-0 object-contain" />
 
         {/* Search — desktop */}
         <div className="hidden md:flex flex-1 items-center border rounded-lg px-3 py-2 bg-gray-50">

@@ -20,7 +20,6 @@ import { refurbishedlaptops, refurbishedProducts } from '../../../res/Data/Devic
 const BuyLaptops = () => {
   return (
     <div>
-       <NavBar/>
         <NavMenu/>
         <Devices/>
         <SlidingAnimation/>

@@ -21,7 +21,6 @@ const FindNewPhone = () => {
   ];
   return (
     <div>
-        <NavBar/>
         <NavMenu/>
       <SlidingAnimations/>
       <SearchByModel/>

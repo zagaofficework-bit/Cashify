@@ -16,7 +16,6 @@ import Category from '../../components/Category';
 const BuyTablets = () => {
     return (
         <div>
-            <NavBar />
             <NavMenu />
             <Devices />
             <SlidingAnimation />
