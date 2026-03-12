@@ -325,6 +325,42 @@ exports.countProductsBySellers = async (sellerIds) => {
 };
 
 ////////////////////////////////////////////////////////////////////
+//// UPDATE SPECS ONLY
+////////////////////////////////////////////////////////////////////
+
+exports.updateSpecs = async (id, specsUpdate) => {
+  const product = await Product.findByIdAndUpdate(
+    id,
+    { $set: specsUpdate },   // specsUpdate keys are like "specs.performance", "specs.display"
+    { new: true, runValidators: true }
+  ).lean();
+
+  await Promise.all([
+    redisClient.del(PRODUCT_KEY(id)).catch(() => null),
+    invalidateListCache(),
+  ]);
+
+  return product;
+};
+
+////////////////////////////////////////////////////////////////////
+//// COMPARE PRODUCTS
+////////////////////////////////////////////////////////////////////
+
+exports.compareProducts = async (ids) => {
+  const products = await Product.find({ _id: { $in: ids } })
+    .select(
+      "title brand category subcategory deviceType condition storage color price originalPrice images rating status address listedByRole createdAt specs"
+    )
+    .lean();
+
+  // Return in same order as requested IDs
+  return ids.map((id) =>
+    products.find((p) => p._id.toString() === id.toString()) || null
+  );
+};
+
+////////////////////////////////////////////////////////////////////
 //// GET ALL PRODUCTS BY A SINGLE SELLER — used in admin detail view
 ////////////////////////////////////////////////////////////////////
 

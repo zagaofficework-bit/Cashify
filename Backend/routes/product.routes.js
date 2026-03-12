@@ -24,29 +24,24 @@ const {
 
 /**
  * @route   GET /api/products
- * @desc    Get all products (supports location filter)
+ * @desc    Get all products (supports filters + location)
  * @access  Public
  * @query   ?latitude=28.6&longitude=77.2&radius=5&category=mobile&minPrice=5000
  */
-router.get(
-  "/",
-  optionalAuthenticate,
-  ProductController.getProducts
-);
+router.get("/", optionalAuthenticate, ProductController.getProducts);
 
 /**
- * @route   GET /api/products/:id
- * @desc    Get single product by ID
+ * @route   GET /api/products/compare
+ * @desc    Compare 2-4 products side by side
  * @access  Public
+ * @query   ?ids=id1,id2,id3
+ * ⚠️ MUST be before /:id — otherwise "compare" is treated as a product ID
  */
-router.get(
-  "/:id",
-  optionalAuthenticate,
-  ProductController.getProductById
-);
+router.get("/compare", optionalAuthenticate, ProductController.compareProducts);
 
 ////////////////////////////////////////////////////////////////////
 //// MY LISTINGS
+//// ⚠️ MUST be before /:id routes
 ////////////////////////////////////////////////////////////////////
 
 /**
@@ -59,7 +54,7 @@ router.get(
   "/my/listings",
   authMiddleware,
   authorize("seller", "user"),
-  ProductController.getMyProducts
+  ProductController.getMyProducts,
 );
 
 ////////////////////////////////////////////////////////////////////
@@ -69,19 +64,21 @@ router.get(
 /**
  * @route   POST /api/products/seller/create
  * @desc    Seller creates a new listing (new / refurbished / old)
+ *          Optionally include specs as JSON string in form-data body
  * @access  Private (Seller only)
+ * @body    form-data: title, category, price, images, specs (optional JSON)
  */
 router.post(
   "/seller/create",
   authMiddleware,
   authorize("seller"),
   blockAdmin,
-  productUpload,              // multer FIRST — parses multipart req.body
+  productUpload,            // multer FIRST — parses multipart req.body
   validateProductFiles,
   requireActiveSubscription,
   checkListingLimit,
   checkDeviceTypePermission,
-  ProductController.createProduct
+  ProductController.createProduct,
 );
 
 ////////////////////////////////////////////////////////////////////
@@ -91,22 +88,45 @@ router.post(
 /**
  * @route   POST /api/products/user/create
  * @desc    User lists an old device
+ *          Optionally include specs as JSON string in form-data body
  * @access  Private (User only)
+ * @body    form-data: title, category, price, images, specs (optional JSON)
  */
 router.post(
   "/user/create",
   authMiddleware,
   authorize("user"),
   blockAdmin,
-  productUpload,              // multer FIRST
+  productUpload,            // multer FIRST
   validateProductFiles,
-  checkDeviceTypePermission,  // enforces deviceType = "old"
-  ProductController.createProduct
+  checkDeviceTypePermission, // enforces deviceType = "old"
+  ProductController.createProduct,
 );
 
 ////////////////////////////////////////////////////////////////////
-//// UPDATE & DELETE — owner only
+//// DYNAMIC :id ROUTES — always last
 ////////////////////////////////////////////////////////////////////
+
+/**
+ * @route   GET /api/products/:id
+ * @desc    Get single product by ID
+ * @access  Public
+ */
+router.get("/:id", optionalAuthenticate, ProductController.getProductById);
+
+/**
+ * @route   PATCH /api/products/:id/specs
+ * @desc    Add or update specs for a product (owner or admin)
+ * @access  Private (Seller, User — owner only)
+ * @body    { performance?, display?, rearCamera?, frontCamera?, battery?, storageType? }
+ */
+router.patch(
+  "/:id/specs",
+  authMiddleware,
+  authorize("seller", "user"),
+  blockAdmin,
+  ProductController.upsertSpecs,
+);
 
 /**
  * @route   PUT /api/products/:id
@@ -120,7 +140,7 @@ router.put(
   blockAdmin,
   productUpload,
   validateProductFiles,
-  ProductController.updateProduct
+  ProductController.updateProduct,
 );
 
 /**
@@ -133,7 +153,7 @@ router.delete(
   authMiddleware,
   authorize("seller", "user"),
   blockAdmin,
-  ProductController.deleteProduct
+  ProductController.deleteProduct,
 );
 
 module.exports = router;

@@ -298,7 +298,7 @@ exports.reinstateSellerSubscription = async (req, res) => {
     }
 
     // Reactivate paused subscription
-    const subscription = await SubscriptionModel.findOneAndUpdate(
+    const subscription = await SubscriptionModel.updateMany(
       { seller: sellerId, isActive: false },
       {
         $set: {
