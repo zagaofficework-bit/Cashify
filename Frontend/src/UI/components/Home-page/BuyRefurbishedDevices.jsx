@@ -1,26 +1,39 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
-export default function BuyRefurbishedDevices({ title, products=[
-  
-] }) {
+export default function BuyRefurbishedDevices({ title, products = [] }) {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [screenWidth, setScreenWidth] = useState(
+    typeof window !== "undefined" ? window.innerWidth : 1200
+  );
 
-  const visibleItems = 5;
+  // detect screen resize
+  useEffect(() => {
+    const handleResize = () => setScreenWidth(window.innerWidth);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
-  const nextSlide = () => {
-    setCurrentIndex((prev) =>
-      prev < products.length - visibleItems ? prev + 1 : prev
+  // Responsive visible items
+  const getVisibleItems = () => {
+    if (screenWidth < 640) return 2;
+    if (screenWidth < 768) return 3;
+    if (screenWidth < 1024) return 4;
+    return 5;
+  };
+
+  const visibleItems = getVisibleItems();
+
+  const next = () =>
+    setCurrentIndex((p) =>
+      p < products.length - visibleItems ? p + 1 : p
     );
-  };
 
-  const prevSlide = () => {
-    setCurrentIndex((prev) => (prev > 0 ? prev - 1 : 0));
-  };
+  const prev = () => setCurrentIndex((p) => (p > 0 ? p - 1 : 0));
 
   return (
-    <section className="bg-gray-50 py-10">
-      <div className="max-w-7xl mx-auto px-6">
-        <h2 className="text-2xl font-bold mb-6 text-gray-800">
+    <section className="bg-gray-50 py-6 md:py-10">
+      <div className="max-w-7xl mx-auto px-4 md:px-6">
+        <h2 className="text-xl md:text-2xl font-bold mb-4 md:mb-6 text-gray-800">
           {title || "Buy Refurbished Devices"}
         </h2>
 
@@ -34,42 +47,44 @@ export default function BuyRefurbishedDevices({ title, products=[
             {products.map((product, index) => (
               <div
                 key={index}
-                className="flex-shrink-0 basis-1/5 p-4 bg-white rounded-lg shadow-md"
+                className="flex-shrink-0 w-1/2 sm:w-1/3 md:w-1/4 lg:basis-1/5 p-2 md:p-4 bg-white rounded-lg shadow-md mx-1"
               >
                 <img
                   src={product.img}
                   alt={product.name}
-                  className="w-full object-contain h-40"
+                  className="w-full object-contain h-28 md:h-40"
                 />
 
-                <h3 className="text-lg font-semibold text-gray-800 mb-2">
+                <h3 className="text-sm md:text-lg font-semibold text-gray-800 mb-1 md:mb-2 line-clamp-2">
                   {product.name}
                 </h3>
 
-                <p className="text-green-600 font-bold">{product.discount}</p>
+                <p className="text-green-600 font-bold text-xs md:text-sm">
+                  {product.discount}
+                </p>
 
-                <div className="flex items-center justify-between text-sm text-gray-600 mt-1">
+                <div className="flex items-center justify-between text-xs text-gray-600 mt-1">
                   <span>{product.saleTag}</span>
                   <span>{product.rating}</span>
                 </div>
 
-                <p className="text-red-600 font-bold mt-2">
+                <p className="text-red-600 font-bold mt-1 text-xs md:text-sm">
                   {product.percent}
                 </p>
 
-                <p className="text-xl font-bold text-gray-800">
+                <p className="text-base md:text-xl font-bold text-gray-800">
                   {product.price}
                 </p>
 
-                <p className="line-through text-gray-500">
+                <p className="line-through text-gray-500 text-xs md:text-sm">
                   {product.original}
                 </p>
 
-                <p className="text-teal-600 font-medium mt-1">
+                <p className="text-teal-600 font-medium mt-1 text-xs md:text-sm">
                   {product.gold}
                 </p>
 
-                <span className="mt-3 inline-block bg-yellow-100 text-yellow-700 text-xs font-semibold px-2 py-1 rounded">
+                <span className="mt-2 inline-block bg-yellow-100 text-yellow-700 text-xs font-semibold px-2 py-1 rounded">
                   Phonify Assured
                 </span>
               </div>
@@ -77,17 +92,17 @@ export default function BuyRefurbishedDevices({ title, products=[
           </div>
 
           <button
-            onClick={prevSlide}
+            onClick={prev}
             disabled={currentIndex === 0}
-            className="absolute left-0 top-1/2 -translate-y-1/2 bg-white shadow-md rounded-full w-10 h-10 flex items-center justify-center disabled:opacity-40"
+            className="absolute left-0 top-1/2 -translate-y-1/2 bg-white shadow-md rounded-full w-8 h-8 md:w-10 md:h-10 flex items-center justify-center disabled:opacity-40 z-10"
           >
             &#x3c;
           </button>
 
           <button
-            onClick={nextSlide}
+            onClick={next}
             disabled={currentIndex >= products.length - visibleItems}
-            className="absolute right-0 top-1/2 -translate-y-1/2 bg-white shadow-md rounded-full w-10 h-10 flex items-center justify-center disabled:opacity-40"
+            className="absolute right-0 top-1/2 -translate-y-1/2 bg-white shadow-md rounded-full w-8 h-8 md:w-10 md:h-10 flex items-center justify-center disabled:opacity-40 z-10"
           >
             &#x3e;
           </button>

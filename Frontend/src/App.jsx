@@ -22,17 +22,22 @@ import MobileBrand from "./UI/components/MobileBrand";
 import { AudioDevices } from "./res/Data/Categorydata";
 import { google } from "./res/Data/PromoCards";
 import Google from "./UI/pages/Buy-Mobile-Brands/Google";
+import { useLocation } from "react-router-dom";
+import { useEffect } from "react";
+import ScrollToTop from "./UI/components/ScrollToTop";
 
 
 
 function App() {
+   
   return (
     <>
-     {/* <BrowserRouter>
+   <BrowserRouter>
+   <ScrollToTop/>
     <NavBar/>
       <Routes>
         {/* Our Services Routes */}
-        {/* <Route path="/" element={<Home />} />
+        <Route path="/" element={<Home />} />
         <Route path="/home" element={<Home />} />
         <Route path="/login" element={<Login/>}/>
         <Route path="/signup" element={<Signup/>}/>
@@ -43,10 +48,10 @@ function App() {
         <Route path="/buy-laptops" element={<BuyLaptops/>} />
         <Route path="/find-phone" element={<FindNewPhone/>} />
         <Route path="/smartwatch" element={<BuyWatches/>} />
-        <Route path="/accessories" element={<BuyAccessories/>} /> */}
+        <Route path="/accessories" element={<BuyAccessories/>} />
 
         {/* Sell Devices Routes */}
-        {/* <Route path="/sell-phone" element={<SellPhones/>} />
+        <Route path="/sell-phone" element={<SellPhones/>} />
         <Route path="/sell-laptop" element={<SellLaptops/>} />
         <Route path="/sell-tv" element={<SellTV/>} />
         <Route path="/sell-tablet" element={<SellTablet/>} />
@@ -55,13 +60,13 @@ function App() {
         <Route path="/sell-speaker" element={<SellSmartSpeaker/>} />
   
       
-      </Routes> */}
+      </Routes> 
         
-      
+      </BrowserRouter>
       
   
           {/* <BuyLaptops/> */}
-          <Google/>
+          
     </>
     
 

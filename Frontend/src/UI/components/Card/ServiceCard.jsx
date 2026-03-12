@@ -5,10 +5,8 @@ const ServiceCard = ({ image, title, path }) => {
   const navigate = useNavigate();
 
   return (
-    <Link to={path}>
-      <div
-    
-      onClick={()=>navigate(path)} 
+    <>
+      <Link to={path} 
       className="flex flex-col items-center justify-center bg-gray-100 rounded-xl p-4 hover:shadow-md transition cursor-pointer h-35">
         
         <div className="w-20 h-20 flex items-center justify-center">
@@ -18,9 +16,8 @@ const ServiceCard = ({ image, title, path }) => {
         <p className="text-sm font-medium mt-2 text-gray-700 text-center">
           {title}
         </p>
-
-      </div>
     </Link>
+    </>
   );
 };
 

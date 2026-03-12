@@ -28,7 +28,7 @@ import ArticleSection from "../components/Home-page/ArticleSection";
 
 export default function Home() {
   return (
-    <>
+    <div className="overflow-x-hidden">
       <NavMenu />
       <Chatbot />
       <SlidingAnimation />
@@ -47,6 +47,6 @@ export default function Home() {
       <DownloadAppBanner />
       <Info />
       <Footer />
-    </>
+    </div>
   );
 }

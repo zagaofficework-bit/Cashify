@@ -2,8 +2,9 @@ import React from "react";
 import NavMenu from "../../components/NavMenu";
 import BuyRefurbishedDevices from "../../components/Home-page/BuyRefurbishedDevices";
 import Footer from "../../components/Home-page/Footer";
+import {refurbishedProducts} from "../../../res/Data/DevicesData";
 
-export default function NewAccessories() {
+export default function BuyAccessories() {
   return (
     <>
       <NavMenu />
@@ -56,7 +57,7 @@ export default function NewAccessories() {
           src="https://s3ng.Phonify.in/estore/3ee66265f9a84ab68507a931dd01b8ea.webp"
         ></img>
 
-        <BuyRefurbishedDevices title="Best Selling" />
+        <BuyRefurbishedDevices title="Best Selling" products={refurbishedProducts}/>
       </section>
       <img src="./assets/img/WhySugato.png" alt="why sugato" />
       <Footer />
