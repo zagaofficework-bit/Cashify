@@ -16,7 +16,7 @@ export const sellDevices = [
   { title: "Sell Gaming Consoles", image: "/assets/game.png", path: "/sell-gaming" },
   { title: "Sell Smartwatch", image: "/assets/watch.png", path: "/sell-smartwatch" },
   { title: "Sell Smart Speakers", image: "/assets/speaker.png", path: "/sell-speaker" },
-  { title: "Sell More", image: "/assets/more.png", path: "/sell-more" },
+  
 ];
 
 export const devices = [

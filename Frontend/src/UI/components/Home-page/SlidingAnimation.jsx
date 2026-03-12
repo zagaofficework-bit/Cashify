@@ -8,6 +8,8 @@ const SlidingAnimation = () => {
     { src: "https://s3ng.Phonify.in/Phonify/web/47309969bbbe4c0d858943e7839e37da.webp?w=1300", alt: "Samsung Galaxy S26 Ultra 4" },
   ];
 
+  
+
   const [currentIndex, setCurrentIndex] = useState(0);
   const timeoutRef = useRef(null);
 

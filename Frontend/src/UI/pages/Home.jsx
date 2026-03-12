@@ -3,7 +3,10 @@ import ServiceSection from "../components/Home-page/ServiceSection";
 
 import SlidingAnimation from "../components/Home-page/SlidingAnimation";
 import Chatbot from "../components/ChatBot";
-import SellOldDevices from "../components/SellOldDevice";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import SellCard from "../components/Card/SellCard";
+import ServiceCard from "../components/Card/ServiceCard";
+import SellOldDevices from "../components/Home-page/SellOldDevice";
 import BuyRefurbishedDevices from "../components/Home-page/BuyRefurbishedDevices";
 import {
   refurbishedlaptops,

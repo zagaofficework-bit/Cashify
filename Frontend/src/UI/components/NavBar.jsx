@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import NavMenu from "./NavMenu";
 
 export default function NavBar() {
   const navigate = useNavigate();
@@ -101,7 +102,12 @@ export default function NavBar() {
   );
 
   return (
+<<<<<<< HEAD
     <nav className="w-full bg-white shadow-md px-4 md:px-6 py-3 sticky top-0 z-50">
+=======
+    <div>
+    <nav className="w-full bg-white shadow-md px-4 md:px-6 py-3">
+>>>>>>> 0502fbdea66ea7023ff8c681b273806741cf93cc
       <div className="flex items-center justify-between gap-3">
         {/* Logo */}
         <img src="./assets/img/Phonify1.png"
@@ -160,29 +166,43 @@ export default function NavBar() {
       {/* Mobile: Expanded menu */}
       {mobileMenuOpen && (
         <div className="md:hidden mt-3 border-t pt-3 space-y-3">
+
+          {/* Location */}
           <div ref={dropdownRef}>
-            <button className="flex items-center w-full text-gray-700 py-2" onClick={() => setShowDropdown((v) => !v)}>
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-teal-600 mr-2 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 11c1.657 0 3-1.343 3-3S13.657 5 12 5s-3 1.343-3 3 1.343 3 3 3z" />
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 22s8-4.5 8-11a8 8 0 10-16 0c0 6.5 8 11 8 11z" />
-              </svg>
+            <button
+              className="flex items-center w-full text-gray-700 py-2"
+              onClick={() => setShowDropdown((v) => !v)}
+            >
               <span className="text-sm font-medium">{locationLabel}</span>
-              <svg className="ml-auto h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-              </svg>
             </button>
+
             {showDropdown && (
               <div className="bg-gray-50 border border-gray-200 rounded-xl mt-1">
                 <LocationDropdownContent />
               </div>
             )}
           </div>
-          <button className="w-full bg-teal-600 text-white px-4 py-2 rounded-lg hover:bg-teal-700 transition"
-            onClick={() => { navigate("/login"); setMobileMenuOpen(false); }}>
+
+          {/* Login */}
+          <button
+            className="w-full bg-teal-600 text-white px-4 py-2 rounded-lg"
+            onClick={() => {
+               setMobileMenuOpen(false);
+              navigate("/login");
+             
+            }}
+          >
             Login
           </button>
+
+         
         </div>
       )}
     </nav>
+        <NavMenu
+      mobileOpen={mobileMenuOpen}
+      setMobileMenuOpen={setMobileMenuOpen}
+    />
+    </div>
   );
 }

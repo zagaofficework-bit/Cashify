@@ -1,3 +1,5 @@
+
+
 import React, { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -35,27 +37,26 @@ const OtpGeneration = () => {
     console.log("Entered OTP:", otpValue);
 
     // API call for verification here
+    navigate("/home");
   };
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black/60 backdrop-blur-sm z-50 p-4">
-      <div className="flex bg-white rounded-lg shadow-lg overflow-hidden max-w-3xl w-full max-h-[600px]">
-        {/* Left panel */}
-        <div className="bg-black text-white flex flex-col justify-between p-8 w-1/2 min-w-[280px]">
-          <h2 className="text-3xl font-bold mb-10 text-center">
-            OTP Verification
-          </h2>
+    <div className="fixed inset-0 flex items-center justify-center bg-black/60 backdrop-blur-sm z-50 p-4 overflow-auto">
+      <div className="flex flex-col md:flex-row w-full max-w-3xl bg-white rounded-lg shadow-lg overflow-hidden">
 
+        {/* Left panel (hidden on small screens) */}
+        <div className="hidden md:flex flex-col justify-between p-8 bg-black text-white w-1/2 min-w-[280px]">
+          <h2 className="text-3xl font-bold mb-10 text-center">OTP Verification</h2>
           <img
             src="../assets/OTP.png"
             alt="Security"
-            className="max-w-full h-auto"
+            className="max-w-full h-auto mx-auto"
           />
         </div>
-        {/*right panel*/}
 
-        <div className="flex flex-col p-8 w-1/2 ">
-          {/* Back */}
+        {/* Right panel */}
+        <div className="w-full md:w-1/2 p-8 flex flex-col">
+          {/* Header */}
           <div className="flex justify-between items-center mb-4">
             <button
               className="text-sm text-gray-600 hover:text-black"
@@ -72,20 +73,22 @@ const OtpGeneration = () => {
             </button>
           </div>
 
-          <form onSubmit={handleSubmit} className="flex flex-col text-center">
-            <h3 className="text-xl font-semibold text-gray-800">
-              Verify Your Email
-            </h3>
+          {/* Form */}
+          <form
+            onSubmit={handleSubmit}
+            className="flex flex-col text-center flex-grow overflow-auto"
+          >
+            <h3 className="text-xl font-semibold text-gray-800">Verify Your Email</h3>
 
-            <div className="flex items-center gap-2 mt-2 text-sm text-gray-500">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-1 mt-2 text-sm text-gray-500">
               <span>
-                The verification code has been send to your{" "}
+                The verification code has been sent to{" "}
                 <span className="font-medium">xx@gmail.com</span>
               </span>
               <span className="cursor-pointer">✏️</span>
             </div>
 
-            {/* OTP inputs */}
+            {/* OTP Inputs */}
             <div className="flex justify-center gap-4 mt-8 mb-4">
               {otp.map((digit, index) => (
                 <input
@@ -103,11 +106,10 @@ const OtpGeneration = () => {
             {/* Error */}
             {error && <p className="text-red-500 text-sm mb-3">{error}</p>}
 
-            {/* Verify button */}
+            {/* Verify Button */}
             <button
               type="submit"
               className="w-full bg-blue-600 text-white py-3 rounded-md hover:bg-blue-700 transition"
-              onClick={() => navigate("/home")}
             >
               Verify OTP
             </button>

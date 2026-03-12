@@ -60,7 +60,7 @@ const StoreSection = () => {
           <div className="flex items-center justify-center gap-4 mt-4">
             <button onClick={mobilePrev} disabled={mobileIndex === 0}
               className="bg-white shadow rounded-full w-8 h-8 flex items-center justify-center disabled:opacity-30 text-gray-600">←</button>
-            <div className="flex gap-2">
+            <div className="flex gap-">
               {stores.map((_, i) => (
                 <button key={i} onClick={() => setMobileIndex(i)}
                   className={`w-2 h-2 rounded-full transition-all ${mobileIndex === i ? "bg-teal-600 w-4" : "bg-gray-300"}`} />
