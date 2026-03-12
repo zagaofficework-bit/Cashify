@@ -22,46 +22,16 @@ import MobileBrand from "./UI/components/MobileBrand";
 import { AudioDevices } from "./res/Data/Categorydata";
 import { google } from "./res/Data/PromoCards";
 import Google from "./UI/pages/Buy-Mobile-Brands/Google";
+import SlidingAnimation from "./UI/components/Home-page/SlidingAnimation";
+import ServiceSection from "./UI/components/Home-page/ServiceSection";
+import SellOldDevices from "./UI/components/Home-page/SellOldDevice";
 
 
 
 function App() {
   return (
     <>
-     {/* <BrowserRouter>
-    <NavBar/>
-      <Routes>
-        {/* Our Services Routes */}
-        {/* <Route path="/" element={<Home />} />
-        <Route path="/home" element={<Home />} />
-        <Route path="/login" element={<Login/>}/>
-        <Route path="/signup" element={<Signup/>}/>
-          <Route path="/otp" element={<OtpGeneration/>}/>
-        <Route path="/sell-phone" element={<SellPhones/>} />
-        <Route path="/buy-gadgets" element={<BuyGadgets/>} />
-        <Route path="/buy-phone" element={<BuyPhone/>} />
-        <Route path="/buy-laptops" element={<BuyLaptops/>} />
-        <Route path="/find-phone" element={<FindNewPhone/>} />
-        <Route path="/smartwatch" element={<BuyWatches/>} />
-        <Route path="/accessories" element={<BuyAccessories/>} /> */}
-
-        {/* Sell Devices Routes */}
-        {/* <Route path="/sell-phone" element={<SellPhones/>} />
-        <Route path="/sell-laptop" element={<SellLaptops/>} />
-        <Route path="/sell-tv" element={<SellTV/>} />
-        <Route path="/sell-tablet" element={<SellTablet/>} />
-        <Route path="/sell-gaming" element={<SellGamingConsole/>} />
-        <Route path="/sell-smartwatch" element={<SellLSmartWatch/>} />
-        <Route path="/sell-speaker" element={<SellSmartSpeaker/>} />
-  
-      
-      </Routes> */}
-        
-      
-      
-  
-          {/* <BuyLaptops/> */}
-          <Google/>
+     
     </>
     
 
