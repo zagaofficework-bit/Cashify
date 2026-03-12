@@ -194,6 +194,31 @@ function checkDeviceTypePermission(req, res, next) {
   next();
 }
 
+// ACCOUNT STATUS CHECK — blocks suspended or banned sellers
+function checkAccountStatus(req, res, next) {
+  const { accountStatus, suspensionReason, banReason } = req.user;
+
+  if (accountStatus === "suspended") {
+    return res.status(403).json({
+      message:
+        "Your account has been temporarily suspended. You cannot create or manage listings until your subscription is reinstated by an admin.",
+      code: "ACCOUNT_SUSPENDED",
+      reason: suspensionReason || null,
+    });
+  }
+
+  if (accountStatus === "banned") {
+    return res.status(403).json({
+      message:
+        "Your account has been permanently banned. Please contact support if you believe this is a mistake.",
+      code: "ACCOUNT_BANNED",
+      reason: banReason || null,
+    });
+  }
+
+  next();
+}
+
 // OPTIONAL AUTH
 async function optionalAuthenticate(req, res, next) {
   try {
@@ -229,5 +254,6 @@ module.exports = {
   requireActiveSubscription,
   checkListingLimit,
   checkDeviceTypePermission,
+  checkAccountStatus,
   optionalAuthenticate,
 };

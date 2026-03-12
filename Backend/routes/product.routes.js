@@ -1,5 +1,5 @@
 const express = require("express");
-const router  = express.Router();
+const router = express.Router();
 
 const ProductController = require("../controller/product.controller");
 
@@ -7,6 +7,7 @@ const {
   authMiddleware,
   authorize,
   blockAdmin,
+  checkAccountStatus,
   requireActiveSubscription,
   checkListingLimit,
   checkDeviceTypePermission,
@@ -28,22 +29,14 @@ const {
  * @access  Public
  * @query   ?latitude=28.6&longitude=77.2&radius=5&category=mobile&minPrice=5000
  */
-router.get(
-  "/",
-  optionalAuthenticate,
-  ProductController.getProducts
-);
+router.get("/", optionalAuthenticate, ProductController.getProducts);
 
 /**
  * @route   GET /api/products/:id
  * @desc    Get single product by ID
  * @access  Public
  */
-router.get(
-  "/:id",
-  optionalAuthenticate,
-  ProductController.getProductById
-);
+router.get("/:id", optionalAuthenticate, ProductController.getProductById);
 
 ////////////////////////////////////////////////////////////////////
 //// MY LISTINGS
@@ -59,7 +52,7 @@ router.get(
   "/my/listings",
   authMiddleware,
   authorize("seller", "user"),
-  ProductController.getMyProducts
+  ProductController.getMyProducts,
 );
 
 ////////////////////////////////////////////////////////////////////
@@ -76,12 +69,13 @@ router.post(
   authMiddleware,
   authorize("seller"),
   blockAdmin,
-  productUpload,              // multer FIRST — parses multipart req.body
+  checkAccountStatus,
+  productUpload, // multer FIRST — parses multipart req.body
   validateProductFiles,
   requireActiveSubscription,
   checkListingLimit,
   checkDeviceTypePermission,
-  ProductController.createProduct
+  ProductController.createProduct,
 );
 
 ////////////////////////////////////////////////////////////////////
@@ -98,10 +92,10 @@ router.post(
   authMiddleware,
   authorize("user"),
   blockAdmin,
-  productUpload,              // multer FIRST
+  productUpload, // multer FIRST
   validateProductFiles,
-  checkDeviceTypePermission,  // enforces deviceType = "old"
-  ProductController.createProduct
+  checkDeviceTypePermission, // enforces deviceType = "old"
+  ProductController.createProduct,
 );
 
 ////////////////////////////////////////////////////////////////////
@@ -120,7 +114,7 @@ router.put(
   blockAdmin,
   productUpload,
   validateProductFiles,
-  ProductController.updateProduct
+  ProductController.updateProduct,
 );
 
 /**
@@ -133,7 +127,7 @@ router.delete(
   authMiddleware,
   authorize("seller", "user"),
   blockAdmin,
-  ProductController.deleteProduct
+  ProductController.deleteProduct,
 );
 
 module.exports = router;
