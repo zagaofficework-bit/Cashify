@@ -2,8 +2,7 @@ const mongoose = require("mongoose");
 
 const productSchema = new mongoose.Schema(
   {
-    
-    // BASIC INFO
+    // ─── BASIC INFO ────────────────────────────────────────────────
     title: {
       type:     String,
       required: [true, "Product title is required"],
@@ -11,8 +10,8 @@ const productSchema = new mongoose.Schema(
     },
 
     description: {
-      type:  String,
-      trim:  true,
+      type: String,
+      trim: true,
     },
 
     category: {
@@ -22,25 +21,23 @@ const productSchema = new mongoose.Schema(
     },
 
     subcategory: {
-      type:  String,
-      trim:  true,
+      type: String,
+      trim: true,
     },
 
     brand: {
-      type:  String,
-      trim:  true,
+      type: String,
+      trim: true,
     },
 
-    
-    // DEVICE TYPE
+    // ─── DEVICE TYPE ───────────────────────────────────────────────
     deviceType: {
       type:     String,
       enum:     ["new", "refurbished", "old"],
       required: [true, "Device type is required"],
     },
 
-    
-    // DEVICE SPECS
+    // ─── DEVICE SPECS ──────────────────────────────────────────────
     condition: {
       type:     String,
       enum:     ["Fair", "Good", "Superb"],
@@ -48,17 +45,16 @@ const productSchema = new mongoose.Schema(
     },
 
     storage: {
-      type:  String,
-      trim:  true,
+      type: String,
+      trim: true,
     },
 
     color: {
-      type:  String,
-      trim:  true,
+      type: String,
+      trim: true,
     },
 
-    
-    // PRICING & PAYMENT
+    // ─── PRICING & PAYMENT ─────────────────────────────────────────
     price: {
       type:     Number,
       required: [true, "Price is required"],
@@ -76,8 +72,7 @@ const productSchema = new mongoose.Schema(
       required: [true, "Payment method is required"],
     },
 
-    
-    // MEDIA
+    // ─── MEDIA ─────────────────────────────────────────────────────
     images: {
       type:     [String],
       required: [true, "At least one image is required"],
@@ -92,8 +87,7 @@ const productSchema = new mongoose.Schema(
       default: null,
     },
 
-    
-    // LOCATION — GeoJSON Point (copied from seller/user at listing time)
+    // ─── LOCATION ──────────────────────────────────────────────────
     location: {
       type: {
         type:    String,
@@ -101,12 +95,11 @@ const productSchema = new mongoose.Schema(
         default: "Point",
       },
       coordinates: {
-        type:     [Number], // [longitude, latitude]
+        type:     [Number],
         required: true,
       },
     },
 
-    // Human readable location
     address: {
       city:    { type: String },
       state:   { type: String },
@@ -114,7 +107,7 @@ const productSchema = new mongoose.Schema(
       full:    { type: String },
     },
 
-    // OWNERSHIP
+    // ─── OWNERSHIP ─────────────────────────────────────────────────
     listedBy: {
       type:     mongoose.Schema.Types.ObjectId,
       ref:      "User",
@@ -122,21 +115,20 @@ const productSchema = new mongoose.Schema(
     },
 
     listedByRole: {
-      type:  String,
-      enum:  ["seller", "user"],
+      type: String,
+      enum: ["seller", "user"],
     },
 
-    // COMMISSION
-    // Admin takes commission on every transaction
+    // ─── COMMISSION ────────────────────────────────────────────────
     commissionRate: {
       type:    Number,
-      default: 5, 
+      default: 5,
     },
 
-    // STATUS
+    // ─── STATUS ────────────────────────────────────────────────────
     status: {
       type:    String,
-      enum:    ["available", "sold", "inactive"],
+      enum:    ["available", "sold", "inactive", "reserved", "hidden"],
       default: "available",
     },
 
@@ -146,20 +138,60 @@ const productSchema = new mongoose.Schema(
       min:     0,
       max:     5,
     },
+
     quantity: {
       type:    Number,
       default: 1,
       min:     1,
     },
+
+    ////////////////////////////////////////////////////////////////////
+    //// SPECS — embedded directly in product
+    ////////////////////////////////////////////////////////////////////
+
+    specs: {
+      // ─── PERFORMANCE ─────────────────────────────────────────────
+      performance: {
+        chipsetFull: { type: String, trim: true, default: null }, // "Qualcomm Snapdragon 8 Elite Gen 5 SM8850-AC"
+        ram:         { type: String, trim: true, default: null }, // "12 GB"
+      },
+
+      // ─── DISPLAY ─────────────────────────────────────────────────
+      display: {
+        sizeInches:     { type: String, trim: true, default: null }, // "6.9 inches"
+        sizeCm:         { type: String, trim: true, default: null }, // "17.53 cm"
+        type:           { type: String, trim: true, default: null }, // "Dynamic AMOLED 2x"
+        resolution:     { type: String, trim: true, default: null }, // "1440x3120 px"
+        resolutionType: { type: String, trim: true, default: null }, // "QHD+"
+        refreshRate:    { type: String, trim: true, default: null }, // "120 Hz"
+      },
+
+      // ─── REAR CAMERA ─────────────────────────────────────────────
+      rearCamera: {
+        primary:    { type: String, default: null }, // "200 MP"
+        secondary:  { type: String, default: null }, // "10 MP"
+        tertiary:   { type: String, default: null }, // "8 MP"
+        quaternary: { type: String, default: null }, // "50 MP"
+      },
+
+      // ─── FRONT CAMERA ────────────────────────────────────────────
+      frontCamera: { type: String, default: null }, // "12 MP"
+
+      // ─── BATTERY ─────────────────────────────────────────────────
+      battery: {
+        capacity:      { type: String, default: null }, // "5000 mAh"
+        wiredCharging: { type: String, default: null }, // "60W Super Fast Charging"
+      },
+
+      // ─── STORAGE TYPE ────────────────────────────────────────────
+      // storage capacity lives in the root "storage" field above
+      storageType: { type: String, default: null }, // "UFS 4.0"
+    },
   },
-  {
-    timestamps: true,
-  }
+  { timestamps: true }
 );
 
-
-// INDEXES
-// Geospatial index — REQUIRED for $near / $geoWithin queries
+// ─── INDEXES ───────────────────────────────────────────────────────────────
 productSchema.index({ location: "2dsphere" });
 productSchema.index({ title: "text", description: "text", brand: "text" });
 productSchema.index({ category: 1, condition: 1, price: 1 });
