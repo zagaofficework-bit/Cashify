@@ -56,6 +56,7 @@ export const refurbishedProducts = [
   }
 ];
 
+
 export const refurbishedlaptops = [
     {
       name: "Apple MacBook Pro 2023 A2992 (Apple M3 Pro Chip)",

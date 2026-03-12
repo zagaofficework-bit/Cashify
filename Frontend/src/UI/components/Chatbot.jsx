@@ -29,14 +29,14 @@ export default function Chatbot() {
       {/* Chat Icon */}
       <button
         onClick={() => setOpen(!open)}
-        className="fixed bottom-6 right-6 bg-teal-500 text-white w-14 h-14 rounded-full shadow-lg flex items-center justify-center hover:bg-teal-700"
+        className="fixed bottom-6 z-12 right-6 bg-teal-500 text-white w-14 h-14 rounded-full shadow-lg flex items-center justify-center hover:bg-teal-700"
       >
         <FontAwesomeIcon icon={faComments} />
       </button>
 
       {/* Chat Window */}
       {open && (
-        <div className="fixed bottom-24 right-6 w-80 bg-white rounded-lg shadow-xl flex flex-col">
+        <div className="fixed bottom-24 z-12 right-6 w-80 bg-white rounded-lg shadow-xl flex flex-col">
           
           {/* Header */}
           <div className="bg-teal-500 text-white p-3 rounded-t-lg flex justify-between items-center">

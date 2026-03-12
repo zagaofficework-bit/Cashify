@@ -1,76 +1,108 @@
+import React, { useState, useEffect } from "react";
 
-import React, { useState } from "react";
-
-export default function RefurbishedLaptops({ products = [] }) {
+export default function BuyRefurbishedDevices({ title, products = [] }) {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [screenWidth, setScreenWidth] = useState(
+    typeof window !== "undefined" ? window.innerWidth : 1200
+  );
 
-  const visibleItems = 5;
+  // detect screen resize
+  useEffect(() => {
+    const handleResize = () => setScreenWidth(window.innerWidth);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
-  const nextSlide = () => {
-    setCurrentIndex((prev) =>
-      prev < products.length - visibleItems ? prev + 1 : prev
+  // Responsive visible items
+  const getVisibleItems = () => {
+    if (screenWidth < 640) return 2;
+    if (screenWidth < 768) return 3;
+    if (screenWidth < 1024) return 4;
+    return 5;
+  };
+
+  const visibleItems = getVisibleItems();
+
+  const next = () =>
+    setCurrentIndex((p) =>
+      p < products.length - visibleItems ? p + 1 : p
     );
-  };
 
-  const prevSlide = () => {
-    setCurrentIndex((prev) => (prev > 0 ? prev - 1 : 0));
-  };
+  const prev = () => setCurrentIndex((p) => (p > 0 ? p - 1 : 0));
 
   return (
-    <section className="bg-gray-50 py-10">
-      <div className="max-w-7xl mx-auto px-6">
-        <h2 className="text-2xl font-bold mb-6 text-gray-800">Refurbished Laptops</h2>
+    <section className="bg-gray-50 py-6 md:py-10">
+      <div className="max-w-7xl mx-auto px-4 md:px-6">
+        <h2 className="text-xl md:text-2xl font-bold mb-4 md:mb-6 text-gray-800">
+          {title || "Buy Refurbished Devices"}
+        </h2>
 
-        {/* Slider container relative for absolute arrows */}
-        <div className="relative overflow-hidden ">
-
-          {/* Slider flex container */}
+        <div className="relative overflow-hidden">
           <div
             className="flex transition-transform duration-500"
-            style={{ transform: `translateX(-${currentIndex * (100 / visibleItems)}%)` }}
+            style={{
+              transform: `translateX(-${currentIndex * (100 / visibleItems)}%)`,
+            }}
           >
-            {products.map((laptop, index) => (
+            {products.map((product, index) => (
               <div
                 key={index}
-                className="w-1/5 flex-shrink-0 p-4 bg-white rounded-lg shadow-md mx-2"
+                className="flex-shrink-0 w-1/2 sm:w-1/3 md:w-1/4 lg:basis-1/5 p-2 md:p-4 bg-white rounded-lg shadow-md mx-1"
               >
                 <img
-                  src={laptop.image}
-                  alt={laptop.name}
-                  className="w-full h-40 object-contain mb-3"
+                  src={product.img}
+                  alt={product.name}
+                  className="w-full object-contain h-28 md:h-40"
                 />
-                <p className="text-green-600 font-bold">{laptop.discount}</p>
-                <h3 className="text-sm font-semibold text-gray-800 mt-2">{laptop.name}</h3>
+
+                <h3 className="text-sm md:text-lg font-semibold text-gray-800 mb-1 md:mb-2 line-clamp-2">
+                  {product.name}
+                </h3>
+
+                <p className="text-green-600 font-bold text-xs md:text-sm">
+                  {product.discount}
+                </p>
+
                 <div className="flex items-center justify-between text-xs text-gray-600 mt-1">
-                  <span>{laptop.saleTag}</span>
-                  <span>{laptop.rating}</span>
+                  <span>{product.saleTag}</span>
+                  <span>{product.rating}</span>
                 </div>
-                <p className="text-red-600 font-bold mt-2">{laptop.percent}</p>
-                <p className="text-lg font-bold text-gray-800">{laptop.price}</p>
-                <p className="line-through text-gray-500">{laptop.original}</p>
-                <p className="text-teal-600 font-medium mt-1">{laptop.gold}</p>
-                <p className="text-xs text-gray-500 mt-1">{laptop.stock}</p>
-                <span className="mt-3 inline-block bg-yellow-100 text-yellow-700 text-xs font-semibold px-2 py-1 rounded">
+
+                <p className="text-red-600 font-bold mt-1 text-xs md:text-sm">
+                  {product.percent}
+                </p>
+
+                <p className="text-base md:text-xl font-bold text-gray-800">
+                  {product.price}
+                </p>
+
+                <p className="line-through text-gray-500 text-xs md:text-sm">
+                  {product.original}
+                </p>
+
+                <p className="text-teal-600 font-medium mt-1 text-xs md:text-sm">
+                  {product.gold}
+                </p>
+
+                <span className="mt-2 inline-block bg-yellow-100 text-yellow-700 text-xs font-semibold px-2 py-1 rounded">
                   Phonify Assured
                 </span>
               </div>
             ))}
           </div>
 
-          {/* Arrows */}
           <button
-            onClick={prevSlide}
+            onClick={prev}
             disabled={currentIndex === 0}
-            className="absolute left-0 top-1/2 -translate-y-1/2 bg-white shadow-md rounded-full w-10 h-10 flex items-center justify-center disabled:opacity-40"
-            aria-label="Previous Slide"
+            className="absolute left-0 top-1/2 -translate-y-1/2 bg-white shadow-md rounded-full w-8 h-8 md:w-10 md:h-10 flex items-center justify-center disabled:opacity-40 z-10"
           >
             &#x3c;
           </button>
+
           <button
-            onClick={nextSlide}
+            onClick={next}
             disabled={currentIndex >= products.length - visibleItems}
-            className="absolute right-0 top-1/2 -translate-y-1/2 bg-white shadow-md rounded-full w-10 h-10 flex items-center justify-center disabled:opacity-40"
-            aria-label="Next Slide"
+            className="absolute right-0 top-1/2 -translate-y-1/2 bg-white shadow-md rounded-full w-8 h-8 md:w-10 md:h-10 flex items-center justify-center disabled:opacity-40 z-10"
           >
             &#x3e;
           </button>

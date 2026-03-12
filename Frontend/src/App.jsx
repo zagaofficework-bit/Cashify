@@ -22,17 +22,17 @@ import MobileBrand from "./UI/components/MobileBrand";
 import { AudioDevices } from "./res/Data/Categorydata";
 import { google } from "./res/Data/PromoCards";
 import Google from "./UI/pages/Buy-Mobile-Brands/Google";
-import SlidingAnimation from "./UI/components/Home-page/SlidingAnimation";
-import ServiceSection from "./UI/components/Home-page/ServiceSection";
-import SellOldDevices from "./UI/components/Home-page/SellOldDevice";
+import { useLocation } from "react-router-dom";
+import { useEffect } from "react";
+import ScrollToTop from "./UI/components/ScrollToTop";
 
 
 
 function App() {
+   
   return (
-    <>
-     
-    </>
+   <>
+   </>
     
 
   );
