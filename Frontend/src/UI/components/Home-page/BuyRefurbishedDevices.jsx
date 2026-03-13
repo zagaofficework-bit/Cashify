@@ -6,7 +6,7 @@ export default function BuyRefurbishedDevices({ title, products = [] }) {
   const [screenWidth, setScreenWidth] = useState(
     typeof window !== "undefined" ? window.innerWidth : 1200
   );
-  
+   const navigate = useNavigate(); 
 
   // detect screen resize
   useEffect(() => {
@@ -33,7 +33,7 @@ export default function BuyRefurbishedDevices({ title, products = [] }) {
   const prev = () => setCurrentIndex((p) => (p > 0 ? p - 1 : 0));
 
   return (
-    <section className="bg-gray-50 py-6 md:py-10">
+  <section className="bg-gray-50 py-6 md:py-10">
       <div className="max-w-7xl mx-auto px-4 md:px-6">
         <h2 className="text-xl md:text-2xl font-bold mb-4 md:mb-6 text-gray-800">
           {title || "Buy Refurbished Devices"}
@@ -49,7 +49,8 @@ export default function BuyRefurbishedDevices({ title, products = [] }) {
             {products.map((product, index) => (
               <div
                 key={index}
-                className="flex-shrink-0 w-1/2 sm:w-1/3 md:w-1/4 lg:basis-1/5 p-2 md:p-4 bg-white rounded-lg shadow-md mx-1"
+                onClick={() => navigate(`/${product.id}`)}  // ✅ navigation
+                className="flex-shrink-0 w-1/2 sm:w-1/3 md:w-1/4 lg:basis-1/5 p-2 md:p-4 bg-white rounded-lg shadow-md mx-1 cursor-pointer"
               >
                 <img
                   src={product.img}

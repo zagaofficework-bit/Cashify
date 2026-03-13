@@ -56,7 +56,7 @@ const colors = [
   { name: "Gray", off: "₹20,500 off", hex: "#8e8e93" },
 ];
 
-export default function ProductDetails() {
+export default function ProductDetails({product}) {
   const [activeImg, setActiveImg] = useState(0);
   const [activeGrade, setActiveGrade] = useState("Good");
   const [selectedColor, setSelectedColor] = useState(0);
@@ -69,6 +69,7 @@ export default function ProductDetails() {
     { key: "specs", label: "Top Specs" },
     { key: "cosmetic", label: "Cosmetic" },
   ];
+
 
   return (
     <>
@@ -104,6 +105,7 @@ export default function ProductDetails() {
       `}</style>
 
       <div className="pd-root bg-white min-h-screen">
+      
 
         {/* ── BREADCRUMB ── */}
         <div className="max-w-7xl mx-auto px-4 md:px-10 pt-5 pb-3">
@@ -115,7 +117,7 @@ export default function ProductDetails() {
               </React.Fragment>
             ))}
             <span className="text-gray-300">/</span>
-            <span className="text-gray-700 font-semibold">Vivo X90 Pro</span>
+            <span className="text-gray-700 font-semibold"></span>
           </nav>
         </div>
 
@@ -128,11 +130,8 @@ export default function ProductDetails() {
               <div className="sticky top-24 space-y-3">
                 {/* Main Image */}
                 <div className="relative bg-gradient-to-br from-slate-50 via-white to-gray-50 rounded-3xl border border-gray-100 shadow-sm overflow-hidden flex items-center justify-center h-[340px] md:h-[400px]">
-                  <img src={images[activeImg]} alt="Vivo X90 Pro" className="w-56 h-56 object-contain img-zoom fade-in" key={activeImg} />
-                  <div className="absolute top-4 left-4 flex flex-col gap-1.5">
-                    <span className="tag-pill bg-red-500 text-white px-2.5 py-1 rounded-lg">-63%</span>
-                    <span className="tag-pill bg-amber-400 text-white px-2.5 py-1 rounded-lg">Holi Sale</span>
-                  </div>
+                  <img src={product.img} alt="Vivo X90 Pro" className="w-56 h-56 object-contain img-zoom fade-in" key={activeImg} />
+               
                   <span className="absolute top-4 right-4 tag-pill bg-teal-600 text-white px-2.5 py-1 rounded-lg">Phonify Assured</span>
                   <button onClick={() => setWishlist(!wishlist)}
                     className="absolute bottom-4 right-4 w-9 h-9 rounded-full bg-white shadow border border-gray-100 flex items-center justify-center transition-transform hover:scale-110">
@@ -172,7 +171,7 @@ export default function ProductDetails() {
                   <span className="tag-pill bg-gray-100 text-gray-500 px-2.5 py-1 rounded-full">Refurbished</span>
                   <span className="tag-pill bg-green-50 text-green-700 border border-green-200 px-2.5 py-1 rounded-full">In Stock</span>
                 </div>
-                <h1 className="pd-heading text-3xl md:text-4xl text-gray-900 leading-tight">Vivo X90 Pro</h1>
+                <h1 className="pd-heading text-3xl md:text-4xl text-gray-900 leading-tight">{product.name}</h1>
                 <p className="text-sm text-gray-500 mt-1.5">Phonify Warranty · Fair Grade · 12 GB / 256 GB · Legendary Black</p>
 
                 {/* Rating */}

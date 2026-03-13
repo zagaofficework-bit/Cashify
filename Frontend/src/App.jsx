@@ -19,6 +19,10 @@ import Login from "./UI/pages/Login";
 import Signup from "./UI/pages/Signup";
 import OtpGeneration from "./UI/pages/OtpGeneration";
 import ScrollToTop from "./UI/components/ScrollToTop";
+import ProductDetails from "./UI/pages/ProductDetails";
+import { refurbishedProducts } from "./res/Data/DevicesData";
+import Test from "./UI/pages/test";
+import ServiceSection from "./UI/components/Home-page/ServiceSection";
 
 
 
@@ -35,7 +39,7 @@ function App() {
         <Route path="/home" element={<Home />} />
         <Route path="/login" element={<Login/>}/>
         <Route path="/signup" element={<Signup/>}/>
-          <Route path="/otp" element={<OtpGeneration/>}/>
+        <Route path="/otp" element={<OtpGeneration/>}/>
         <Route path="/sell-phone" element={<SellPhones/>} />
         <Route path="/buy-gadgets" element={<BuyGadgets/>} />
         <Route path="/buy-phone" element={<BuyPhone/>} />
@@ -52,12 +56,14 @@ function App() {
         <Route path="/sell-gaming" element={<SellGamingConsole/>} />
         <Route path="/sell-smartwatch" element={<SellLSmartWatch/>} />
         <Route path="/sell-speaker" element={<SellSmartSpeaker/>} />
+
+        <Route path="/:id" element={<Test/>} />
   
        
       </Routes> 
         
       </BrowserRouter>
-      
+     
   
     </>
     

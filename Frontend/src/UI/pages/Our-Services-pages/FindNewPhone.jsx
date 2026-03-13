@@ -21,10 +21,7 @@ const FindNewPhone = () => {
   ];
   return (
     <div>
-<<<<<<< HEAD
-=======
       
->>>>>>> 0502fbdea66ea7023ff8c681b273806741cf93cc
         <NavMenu/>
       <SlidingAnimations/>
       <SearchByModel/>
