@@ -18,6 +18,8 @@ const adminRouter        = require("./routes/admin.routes");
 const orderRouter        = require("./routes/order.routes");
 const messageRouter      = require("./routes/message.routes");
 const profileRouter      = require("./routes/profile.routes");
+const wishlistRouter     = require("./routes/wishlist.routes");
+const cartRouter         = require("./routes/cart.routes");
 
 
 // API routes
@@ -28,5 +30,7 @@ app.use("/api/admin",         adminRouter);
 app.use("/api/orders",        orderRouter);
 app.use("/api/messages",      messageRouter);
 app.use("/api/profile",       profileRouter);
+app.use("/api/wishlist",      wishlistRouter);
+app.use("/api/cart",          cartRouter);
 
 module.exports = app;
