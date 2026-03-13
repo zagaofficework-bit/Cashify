@@ -162,8 +162,8 @@ async function syncUserAddress(userId) {
       ? {
           city:    def.city,
           state:   def.state,
-          pincode: def.zipcode,
-          full:    `${def.street}, ${def.city}, ${def.state} - ${def.zipcode}`,
+          pincode: def.pincode,                           
+          full:    `${def.street}, ${def.city}, ${def.state} - ${def.pincode}`, 
         }
       : { city: null, state: null, pincode: null, full: null },
   });
@@ -175,15 +175,15 @@ async function syncUserAddress(userId) {
 exports.addAddress = async (req, res) => {
   try {
     const userId = req.user._id;
-    const { email, phone, street, city, state, zipcode, country, isDefault } = req.body;
+    const { email, mobile, street, city, state, pincode, country, isDefault } = req.body;  // ✅
 
-    if (!email || !phone || !street || !city || !state || !zipcode || !country) {
+    if (!email || !mobile || !street || !city || !state || !pincode || !country) {  // ✅
       return res.status(400).json({
-        message: "All fields are required: email, phone, street, city, state, zipcode, country",
+        message: "All fields are required: email, mobile, street, city, state, pincode, country",  // ✅
       });
     }
 
-    const existingCount  = await Address.countDocuments({ userId });
+    const existingCount   = await Address.countDocuments({ userId });
     const shouldBeDefault = existingCount === 0 ? true : !!isDefault;
 
     if (shouldBeDefault) {
@@ -193,12 +193,12 @@ exports.addAddress = async (req, res) => {
     const address = await Address.create({
       userId,
       email,
-      phone,
+      mobile,                                // ✅ was phone
       street,
       city,
       state,
-      zipcode,
-      country:   country || "India",
+      pincode,                               // ✅ was zipcode
+      country: country || "India",
       isDefault: shouldBeDefault,
     });
 
@@ -214,7 +214,6 @@ exports.addAddress = async (req, res) => {
     res.status(500).json({ message: "Failed to add address" });
   }
 };
-
 
 // ─── GET ALL ADDRESSES ────────────────────────────────────────────────────────
 // GET /api/profile/address
