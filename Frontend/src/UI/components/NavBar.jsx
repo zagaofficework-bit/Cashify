@@ -102,12 +102,8 @@ export default function NavBar() {
   );
 
   return (
-<<<<<<< HEAD
+    <>
     <nav className="w-full bg-white shadow-md px-4 md:px-6 py-3 sticky top-0 z-50">
-=======
-    <div>
-    <nav className="w-full bg-white shadow-md px-4 md:px-6 py-3">
->>>>>>> 0502fbdea66ea7023ff8c681b273806741cf93cc
       <div className="flex items-center justify-between gap-3">
         {/* Logo */}
         <img src="./assets/img/Phonify1.png"
@@ -203,6 +199,6 @@ export default function NavBar() {
       mobileOpen={mobileMenuOpen}
       setMobileMenuOpen={setMobileMenuOpen}
     />
-    </div>
+    </>
   );
 }

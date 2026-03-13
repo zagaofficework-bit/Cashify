@@ -19,6 +19,7 @@ import Login from "./UI/pages/Login";
 import Signup from "./UI/pages/Signup";
 import OtpGeneration from "./UI/pages/OtpGeneration";
 import ScrollToTop from "./UI/components/ScrollToTop";
+import PhoneDetail from "./UI/pages/DetailedProduct/PhoneDetail"
 
 
 
@@ -35,7 +36,7 @@ function App() {
         <Route path="/home" element={<Home />} />
         <Route path="/login" element={<Login/>}/>
         <Route path="/signup" element={<Signup/>}/>
-          <Route path="/otp" element={<OtpGeneration/>}/>
+        <Route path="/otp" element={<OtpGeneration/>}/>
         <Route path="/sell-phone" element={<SellPhones/>} />
         <Route path="/buy-gadgets" element={<BuyGadgets/>} />
         <Route path="/buy-phone" element={<BuyPhone/>} />
@@ -52,7 +53,11 @@ function App() {
         <Route path="/sell-gaming" element={<SellGamingConsole/>} />
         <Route path="/sell-smartwatch" element={<SellLSmartWatch/>} />
         <Route path="/sell-speaker" element={<SellSmartSpeaker/>} />
-  
+
+
+{/* Buy Refurbished */}
+
+<Route path="/:id" element={<PhoneDetail/>}/>
        
       </Routes> 
         
