@@ -14,23 +14,35 @@ function isValidObjectId(id) {
 
 exports.getBrands = async (req, res) => {
   try {
-    const { category = "mobile" } = req.query;
+    const { category } = req.query;
+
+    // ✅ category is required
+    if (!category) {
+      return res.status(400).json({
+        message: "category is required",
+        allowed: ["mobile", "laptop", "tablet", "smartwatch", "camera"],
+      });
+    }
 
     const brands = await DeviceCatalog
       .find({ category })
       .select("brand")
       .lean();
 
+    if (brands.length === 0) {
+      return res.status(404).json({ message: `No brands found for category: ${category}` });
+    }
+
     res.status(200).json({
-      success: true,
-      data:    brands.map((b) => b.brand),
+      success:  true,
+      category,
+      data:     brands.map((b) => b.brand),
     });
   } catch (error) {
     console.error("getBrands error:", error);
     res.status(500).json({ message: "Failed to fetch brands" });
   }
 };
-
 
 ////////////////////////////////////////////////////////////////////
 //// STEP 2 — GET MODELS BY BRAND
@@ -39,8 +51,15 @@ exports.getBrands = async (req, res) => {
 
 exports.getModelsByBrand = async (req, res) => {
   try {
-    const { brand }            = req.params;
-    const { category = "mobile" } = req.query;
+    const { brand }    = req.params;
+    const { category } = req.query;
+
+    if (!category) {
+      return res.status(400).json({
+        message: "category is required",
+        allowed: ["mobile", "laptop", "tablet", "smartwatch", "camera"],
+      });
+    }
 
     const catalog = await DeviceCatalog
       .findOne({ brand, category })
@@ -48,13 +67,14 @@ exports.getModelsByBrand = async (req, res) => {
       .lean();
 
     if (!catalog) {
-      return res.status(404).json({ message: "Brand not found" });
+      return res.status(404).json({ message: `Brand "${brand}" not found in category "${category}"` });
     }
 
     res.status(200).json({
-      success: true,
-      brand:   catalog.brand,
-      data:    catalog.models.map((m) => ({
+      success:  true,
+      brand:    catalog.brand,
+      category,
+      data:     catalog.models.map((m) => ({
         id:        m._id,
         name:      m.name,
         image:     m.image,
@@ -66,7 +86,6 @@ exports.getModelsByBrand = async (req, res) => {
     res.status(500).json({ message: "Failed to fetch models" });
   }
 };
-
 
 ////////////////////////////////////////////////////////////////////
 //// STEP 3 — GET VARIANTS BY MODEL
@@ -116,14 +135,26 @@ exports.getVariantsByModel = async (req, res) => {
 
 exports.getEvaluationConfig = async (req, res) => {
   try {
-    const config = await EvaluationConfig.findOne().lean();
+    const { category } = req.query;
+
+    if (!category) {
+      return res.status(400).json({
+        message: "category is required",
+        allowed: ["mobile", "laptop", "tablet", "smartwatch", "camera"],
+      });
+    }
+
+    const config = await EvaluationConfig.findOne({ category }).lean();
 
     if (!config) {
-      return res.status(404).json({ message: "Evaluation config not found" });
+      return res.status(404).json({
+        message: `Evaluation config not found for category: ${category}`,
+      });
     }
 
     res.status(200).json({
-      success: true,
+      success:  true,
+      category,
       data: {
         questions:     config.questions.sort((a, b) => a.order - b.order),
         defects:       config.defects.sort((a, b) => a.order - b.order),
@@ -137,7 +168,6 @@ exports.getEvaluationConfig = async (req, res) => {
   }
 };
 
-
 ////////////////////////////////////////////////////////////////////
 //// STEP 5 — CALCULATE PRICE (preview before submit)
 //// POST /api/device-sell/calculate
@@ -148,12 +178,16 @@ exports.calculatePrice = async (req, res) => {
     const {
       variantId,
       modelId,
-      answers,      // { canMakeCalls: true, touchWorking: true, originalScreen: false }
-      defectKeys,   // ["front_camera_not_working", "battery_service"]
-      accessoryKeys // ["original_charger"]
+      category,     // ✅ now required
+      answers,
+      defectKeys,
+      accessoryKeys,
     } = req.body;
 
-    // Get base price from catalog
+    if (!category) {
+      return res.status(400).json({ message: "category is required" });
+    }
+
     const catalog = await DeviceCatalog
       .findOne({ "models._id": modelId })
       .lean();
@@ -173,15 +207,17 @@ exports.calculatePrice = async (req, res) => {
       return res.status(404).json({ message: "Variant not found" });
     }
 
-    const config = await EvaluationConfig.findOne().lean();
+    // ✅ Fetch config by category
+    const config = await EvaluationConfig.findOne({ category }).lean();
     if (!config) {
-      return res.status(500).json({ message: "Evaluation config missing" });
+      return res.status(500).json({
+        message: `Evaluation config not found for category: ${category}`,
+      });
     }
 
     let totalDeductionPercent = 0;
     const deductionBreakdown  = [];
 
-    // ── Question deductions ─────────────────────────────────────────────────
     if (answers) {
       for (const q of config.questions) {
         const answer = answers[q.key];
@@ -195,7 +231,6 @@ exports.calculatePrice = async (req, res) => {
       }
     }
 
-    // ── Defect deductions ───────────────────────────────────────────────────
     if (defectKeys?.length > 0) {
       for (const key of defectKeys) {
         const defect = config.defects.find((d) => d.key === key);
@@ -209,7 +244,6 @@ exports.calculatePrice = async (req, res) => {
       }
     }
 
-    // ── Accessory additions ─────────────────────────────────────────────────
     let totalAdditionPercent = 0;
     const additionBreakdown  = [];
 
@@ -226,7 +260,6 @@ exports.calculatePrice = async (req, res) => {
       }
     }
 
-    // ── Calculate final price ───────────────────────────────────────────────
     const basePrice       = variant.basePrice;
     const deductionAmount = parseFloat(((basePrice * totalDeductionPercent) / 100).toFixed(2));
     const additionAmount  = parseFloat(((basePrice * totalAdditionPercent) / 100).toFixed(2));
@@ -238,9 +271,10 @@ exports.calculatePrice = async (req, res) => {
       success: true,
       data: {
         device: {
-          model:   model.name,
-          variant: variant.ram ? `${variant.ram}/${variant.storage}` : variant.storage,
-          image:   model.image,
+          model:    model.name,
+          variant:  variant.ram ? `${variant.ram}/${variant.storage}` : variant.storage,
+          image:    model.image,
+          category,
         },
         pricing: {
           basePrice,
@@ -262,7 +296,6 @@ exports.calculatePrice = async (req, res) => {
   }
 };
 
-
 ////////////////////////////////////////////////////////////////////
 //// STEP 6 — SUBMIT LISTING
 //// POST /api/device-sell/submit
@@ -275,12 +308,16 @@ exports.submitListing = async (req, res) => {
     const {
       variantId,
       modelId,
+      category,       // ✅ now required
       answers,
       defectKeys,
       accessoryKeys,
     } = req.body;
 
-    // Get catalog data
+    if (!category) {
+      return res.status(400).json({ message: "category is required" });
+    }
+
     const catalog = await DeviceCatalog
       .findOne({ "models._id": modelId })
       .lean();
@@ -300,9 +337,14 @@ exports.submitListing = async (req, res) => {
       return res.status(404).json({ message: "Variant not found" });
     }
 
-    const config = await EvaluationConfig.findOne().lean();
+    // ✅ Fetch config by category
+    const config = await EvaluationConfig.findOne({ category }).lean();
+    if (!config) {
+      return res.status(500).json({
+        message: `Evaluation config not found for category: ${category}`,
+      });
+    }
 
-    // ── Rebuild price calculation ───────────────────────────────────────────
     let totalDeductionPercent = 0;
     const defectsData         = [];
 
@@ -345,19 +387,19 @@ exports.submitListing = async (req, res) => {
     const processingFee   = config.processingFee;
     const finalPrice      = Math.max(0, Math.round(basePrice - deductionAmount + additionAmount - processingFee));
 
-    // ── Create listing ──────────────────────────────────────────────────────
     const listing = await DeviceListing.create({
-      listedBy: userId,
-      brand:    catalog.brand,
-      model:    model.name,
-      ram:      variant.ram,
-      storage:  variant.storage,
-      image:    model.image,
+      listedBy:  userId,
+      brand:     catalog.brand,
+      category,                    // ✅ saved on listing
+      model:     model.name,
+      ram:       variant.ram,
+      storage:   variant.storage,
+      image:     model.image,
 
       evaluation: {
-        canMakeCalls:        answers?.can_make_calls        ?? true,
-        touchWorking:        answers?.touch_working         ?? true,
-        originalScreen:      answers?.original_screen       ?? true,
+        canMakeCalls:        answers?.can_make_calls   ?? true,
+        touchWorking:        answers?.touch_working    ?? true,
+        originalScreen:      answers?.original_screen  ?? true,
         defects:             defectsData,
         hasOriginalCharger,
         hasOriginalBox,
@@ -371,7 +413,6 @@ exports.submitListing = async (req, res) => {
       status:          "available",
     });
 
-    // Increment sold count on model
     await DeviceCatalog.updateOne(
       { "models._id": modelId },
       { $inc: { "models.$.soldCount": 1 } }
@@ -383,6 +424,7 @@ exports.submitListing = async (req, res) => {
       data: {
         listingId:  listing._id,
         device:     `${model.name} (${variant.ram ? `${variant.ram}/` : ""}${variant.storage})`,
+        category,
         finalPrice,
         status:     "available",
       },
@@ -393,7 +435,6 @@ exports.submitListing = async (req, res) => {
   }
 };
 
-
 ////////////////////////////////////////////////////////////////////
 //// GET ALL AVAILABLE DEVICE LISTINGS — for sellers to browse
 //// GET /api/device-sell/listings
@@ -401,11 +442,12 @@ exports.submitListing = async (req, res) => {
 
 exports.getListings = async (req, res) => {
   try {
-    const { brand, model, page = 1, limit = 20 } = req.query;
+    const { brand, model, category, page = 1, limit = 20 } = req.query;
 
     const filter = { status: "available" };
-    if (brand) filter.brand = new RegExp(brand, "i");
-    if (model) filter.model = new RegExp(model, "i");
+    if (brand)    filter.brand    = new RegExp(brand, "i");
+    if (model)    filter.model    = new RegExp(model, "i");
+    if (category) filter.category = category;    // ✅ filter by category
 
     const pageNum  = Math.max(1, parseInt(page));
     const limitNum = Math.min(50, Math.max(1, parseInt(limit)));
@@ -438,7 +480,6 @@ exports.getListings = async (req, res) => {
     res.status(500).json({ message: "Failed to fetch listings" });
   }
 };
-
 
 ////////////////////////////////////////////////////////////////////
 //// SELLER ACCEPTS LISTING
@@ -691,17 +732,24 @@ exports.addBrandCatalog = async (req, res) => {
 // Update evaluation config
 exports.updateEvaluationConfig = async (req, res) => {
   try {
-    const { questions, defects, accessories, processingFee } = req.body;
+    const { category, questions, defects, accessories, processingFee } = req.body;
+
+    if (!category) {
+      return res.status(400).json({
+        message: "category is required",
+        allowed: ["mobile", "laptop", "tablet", "smartwatch", "camera"],
+      });
+    }
 
     const config = await EvaluationConfig.findOneAndUpdate(
-      {},
-      { $set: { questions, defects, accessories, processingFee } },
+      { category },                                          // ✅ per category
+      { $set: { category, questions, defects, accessories, processingFee } },
       { new: true, upsert: true }
     );
 
     res.status(200).json({
       success: true,
-      message: "Evaluation config updated",
+      message: `Evaluation config updated for category: ${category}`,
       data:    config,
     });
   } catch (error) {

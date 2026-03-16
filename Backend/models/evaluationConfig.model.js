@@ -2,39 +2,42 @@ const mongoose = require("mongoose");
 
 const evaluationConfigSchema = new mongoose.Schema(
   {
-    // Questions — Yes/No
+    // ─── ONE CONFIG PER CATEGORY ───────────────────────────────────
+    category: {
+      type:     String,
+      enum:     ["mobile", "laptop", "tablet", "smartwatch", "camera"],
+      required: true,
+      unique:   true,   // one config per category
+    },
+
     questions: [
       {
-        key:         { type: String, required: true }, // "can_make_calls"
-        label:       { type: String, required: true }, // "Are you able to make and receive calls?"
-        description: { type: String, default: null },  // helper text
-        // if answer is "No", deduct this %
+        key:           { type: String, required: true },
+        label:         { type: String, required: true },
+        description:   { type: String, default: null },
         deductionOnNo: { type: Number, default: 0 },
         order:         { type: Number, default: 0 },
       }
     ],
 
-    // Defects — multi-select, each deducts %
     defects: [
       {
-        key:       { type: String, required: true },  // "front_camera_not_working"
-        label:     { type: String, required: true },  // "Front Camera not working"
-        deduction: { type: Number, required: true },  // % to deduct e.g. 5
+        key:       { type: String, required: true },
+        label:     { type: String, required: true },
+        deduction: { type: Number, required: true },
         order:     { type: Number, default: 0 },
       }
     ],
 
-    // Accessories — add back small %
     accessories: [
       {
-        key:      { type: String, required: true },  // "original_charger"
-        label:    { type: String, required: true },  // "Original Charger of Device"
-        addition: { type: Number, default: 0 },      // % to add back e.g. 2
+        key:      { type: String, required: true },
+        label:    { type: String, required: true },
+        addition: { type: Number, default: 0 },
         order:    { type: Number, default: 0 },
       }
     ],
 
-    // Processing fee — flat deduction shown in price summary
     processingFee: { type: Number, default: 49 },
   },
   { timestamps: true }
