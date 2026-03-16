@@ -1,13 +1,13 @@
 import React from "react";
 import NavMenu from "../../components/NavMenu";
-import SlidingAnimation from "../../components/SlidingAnimation";
+import SlidingAnimation from "../../components/Home-page/SlidingAnimation";
 import Devices from "../../components/Devices";
 import BestSellingcomponent from "../../components/BestSellingcomponent";
-import BuyRefurbishedDevices from "../../components/BuyRefurbishedDevices";
-import Footer from "../../components/Footer";
-import { audioDevices } from "../../../res/js/DevicesData";
-import { AudioDevices } from "../../../res/js/Categorydata";
-import Feedback from "../../components/Feedback";
+import BuyRefurbishedDevices from "../../components/Home-page/BuyRefurbishedDevices";
+import Footer from "../../components/Home-page/Footer";
+import { audioDevices } from "../../../res/Data/DevicesData";
+import { AudioDevices } from "../../../res/Data/Categorydata";
+import Feedback from "../../components/Home-page/Feedback";
 
 const BuyAudioDevices = () => {
   return (
