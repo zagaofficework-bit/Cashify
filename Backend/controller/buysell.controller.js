@@ -1,7 +1,6 @@
 const mongoose       = require("mongoose");
 const ProductService = require("../service/product.service");
 const OrderModel     = require("../models/order.model");
-const UserModel      = require("../models/user.model");
 
 const COMMISSION_RATES = OrderModel.COMMISSION_RATES;
 
@@ -391,5 +390,68 @@ exports.getSellerPendingOrders = async (req, res) => {
   } catch (error) {
     console.error("getSellerPendingOrders error:", error);
     res.status(500).json({ message: "Failed to fetch pending orders" });
+  }
+};
+
+// ─── UPDATE ORDER STATUS ─────────────────────────────────────────
+// PATCH /orders/:orderId/status
+
+exports.updateOrderStatus = async (req, res) => {
+  try {
+    if (!isValidObjectId(req.params.orderId)) {
+      return res.status(400).json({ message: "Invalid order ID" });
+    }
+
+    const { status } = req.body;
+
+    const allowedStatuses = ["pending", "confirmed", "completed", "cancelled","delivered", "rejected", "shipped"];
+
+    if (!status || !allowedStatuses.includes(status)) {
+      return res.status(400).json({
+        message: "Invalid status value",
+        allowedStatuses,
+      });
+    }
+
+    const order = await OrderModel.findById(req.params.orderId);
+
+    if (!order) {
+      return res.status(404).json({ message: "Order not found" });
+    }
+
+    const isBuyer = order.buyer.toString() === req.user._id.toString();
+    const isSeller = order.seller.toString() === req.user._id.toString();
+
+    if (!isBuyer && !isSeller) {
+      return res.status(403).json({
+        message: "You are not allowed to update this order",
+      });
+    }
+
+    if (order.status === "completed" || order.status === "cancelled") {
+      return res.status(400).json({
+        message: "Finalized orders cannot be updated",
+      });
+    }
+    
+    order.status = status;
+
+    await order.save();
+
+    const updatedOrder = await OrderModel.findById(order._id)
+      .populate("product", "title price")
+      .populate("buyer", "firstname lastname email")
+      .populate("seller", "firstname lastname email")
+      .lean();
+
+    res.status(200).json({
+      success: true,
+      message: `Order status updated to "${status}"`,
+      data: updatedOrder,
+    });
+
+  } catch (error) {
+    console.error("updateOrderStatus error:", error);
+    res.status(500).json({ message: "Failed to update order status" });
   }
 };

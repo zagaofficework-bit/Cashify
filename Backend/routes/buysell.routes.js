@@ -99,4 +99,16 @@ router.get(
   BuySellController.getMyOrders
 );
 
+/**
+ * @route   PATCH /api/orders/:orderId/status
+ * @desc    Update order status
+ * @access  Private (Seller, User)
+ */
+router.patch(
+  "/:orderId/status",
+  authMiddleware,
+  authorize("seller"),
+  BuySellController.updateOrderStatus
+);
+
 module.exports = router;
