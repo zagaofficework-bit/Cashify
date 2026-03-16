@@ -1,12 +1,12 @@
 import NavBar from "../../components/NavBar";
 import NavMenu from "../../components/NavMenu";
-import SlidingAnimation from "../../components/SlidingAnimation";
+import SlidingAnimation from "../../components/Home-page/SlidingAnimation";
 import Devices from "../../components/Devices";
 
-import BuyRefurbishedDevices from "../../components/BuyRefurbishedDevices";
+import BuyRefurbishedDevices from "../../components/Home-page/BuyRefurbishedDevices";
 
-import Footer from "../../components/Footer";
-import { cameras, gamingConsole } from "../../../res/js/DevicesData";
+import Footer from "../../components/Home-page/Footer";
+import { cameras, gamingConsole } from "../../../res/Data/DevicesData";
 const BuyCamera = () => {
   return (
     <div>

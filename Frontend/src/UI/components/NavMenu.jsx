@@ -37,74 +37,131 @@ export default function NavMenu({ mobileOpen, setMobileMenuOpen }) {
 
   const menuItems = [
     {
-      title: "All",
-      subItems: [
-        { label: "Sell",          subs: ["Sell Phone", "Sell Laptop", "Sell Tablet", "Sell Smartwatch"] },
-        { label: "Repair",        subs: ["Phone Repair", "Laptop Repair", "Screen Replacement", "Battery Replacement"] },
-        { label: "Buy Gadgets",   subs: ["Refurbished Phones", "Refurbished Laptops", "Refurbished Tablets"] },
-        { label: "Recycle",       subs: ["Recycle Phone", "Recycle Laptop", "Recycle Accessories"] },
-        { label: "Phonify Store", subs: ["Accessories", "Deals", "Offers"] },
-      ],
-    },
-    {
       title: "Sell Phone",
+      tit: "Brands",
       subItems: [
-        { label: "Apple",      subs: ["iPhone 15 Series", "iPhone 14 Series", "iPhone 13 Series", "Older Models"] },
-        { label: "Laptop",     subs: ["MacBook", "Dell", "HP", "Lenovo"] },
-        { label: "Smartwatch", subs: ["Apple Watch", "Samsung Galaxy Watch", "Fitbit", "Other Brands"] },
-        { label: "Tablet",     subs: ["iPad", "Samsung Tab", "Lenovo Tab", "Other Tablets"] },
+        { label: "Apple" },
+        { label: "OnePlus" },
+        { label: "Samsung" },
+        { label: "Xiaomi" },
       ],
     },
     {
       title: "Sell Gadgets",
       subItems: [
-        { label: "Sell Phone",          subs: ["iPhone", "Samsung", "OnePlus", "Vivo", "Oppo"] },
-        { label: "Sell Laptops",        subs: ["MacBook", "Windows Laptop", "Gaming Laptop", "Chromebook"] },
-        { label: "Sell Smart Watches",  subs: ["Apple Watch", "Fitbit", "Garmin", "Fossil"] },
-        { label: "Sell Tablets",        subs: ["iPad", "Samsung Tab", "Lenovo Tab"] },
-        { label: "Sell Gaming Console", subs: ["PlayStation", "Xbox", "Nintendo Switch"] },
-        { label: "Sell Speakers",       subs: ["Bluetooth Speaker", "Smart Speaker", "Soundbar"] },
+        {
+          label: "Sell Phone", path:'/sell-phone'
+        },
+                {
+          label: "Sell TV", path:'/sell-tv'
+        },
+        { 
+          label: "Sell Laptops", path:'/sell-laptop' 
+        },
+        {
+          label: "Sell Smart Watches", path:'/sell-smartwatch'
+        },
+        {
+          label: "Sell Tablets", path:'/sell-tablet'
+        },
+        {
+          label: "Sell Gaming Console", path:'/sell-gaming'
+        },
+        {
+          label: "Sell Speakers", path:'/sell-speaker'
+        },
       ],
     },
     {
       title: "Buy Refurbished Devices",
       subItems: [
-        { label: "Refurbished Phones",        subs: ["iPhone", "Samsung", "OnePlus", "Vivo", "Google Pixel"] },
-        { label: "Refurbished Laptops",       subs: ["MacBook", "Dell Laptop", "HP Laptop", "Lenovo Laptop"] },
-        { label: "Refurbished Smart Watches", subs: ["Apple Watch", "Samsung Watch", "Fitbit"] },
-        { label: "Refurbished Tablets",       subs: ["iPad", "Samsung Tab", "Lenovo Tab"] },
+        { 
+          label: "Buy Phone", path:"/buy-phone"
+        },
+        { 
+          label: "Buy Laptops", path:"/buy-laptop"
+        },
+        {
+          label: "Buy Smart Watches", path:"/buy-smartwatch"
+        },
+        {
+          label: "Buy Tablets", path:"/buy-tablet"
+        },
+        {
+          label: "Buy Gaming Console", path:"/buy-gaming"
+        },
+        {
+          label: "Buy Speakers", path:"/buy-speaker"
+        },
       ],
     },
     {
       title: "Find New Gadget",
       subItems: [
-        { label: "New Phones",        subs: ["Apple", "Samsung", "OnePlus", "Nothing"] },
-        { label: "New Laptops",       subs: ["MacBook", "Dell XPS", "HP Spectre", "Lenovo ThinkPad"] },
-        { label: "New Smart Watches", subs: ["Apple Watch", "Samsung Galaxy Watch", "Garmin"] },
-        { label: "New Tablets",       subs: ["iPad Pro", "Samsung Tab S", "Lenovo Tab P"] },
+        {
+          label: "Find New Phone", path: '/find-  phone'
+          
+        },
+        {
+          label: "Find New Laptops",
+          subs: ["MacBook", "HP", "Dell", "Lenovo"],
+        },
+        {
+          label: "Find New Smart Watches",
+          subs: ["Apple Watch", "Amazefit", "Boat", "Bolt"],
+        },
+        {
+          label: "Find New Tablets",
+          subs: ["iPad", "Samsung", "Lenovo", "Oneplus"],
+        },
+        {
+          label: "Find New Gaming Console",
+          subs: ["PlayStation", "Xbox", "Nintendo Switch", "Sony"],
+        },
+        {
+          label: "Find New Speakers",
+          subs: ["Boat", "JBL", "Marshall", "Zebronics"],
+        },
       ],
     },
     {
       title: "Buy Laptop",
+      tit: "Top Brands",
       subItems: [
-        { label: "MacBook",        subs: ["MacBook Air M2", "MacBook Air M3", "MacBook Pro 14\"", "MacBook Pro 16\""] },
-        { label: "Windows Laptop", subs: ["Dell XPS", "HP Spectre", "Lenovo ThinkPad", "Asus ZenBook"] },
-        { label: "Gaming Laptop",  subs: ["ASUS ROG", "MSI Gaming", "Alienware", "Razer Blade"] },
-      ],
-    },
-    {
-      title: "Phonify Store",
-      subItems: [
-        { label: "Accessories", subs: ["Cases & Covers", "Chargers", "Earphones", "Screen Guards"] },
-        { label: "Deals",       subs: ["Today's Deals", "Flash Sale", "Clearance", "Bundle Offers"] },
-        { label: "Offers",      subs: ["Student Offers", "Exchange Offers", "EMI Offers", "Coupon Codes"] },
+        {
+          label: "MacBook",
+          subs: [
+            "MacBook Air M2",
+            "MacBook Air M3",
+            'MacBook Pro 14"',
+            'MacBook Pro 16"',
+          ],
+        },
+        {
+          label: "HP",
+          subs: ["Dell XPS", "HP Spectre", "Lenovo ThinkPad", "Asus ZenBook"],
+        },
+        {
+          label: "Dell",
+          subs: ["ASUS ROG", "MSI Gaming", "Alienware", "Razer Blade"],
+        },
+        {
+          label: "Lenovo",
+          subs: ["ASUS ROG", "MSI Gaming", "Alienware", "Razer Blade"],
+        },
       ],
     },
     {
       title: "More",
       subItems: [
-        { label: "Support",  subs: ["Help Center", "Track Order", "Warranty Claim", "Contact Us"] },
-        { label: "Blog",     subs: ["Tech News", "Buying Guides", "Comparison", "Tips & Tricks"] },
+        {
+          label: "Support",
+          subs: ["Help Center", "Track Order", "Warranty Claim", "Contact Us"],
+        },
+        {
+          label: "Blog",
+          subs: ["Tech News", "Buying Guides", "Comparison", "Tips & Tricks"],
+        },
         { label: "About Us", subs: ["Our Story", "Team", "Careers", "Press"] },
       ],
     },
@@ -115,7 +172,7 @@ export default function NavMenu({ mobileOpen, setMobileMenuOpen }) {
       {/* ═══════════════ DESKTOP ═══════════════ */}
       <div className="hidden md:block w-full bg-white border-t border-b border-gray-200" ref={navRef}>
         <div className="max-w-7xl mx-auto px-6">
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-24">
 
             {menuItems.map((item, idx) => (
               <div key={idx} className="relative py-3">
@@ -147,7 +204,7 @@ export default function NavMenu({ mobileOpen, setMobileMenuOpen }) {
 
                       {/* Non-clickable title */}
                       <div className="px-4 py-2.5 border-b border-gray-100">
-                        <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400">{item.title}</p>
+                        <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400">{item.tit}</p>
                       </div>
 
                       {/* Sub items */}
@@ -166,7 +223,12 @@ export default function NavMenu({ mobileOpen, setMobileMenuOpen }) {
                                   : "text-gray-700 hover:bg-teal-50 hover:text-teal-700"
                               }`}
                             >
-                              <span>{sub.label}</span>
+                              
+                              <span
+                              onClick={() => sub.path && navigate(sub.path)}
+                              className={sub.path ? "cursor-pointer" : ""}
+                              >{sub.label}</span>
+                  
                               {sub.subs?.length > 0 && (
                                 <svg
                                   className={`w-3.5 h-3.5 flex-shrink-0 transition-transform duration-200 ${
@@ -185,10 +247,11 @@ export default function NavMenu({ mobileOpen, setMobileMenuOpen }) {
                                 {sub.subs.map((s, ti) => (
                                   <div
                                     key={ti}
+                                    onClick={() => s.path && navigate(s.path)}
                                     className="px-6 py-2 text-sm text-gray-600 hover:bg-teal-100 hover:text-teal-800 cursor-pointer transition-colors duration-100 flex items-center gap-2"
                                   >
                                     <span className="w-1 h-1 rounded-full bg-teal-400 flex-shrink-0" />
-                                    {s}
+                                    {s.label}
                                   </div>
                                 ))}
                               </div>

@@ -1,6 +1,6 @@
 import React from 'react'
-import SellMobileBrand from '../../components/SellMobileBrand'
-import { xiaomi } from '../../../res/Data/SellBrandData'
+import SellMobileBrand from '../../../components/SellMobileBrand'
+import { xiaomi } from '../../../../res/Data/SellBrandData'
 
 const Xiaomi = () => {
   return (

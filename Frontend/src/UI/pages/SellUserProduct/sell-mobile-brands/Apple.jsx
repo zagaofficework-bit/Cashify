@@ -1,16 +1,16 @@
 import React from "react";
-import { apple } from "../../../res/Data/SellBrandData";
-import SellMobileBrand from "../../components/SellMobileBrand";
-import NavMenu from "../../components/NavMenu";
+import { apple } from "../../../../res/Data/SellBrandData";
+import SellMobileBrand from "../../../components/SellMobileBrand";
+import NavMenu from "../../../components/NavMenu";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faShieldAlt,
   faBolt,
   faMoneyBillWave,
 } from "@fortawesome/free-solid-svg-icons";
-import Brands from "../../components/Brands";
-import DownloadAppBanner from "../../components/Home-page/DownloadAppBanner";
-import Footer from "../../components/Home-page/Footer";
+import Brands from "../../../components/Brands";
+import DownloadAppBanner from "../../../components/Home-page/DownloadAppBanner";
+import Footer from "../../../components/Home-page/Footer";
 
 const Apple = () => {
   const benefits = [

@@ -1,15 +1,15 @@
 import NavBar from "../../components/NavBar";
 import NavMenu from "../../components/NavMenu";
-import SlidingAnimation from "../../components/SlidingAnimation";
+import SlidingAnimation from "../../components/Home-page/SlidingAnimation";
 import Devices from "../../components/Devices";
 import Shopbuy from "../../components/Shopbuy";
-import BuyRefurbishedDevices from "../../components/BuyRefurbishedDevices";
+import BuyRefurbishedDevices from "../../components/Home-page/BuyRefurbishedDevices";
 
 import BestSellingcomponent from "../../components/BestSellingcomponent";
 import ConditionsExplained from "../../components/ConditionalExplained";
-import Footer from "../../components/Footer";
-import { gamingConsole } from "../../../res/js/DevicesData";
-import { GamingConsole } from "../../../res/js/Categorydata";
+import Footer from "../../components/Home-page/Footer";
+import { gamingConsole } from "../../../res/Data/DevicesData";
+import { GamingConsole } from "../../../res/Data/Categorydata";
 import Category from "../../components/Category";
 
 const BuyGamingConsole = () => {
