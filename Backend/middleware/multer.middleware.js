@@ -84,15 +84,48 @@ const profileUpload = multer({
   },
 }).single("profilePic");      // ← field name must be "profilePic" in Postman
 
-module.exports = {
-  productUpload,
-  validateProductFiles,
-  profileUpload,              // ← export it
-};
+// REVIEW UPLOAD MIDDLEWARE — 5 images + 1 video
+const reviewUpload = multer({
+  storage,
+  fileFilter,
+  limits: {
+    fileSize: MAX_VIDEO_SIZE,  // 50MB ceiling (per-file size validated below)
+    files:    6,               // max 5 images + 1 video
+  },
+}).fields([
+  { name: "images", maxCount: 5 },
+  { name: "video",  maxCount: 1 },
+]);
+
+// VALIDATE REVIEW FILE SIZES
+function validateReviewFiles(req, res, next) {
+  if (req.files?.images) {
+    for (const image of req.files.images) {
+      if (image.size > MAX_IMAGE_SIZE) {
+        return res.status(400).json({
+          message: `Image "${image.originalname}" exceeds 5MB limit`,
+        });
+      }
+    }
+  }
+
+  if (req.files?.video) {
+    const video = req.files.video[0];
+    if (video.size > MAX_VIDEO_SIZE) {
+      return res.status(400).json({
+        message: `Video "${video.originalname}" exceeds 50MB limit`,
+      });
+    }
+  }
+
+  next();
+}
 
 // EXPORT
 module.exports = {
   productUpload,
   validateProductFiles,
   profileUpload,
+  reviewUpload,
+  validateReviewFiles,
 };

@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 const ProductController = require("../controller/product.controller");
+const reviewRouter = require("./review.routes");
 
 const {
   authMiddleware,
@@ -157,5 +158,13 @@ router.delete(
   blockAdmin,
   ProductController.deleteProduct,
 );
+
+/**
+ * @route   USE /api/products/:productId/reviews
+ * @desc    Use review routes for a specific product
+ * @access  Public
+ */
+router.use("/:productId/reviews", reviewRouter);
+
 
 module.exports = router;

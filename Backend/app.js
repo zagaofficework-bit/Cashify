@@ -20,7 +20,7 @@ const messageRouter      = require("./routes/message.routes");
 const profileRouter      = require("./routes/profile.routes");
 const wishlistRouter     = require("./routes/wishlist.routes");
 const cartRouter         = require("./routes/cart.routes");
-
+const deviceSellRouter   = require("./routes/deviceSell.routes");
 
 // API routes
 app.use("/api/auth",          authRouter);
@@ -32,5 +32,7 @@ app.use("/api/messages",      messageRouter);
 app.use("/api/profile",       profileRouter);
 app.use("/api/wishlist",      wishlistRouter);
 app.use("/api/cart",          cartRouter);
+app.use("/api/device-sell",   deviceSellRouter);
+
 
 module.exports = app;
