@@ -16,8 +16,6 @@ function isValidPaymentMethod(method) {
 }
 
 // ─── HELPER: Calculate commission ─────────────────────────────────────────────
-// seller: avg 1.25%  |  user: avg 2.25%
-
 function calculateCommission(price, role) {
   const rates  = COMMISSION_RATES[role];
   const rate   = (rates.min + rates.max) / 2;
@@ -25,27 +23,19 @@ function calculateCommission(price, role) {
   return { rate, amount };
 }
 
+// ─── Buyer populate fields — includes phone + address for seller order view ───
+const BUYER_FIELDS  = "firstname lastname email mobile phone address";
+const SELLER_FIELDS = "firstname lastname email";
+
 
 // ─── PLACE BUY ORDER ──────────────────────────────────────────────────────────
-// Flow:
-//   1. Buyer picks payment method (Cash/UPI/Card/NetBanking) and places order
-//   2. Payment is collected immediately → paymentStatus: "completed"
-//   3. Order sits as "pending" until seller confirms
-//   4. Seller confirms → status: "confirmed", product marked sold
-//
-// user   → can only buy from seller
-// seller → can buy from seller or user
-// admin  → blocked via middleware
 // POST /products/:id/buy
-// body: { paymentMethod: "Cash" | "UPI" | "Card" | "NetBanking" }
-
 exports.buyProduct = async (req, res) => {
   try {
     if (!isValidObjectId(req.params.id)) {
       return res.status(400).json({ message: "Invalid product ID" });
     }
 
-    // ── Step 1: Validate payment method ──────────────────────────────────────
     const { paymentMethod } = req.body;
 
     if (!paymentMethod) {
@@ -62,7 +52,6 @@ exports.buyProduct = async (req, res) => {
       });
     }
 
-    // ── Step 2: Validate product ──────────────────────────────────────────────
     const product = await ProductService.getProductById(req.params.id);
 
     if (!product) {
@@ -87,13 +76,9 @@ exports.buyProduct = async (req, res) => {
       });
     }
 
-    // ── Step 3: Calculate commission ──────────────────────────────────────────
     const { rate, amount } = calculateCommission(product.price, buyerRole);
     const sellerEarnings   = parseFloat((product.price - amount).toFixed(2));
 
-    // ── Step 4: Create order ──────────────────────────────────────────────────
-    //   paymentStatus = "completed" → payment is done at time of order placement
-    //   status        = "pending"   → seller still needs to confirm
     const order = await OrderModel.create({
       buyer:            req.user._id,
       buyerRole,
@@ -105,13 +90,12 @@ exports.buyProduct = async (req, res) => {
       commissionRate:   rate,
       commissionAmount: amount,
       sellerEarnings,
-      paymentMethod,                  // Cash | UPI | Card | NetBanking
-      paymentStatus:    "completed",  // payment collected upfront
+      paymentMethod,
+      paymentStatus:    "completed",
       paidAt:           new Date(),
-      status:           "pending",    // waiting for seller confirmation
+      status:           "pending",
     });
 
-    // ── Step 5: Reserve product so no one else can order while pending ─────────
     await ProductService.markAsReserved(product._id);
 
     res.status(201).json({
@@ -144,18 +128,14 @@ exports.buyProduct = async (req, res) => {
 };
 
 
-// ─── CONFIRM BUY ORDER — seller confirms buyer's order request ────────────────
-// Only the seller of the product can confirm.
-// On confirm → status: "confirmed", product marked as sold.
+// ─── CONFIRM BUY ORDER ────────────────────────────────────────────────────────
 // POST /orders/:orderId/confirm
-
 exports.confirmBuyOrder = async (req, res) => {
   try {
     if (!isValidObjectId(req.params.orderId)) {
       return res.status(400).json({ message: "Invalid order ID" });
     }
 
-    // Find the pending buy order where the logged-in user is the seller
     const order = await OrderModel.findOne({
       _id:             req.params.orderId,
       seller:          req.user._id,
@@ -163,7 +143,7 @@ exports.confirmBuyOrder = async (req, res) => {
       status:          "pending",
     })
       .populate("product", "title price images status")
-      .populate("buyer",   "firstname lastname email")
+      .populate("buyer",   BUYER_FIELDS)   // ← full buyer fields
       .lean();
 
     if (!order) {
@@ -172,7 +152,6 @@ exports.confirmBuyOrder = async (req, res) => {
       });
     }
 
-    // Update order to confirmed
     const confirmedOrder = await OrderModel.findByIdAndUpdate(
       order._id,
       {
@@ -183,11 +162,10 @@ exports.confirmBuyOrder = async (req, res) => {
       { new: true }
     )
       .populate("product", "title price images")
-      .populate("buyer",   "firstname lastname email")
-      .populate("seller",  "firstname lastname email")
+      .populate("buyer",   BUYER_FIELDS)   // ← full buyer fields
+      .populate("seller",  SELLER_FIELDS)
       .lean();
 
-    // Mark product as sold
     await ProductService.markAsSold(order.product._id);
 
     res.status(200).json({
@@ -215,10 +193,8 @@ exports.confirmBuyOrder = async (req, res) => {
 };
 
 
-// ─── REJECT BUY ORDER — seller rejects buyer's order request ─────────────────
-// Seller can reject with a reason. Product goes back to "available".
+// ─── REJECT BUY ORDER ─────────────────────────────────────────────────────────
 // POST /orders/:orderId/reject
-
 exports.rejectBuyOrder = async (req, res) => {
   try {
     if (!isValidObjectId(req.params.orderId)) {
@@ -233,7 +209,7 @@ exports.rejectBuyOrder = async (req, res) => {
       transactionType: "buy",
       status:          "pending",
     })
-      .populate("buyer",   "firstname lastname email")
+      .populate("buyer",   BUYER_FIELDS)   // ← full buyer fields
       .populate("product", "title")
       .lean();
 
@@ -243,14 +219,12 @@ exports.rejectBuyOrder = async (req, res) => {
       });
     }
 
-    // Update order to rejected
     await OrderModel.findByIdAndUpdate(order._id, {
-      status:         "rejected",
-      rejectedAt:     new Date(),
+      status:          "rejected",
+      rejectedAt:      new Date(),
       rejectionReason: reason?.trim() || null,
     });
 
-    // Release product back to available
     await ProductService.markAsAvailable(order.product._id);
 
     res.status(200).json({
@@ -270,10 +244,8 @@ exports.rejectBuyOrder = async (req, res) => {
 };
 
 
-// ─── CANCEL BUY ORDER — buyer cancels their own pending order ─────────────────
-// Only the buyer can cancel and only while status is "pending".
+// ─── CANCEL BUY ORDER ─────────────────────────────────────────────────────────
 // POST /orders/:orderId/cancel
-
 exports.cancelBuyOrder = async (req, res) => {
   try {
     if (!isValidObjectId(req.params.orderId)) {
@@ -300,7 +272,6 @@ exports.cancelBuyOrder = async (req, res) => {
       cancelledAt: new Date(),
     });
 
-    // Release product back to available
     await ProductService.markAsAvailable(order.product._id);
 
     res.status(200).json({
@@ -318,9 +289,9 @@ exports.cancelBuyOrder = async (req, res) => {
   }
 };
 
-// ─── GET MY ORDERS — seller/user ──────────────────────────────────────────────
-// GET /orders?type=buy&status=pending
 
+// ─── GET MY ORDERS ────────────────────────────────────────────────────────────
+// GET /orders/my?type=buy&status=pending&page=1&limit=10
 exports.getMyOrders = async (req, res) => {
   try {
     const { type, status, page = 1, limit = 10 } = req.query;
@@ -340,9 +311,9 @@ exports.getMyOrders = async (req, res) => {
         .sort({ createdAt: -1 })
         .skip(skip)
         .limit(limitNum)
-        .populate("product", "title images price")
-        .populate("buyer",   "firstname lastname role")
-        .populate("seller",  "firstname lastname role")
+        .populate("product", "title images price brand")
+        .populate("buyer",   BUYER_FIELDS)   // ← full buyer fields
+        .populate("seller",  SELLER_FIELDS)
         .lean(),
       OrderModel.countDocuments(filter),
     ]);
@@ -367,9 +338,7 @@ exports.getMyOrders = async (req, res) => {
 
 
 // ─── GET PENDING ORDERS FOR SELLER ────────────────────────────────────────────
-// Seller sees all incoming buy requests waiting for their confirmation
 // GET /orders/pending
-
 exports.getSellerPendingOrders = async (req, res) => {
   try {
     const orders = await OrderModel.find({
@@ -378,8 +347,8 @@ exports.getSellerPendingOrders = async (req, res) => {
       status:          "pending",
     })
       .sort({ createdAt: -1 })
-      .populate("product", "title images price condition")
-      .populate("buyer",   "firstname lastname email")
+      .populate("product", "title images price condition brand")
+      .populate("buyer",   BUYER_FIELDS)   // ← full buyer fields
       .lean();
 
     res.status(200).json({
@@ -393,9 +362,9 @@ exports.getSellerPendingOrders = async (req, res) => {
   }
 };
 
-// ─── UPDATE ORDER STATUS ─────────────────────────────────────────
-// PATCH /orders/:orderId/status
 
+// ─── UPDATE ORDER STATUS ──────────────────────────────────────────────────────
+// PATCH /orders/:orderId/status
 exports.updateOrderStatus = async (req, res) => {
   try {
     if (!isValidObjectId(req.params.orderId)) {
@@ -404,7 +373,7 @@ exports.updateOrderStatus = async (req, res) => {
 
     const { status } = req.body;
 
-    const allowedStatuses = ["pending", "confirmed", "completed", "cancelled","delivered", "rejected", "shipped"];
+    const allowedStatuses = ["pending", "confirmed", "completed", "cancelled", "delivered", "rejected", "shipped"];
 
     if (!status || !allowedStatuses.includes(status)) {
       return res.status(400).json({
@@ -419,37 +388,31 @@ exports.updateOrderStatus = async (req, res) => {
       return res.status(404).json({ message: "Order not found" });
     }
 
-    const isBuyer = order.buyer.toString() === req.user._id.toString();
+    const isBuyer  = order.buyer.toString()  === req.user._id.toString();
     const isSeller = order.seller.toString() === req.user._id.toString();
 
     if (!isBuyer && !isSeller) {
-      return res.status(403).json({
-        message: "You are not allowed to update this order",
-      });
+      return res.status(403).json({ message: "You are not allowed to update this order" });
     }
 
     if (order.status === "completed" || order.status === "cancelled") {
-      return res.status(400).json({
-        message: "Finalized orders cannot be updated",
-      });
+      return res.status(400).json({ message: "Finalized orders cannot be updated" });
     }
-    
-    order.status = status;
 
+    order.status = status;
     await order.save();
 
     const updatedOrder = await OrderModel.findById(order._id)
-      .populate("product", "title price")
-      .populate("buyer", "firstname lastname email")
-      .populate("seller", "firstname lastname email")
+      .populate("product", "title price brand images")
+      .populate("buyer",   BUYER_FIELDS)   // ← full buyer fields
+      .populate("seller",  SELLER_FIELDS)
       .lean();
 
     res.status(200).json({
       success: true,
       message: `Order status updated to "${status}"`,
-      data: updatedOrder,
+      data:    updatedOrder,
     });
-
   } catch (error) {
     console.error("updateOrderStatus error:", error);
     res.status(500).json({ message: "Failed to update order status" });
