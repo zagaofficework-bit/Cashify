@@ -34,7 +34,7 @@ export default function BuyRefurbishedDevices({ title, products = [] }) {
   const prev = () => setCurrentIndex((p) => (p > 0 ? p - 1 : 0));
 
   return (
-    <section className="bg-gray-50 py-6 md:py-10">
+  <section className="bg-gray-50 py-6 md:py-10">
       <div className="max-w-7xl mx-auto px-4 md:px-6">
         <h2 className="text-xl md:text-2xl font-bold mb-4 md:mb-6 text-gray-800">
           {title || "Buy Refurbished Devices"}

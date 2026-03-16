@@ -72,6 +72,7 @@ export default function ProductDetails({data}) {
     { key: "cosmetic", label: "Cosmetic" },
   ];
 
+
   return (
     <>
       <style>{`
@@ -106,6 +107,7 @@ export default function ProductDetails({data}) {
       `}</style>
 
       <div className="pd-root bg-white min-h-screen">
+      
 
         
         {/* ── HERO ── */}

@@ -29,8 +29,8 @@ import ProductDetails from "./ProductDetails";
 export default function Home() {
   return (
     <div className="overflow-x-hidden">
-
-      
+{/* 
+      <ProductDetails /> */}
       <NavMenu />
       <Chatbot />
       <SlidingAnimation />

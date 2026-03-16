@@ -1,8 +1,8 @@
 import { Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+
 
 const ServiceCard = ({ image, title, path }) => {
-  const navigate = useNavigate();
+ 
 
   return (
     <>

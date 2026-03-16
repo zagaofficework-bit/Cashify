@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import NavMenu from "./NavMenu";
@@ -102,8 +103,8 @@ export default function NavBar() {
   );
 
   return (
-    <>
-    <nav className="w-full bg-white shadow-md px-4 md:px-6 py-3 sticky top-0 z-50">
+    <div>
+    <nav className="w-full bg-white shadow-md px-4 md:px-6 py-3">
       <div className="flex items-center justify-between gap-3">
         {/* Logo */}
         <img src="./assets/img/Phonify1.png"
@@ -195,10 +196,12 @@ export default function NavBar() {
         </div>
       )}
     </nav>
+    {mobileMenuOpen && (
         <NavMenu
       mobileOpen={mobileMenuOpen}
-      setMobileMenuOpen={setMobileMenuOpen}
-    />
-    </>
+      setMobileMenuOpen={setMobileMenuOpen}/>
+
+    )}
+    </div>
   );
 }
