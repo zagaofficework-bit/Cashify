@@ -61,7 +61,7 @@ router.get("/address", ProfileController.getAddresses);
  * @route   POST /api/profile/address
  * @desc    Add a new address (first address auto-set as default)
  * @access  Private
- * @body    { email, mobile, street, city, state, pincode, country, isDefault? }
+ * @body    { street, city, state, pincode, country, isDefault? }
  */
 router.post("/address", ProfileController.addAddress);
 

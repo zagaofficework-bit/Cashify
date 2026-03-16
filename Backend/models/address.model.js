@@ -3,78 +3,54 @@ const mongoose = require("mongoose");
 const addressSchema = new mongoose.Schema(
   {
     // ─── OWNER ─────────────────────────────────────────────────────────────────
-
     userId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+      type:     mongoose.Schema.Types.ObjectId,
+      ref:      "User",
       required: [true, "User ID is required"],
     },
 
-    // ─── CONTACT ───────────────────────────────────────────────────────────────
-
-    // ─── CONTACT ───────────────────────────────────────────────────────────────
-
-    email: {
-      type: String,
-      required: [true, "Email is required"],
-      lowercase: true,
-      trim: true,
-    },
-
-    mobile: {
-      type: String,
-      required: [true, "Mobile number is required"],
-      trim: true,
-    },
-
     // ─── ADDRESS FIELDS ────────────────────────────────────────────────────────
-
     street: {
-      type: String,
+      type:     String,
       required: [true, "Street is required"],
-      trim: true,
+      trim:     true,
     },
 
     city: {
-      type: String,
+      type:     String,
       required: [true, "City is required"],
-      trim: true,
+      trim:     true,
     },
 
     state: {
-      type: String,
+      type:     String,
       required: [true, "State is required"],
-      trim: true,
+      trim:     true,
     },
 
     pincode: {
-      type: String,
+      type:     String,
       required: [true, "Pincode is required"],
-      trim: true,
+      trim:     true,
     },
 
     country: {
-      type: String,
+      type:     String,
       required: [true, "Country is required"],
-      trim: true,
-      default: "India",
+      trim:     true,
+      default:  "India",
     },
 
     // ─── DEFAULT FLAG ──────────────────────────────────────────────────────────
-
     isDefault: {
-      type: Boolean,
+      type:    Boolean,
       default: false,
     },
   },
-  {
-    timestamps: true,
-  },
+  { timestamps: true }
 );
 
-// ─── INDEXES ───────────────────────────────────────────────────────────────────
-
-addressSchema.index({ userId: 1 }); // fast lookup by user
-addressSchema.index({ userId: 1, isDefault: -1 }); // default address first
+addressSchema.index({ userId: 1 });
+addressSchema.index({ userId: 1, isDefault: -1 });
 
 module.exports = mongoose.model("Address", addressSchema);

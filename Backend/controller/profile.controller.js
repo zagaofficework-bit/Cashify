@@ -175,11 +175,11 @@ async function syncUserAddress(userId) {
 exports.addAddress = async (req, res) => {
   try {
     const userId = req.user._id;
-    const { email, mobile, street, city, state, pincode, country, isDefault } = req.body;  // ✅
+    const { street, city, state, pincode, country, isDefault } = req.body;
 
-    if (!email || !mobile || !street || !city || !state || !pincode || !country) {  // ✅
+    if (!street || !city || !state || !pincode || !country) {
       return res.status(400).json({
-        message: "All fields are required: email, mobile, street, city, state, pincode, country",  // ✅
+        message: "All fields are required: street, city, state, pincode, country",
       });
     }
 
@@ -192,13 +192,11 @@ exports.addAddress = async (req, res) => {
 
     const address = await Address.create({
       userId,
-      email,
-      mobile,                                // ✅ was phone
       street,
       city,
       state,
-      pincode,                               // ✅ was zipcode
-      country: country || "India",
+      pincode,
+      country:   country || "India",
       isDefault: shouldBeDefault,
     });
 
@@ -214,7 +212,6 @@ exports.addAddress = async (req, res) => {
     res.status(500).json({ message: "Failed to add address" });
   }
 };
-
 // ─── GET ALL ADDRESSES ────────────────────────────────────────────────────────
 // GET /api/profile/address
 
