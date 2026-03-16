@@ -25,13 +25,19 @@ import Info from "../components/Home-page/Info";
 import Footer from "../components/Home-page/Footer";
 import ArticleSection from "../components/Home-page/ArticleSection";
 import ProductDetails from "./ProductDetails";
+import MobileBrand from "../components/MobileBrand";
+import { google } from "../../res/Data/PromoCards";
+
+import Apple from "../pages/Sell-laptop/Apple";
+
+
 
 export default function Home() {
   return (
     <div className="overflow-x-hidden">
 {/* 
       <ProductDetails /> */}
-      <NavMenu />
+      {/* <NavMenu />
       <Chatbot />
       <SlidingAnimation />
       <Chatbot />
@@ -48,7 +54,8 @@ export default function Home() {
       <Recents />
       <DownloadAppBanner />
       <Info />
-      <Footer />
+      <Footer /> */}
+  <Apple/>
     </div>
   );
 }

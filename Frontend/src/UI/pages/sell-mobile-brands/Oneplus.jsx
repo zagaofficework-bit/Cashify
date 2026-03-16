@@ -1,11 +1,12 @@
 import React from 'react'
-import SellMobileBrand from '../../components/SellMobileBrand'
+
 import { onePlus } from '../../../res/Data/SellBrandData'
+import SellDevices from '../../components/SellDevices'
 
 const Oneplus = () => {
   return (
     <div>
-      <SellMobileBrand data={onePlus} brand="OnePlus"/>
+      <SellDevices data={onePlus} brand="OnePlus"/>
     </div>
   )
 }

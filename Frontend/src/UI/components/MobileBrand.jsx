@@ -68,7 +68,7 @@ const MobileBrand = ({ brand }) => {
       <BuyRefurbishedDevices products={refurbishedProducts} />
 
       {/* Bottom Banners */}
-      <div className="m-4 md:m-8 lg:m-12 grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="m-4 md:m-8 lg:m-12 grid grid-cols-1 md:grid-cols-1 gap-5">
         <img
           src="https://s3ng.cashify.in/estore/e2588df8c0934fb4a7add81e2a1286fb.webp"
           alt=""
