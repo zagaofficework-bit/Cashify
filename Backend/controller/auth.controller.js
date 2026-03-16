@@ -143,7 +143,7 @@ async function verifyRegisterOtpController(req, res) {
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
+      sameSite: "lax",
     });
 
     // 9. Return response — exclude sensitive fields
@@ -279,7 +279,7 @@ async function verifyLoginOtpController(req, res) {
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
+      sameSite: "lax",
     });
 
     // 9. Return response — exclude sensitive fields
@@ -344,7 +344,7 @@ async function userLogoutController(req, res) {
     res.clearCookie("refreshToken", {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
+      sameSite: "lax",
     });
 
     res.status(200).json({ message: "User logged out successfully" });

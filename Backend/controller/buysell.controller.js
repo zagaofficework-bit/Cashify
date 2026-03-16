@@ -1,7 +1,6 @@
 const mongoose       = require("mongoose");
 const ProductService = require("../service/product.service");
 const OrderModel     = require("../models/order.model");
-const UserModel      = require("../models/user.model");
 
 const COMMISSION_RATES = OrderModel.COMMISSION_RATES;
 
@@ -320,118 +319,6 @@ exports.cancelBuyOrder = async (req, res) => {
 };
 
 
-// ─── SELL DEVICE TO SELLER ────────────────────────────────────────────────────
-// User submits their device to a specific seller for a quote → status: "pending"
-// Seller confirms via confirmSellRequest → status: "completed"
-// POST /sell
-
-exports.sellDeviceToSeller = async (req, res) => {
-  try {
-    const { sellerId, deviceDetails, expectedPrice, paymentMethod } = req.body;
-
-    if (!isValidObjectId(sellerId)) {
-      return res.status(400).json({ message: "Invalid seller ID" });
-    }
-
-    if (!expectedPrice || expectedPrice <= 0) {
-      return res.status(400).json({ message: "Valid expected price is required" });
-    }
-
-    // Verify target is a seller
-    const targetSeller = await UserModel
-      .findById(sellerId)
-      .select("role firstname lastname")
-      .lean();
-
-    if (!targetSeller || targetSeller.role !== "seller") {
-      return res.status(404).json({ message: "Seller not found" });
-    }
-
-    const { rate, amount } = calculateCommission(expectedPrice, "user");
-    const sellerEarnings   = parseFloat((expectedPrice - amount).toFixed(2));
-
-    const order = await OrderModel.create({
-      buyer:            sellerId,
-      buyerRole:        "seller",
-      seller:           req.user._id,
-      sellerRole:       "user",
-      transactionType:  "sell",
-      salePrice:        expectedPrice,
-      commissionRate:   rate,
-      commissionAmount: amount,
-      sellerEarnings,
-      paymentMethod:    paymentMethod || null,
-      status:           "pending",     // ← pending until seller confirms
-      paymentStatus:    "pending",
-      sellerNote:       deviceDetails || null,
-    });
-
-    res.status(201).json({
-      success: true,
-      message: `Sell request sent to ${targetSeller.firstname}. They will review and confirm.`,
-      data: {
-        orderId: order._id,
-        status:  "pending",
-        breakdown: {
-          expectedPrice,
-          commissionRate:   `${rate}%`,
-          commissionAmount: amount,
-          youWillReceive:   sellerEarnings,
-        },
-      },
-    });
-  } catch (error) {
-    console.error("sellDeviceToSeller error:", error);
-    res.status(500).json({ message: "Failed to submit sell request" });
-  }
-};
-
-
-// ─── CONFIRM SELL REQUEST — seller confirms user's sell request ───────────────
-// POST /orders/:orderId/sell-confirm
-
-exports.confirmSellRequest = async (req, res) => {
-  try {
-    if (!isValidObjectId(req.params.orderId)) {
-      return res.status(400).json({ message: "Invalid order ID" });
-    }
-
-    const order = await OrderModel.findOneAndUpdate(
-      {
-        _id:             req.params.orderId,
-        buyer:           req.user._id,
-        transactionType: "sell",
-        status:          "pending",
-      },
-      {
-        status:        "completed",
-        paymentStatus: "completed",
-        confirmedAt:   new Date(),
-      },
-      { new: true }
-    )
-      .populate("seller", "firstname lastname email")
-      .populate("buyer",  "firstname lastname email")
-      .lean();
-
-    if (!order) {
-      return res.status(404).json({
-        message: "Sell request not found or already processed",
-      });
-    }
-
-    res.status(200).json({
-      success: true,
-      message: "Sell request confirmed successfully",
-      data:    order,
-    });
-  } catch (error) {
-    console.error("confirmSellRequest error:", error);
-    res.status(500).json({ message: "Failed to confirm sell request" });
-  }
-};
-
-
 // ─── GET MY ORDERS — seller/user ──────────────────────────────────────────────
 // GET /orders?type=buy&status=pending
 
@@ -504,5 +391,68 @@ exports.getSellerPendingOrders = async (req, res) => {
   } catch (error) {
     console.error("getSellerPendingOrders error:", error);
     res.status(500).json({ message: "Failed to fetch pending orders" });
+  }
+};
+
+// ─── UPDATE ORDER STATUS ─────────────────────────────────────────
+// PATCH /orders/:orderId/status
+
+exports.updateOrderStatus = async (req, res) => {
+  try {
+    if (!isValidObjectId(req.params.orderId)) {
+      return res.status(400).json({ message: "Invalid order ID" });
+    }
+
+    const { status } = req.body;
+
+    const allowedStatuses = ["pending", "confirmed", "completed", "cancelled","delivered", "rejected", "shipped"];
+
+    if (!status || !allowedStatuses.includes(status)) {
+      return res.status(400).json({
+        message: "Invalid status value",
+        allowedStatuses,
+      });
+    }
+
+    const order = await OrderModel.findById(req.params.orderId);
+
+    if (!order) {
+      return res.status(404).json({ message: "Order not found" });
+    }
+
+    const isBuyer = order.buyer.toString() === req.user._id.toString();
+    const isSeller = order.seller.toString() === req.user._id.toString();
+
+    if (!isBuyer && !isSeller) {
+      return res.status(403).json({
+        message: "You are not allowed to update this order",
+      });
+    }
+
+    if (order.status === "completed" || order.status === "cancelled") {
+      return res.status(400).json({
+        message: "Finalized orders cannot be updated",
+      });
+    }
+    
+    order.status = status;
+
+    await order.save();
+
+    const updatedOrder = await OrderModel.findById(order._id)
+      .populate("product", "title price")
+      .populate("buyer", "firstname lastname email")
+      .populate("seller", "firstname lastname email")
+      .lean();
+
+    res.status(200).json({
+      success: true,
+      message: `Order status updated to "${status}"`,
+      data: updatedOrder,
+    });
+
+  } catch (error) {
+    console.error("updateOrderStatus error:", error);
+    res.status(500).json({ message: "Failed to update order status" });
   }
 };

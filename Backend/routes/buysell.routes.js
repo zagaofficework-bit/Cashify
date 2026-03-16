@@ -70,36 +70,6 @@ router.post(
   BuySellController.cancelBuyOrder
 );
 
-////////////////////////////////////////////////////////////////////
-//// SELL ROUTES
-////////////////////////////////////////////////////////////////////
-
-/**
- * @route   POST /api/orders/sell-request
- * @desc    User submits their device to a seller for a quote
- *          → status: "pending" until seller confirms
- * @access  Private (User only)
- * @body    { sellerId, deviceDetails, expectedPrice, paymentMethod }
- */
-router.post(
-  "/sell-request",
-  authMiddleware,
-  authorize("user"),
-  BuySellController.sellDeviceToSeller
-);
-
-/**
- * @route   PATCH /api/orders/sell-request/:orderId/confirm
- * @desc    Seller confirms a user's sell request
- *          → status: "completed", payment settled
- * @access  Private (Seller only)
- */
-router.patch(
-  "/sell-request/:orderId/confirm",
-  authMiddleware,
-  authorize("seller"),
-  BuySellController.confirmSellRequest
-);
 
 ////////////////////////////////////////////////////////////////////
 //// ORDER HISTORY & PENDING
@@ -128,6 +98,18 @@ router.get(
   authMiddleware,
   authorize("seller", "user"),
   BuySellController.getMyOrders
+);
+
+/**
+ * @route   PATCH /api/orders/:orderId/status
+ * @desc    Update order status
+ * @access  Private (Seller, User)
+ */
+router.patch(
+  "/:orderId/status",
+  authMiddleware,
+  authorize("seller"),
+  BuySellController.updateOrderStatus
 );
 
 module.exports = router;
