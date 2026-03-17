@@ -28,7 +28,7 @@ import ProductDetails from "./ProductDetails";
 import MobileBrand from "../components/MobileBrand";
 import { google } from "../../res/Data/PromoCards";
 
-import Apple from "../pages/Sell-laptop/Apple";
+import Apple from "./SellUserProduct/Sell-laptop/Apple";
 
 
 
@@ -37,7 +37,7 @@ export default function Home() {
     <div className="overflow-x-hidden">
 {/* 
       <ProductDetails /> */}
-      {/* <NavMenu />
+       <NavMenu />
       <Chatbot />
       <SlidingAnimation />
       <Chatbot />
@@ -54,8 +54,8 @@ export default function Home() {
       <Recents />
       <DownloadAppBanner />
       <Info />
-      <Footer /> */}
-  <Apple/>
+      <Footer /> 
+  
     </div>
   );
 }

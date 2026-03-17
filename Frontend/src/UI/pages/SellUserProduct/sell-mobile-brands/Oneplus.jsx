@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { onePlus } from '../../../res/Data/SellBrandData'
+import { onePlus } from "../../../../res/Data/Sell-Devices-data/SellBrandData";
 import SellDevices from '../../components/SellDevices'
 
 const Oneplus = () => {

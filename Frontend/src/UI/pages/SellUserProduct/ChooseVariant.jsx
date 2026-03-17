@@ -1,26 +1,37 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-
-const devices = [
-  {
-    id: 1,
-    name: "Xiaomi Mi A2",
-    sold: "19,450+",
-    img: "https://fdn2.gsmarena.com/vv/bigpic/xiaomi-mi-a2.jpg",
-    variants: ["4 GB / 64 GB", "6 GB / 128 GB", "8 GB / 256 GB", "16 GB / 512 GB"],
-  },
-];
-
-
+import { useNavigate, useLocation } from "react-router-dom";
 
 export default function ChooseVariant() {
   const [selectedVariant, setSelectedVariant] = useState({});
 
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const product = location.state?.product;
+
+  // fallback
+  if (!product) {
+    return <div className="text-center mt-10">No product selected</div>;
+  }
+
+  // keep same structure as before
+  const devices = [
+    {
+      id: 1,
+      name: product.title,
+      img: product.img,
+      variants: [
+        "4 GB / 64 GB",
+        "6 GB / 128 GB",
+        "8 GB / 256 GB",
+        "16 GB / 512 GB",
+      ],
+    },
+  ];
+
   const handleVariant = (deviceId, variant) => {
     setSelectedVariant((prev) => ({ ...prev, [deviceId]: variant }));
   };
- const navigate = useNavigate()
-  
 
   return (
     <div className="max-h-screen bg-gray-50 flex items-center justify-center p-6">
@@ -28,6 +39,7 @@ export default function ChooseVariant() {
 
         {devices.map((device) => {
           const selected = selectedVariant[device.id];
+
           return (
             <div
               key={device.id}
@@ -44,14 +56,20 @@ export default function ChooseVariant() {
 
               {/* Content */}
               <div className="flex-1 space-y-3">
-                {/* Title + sold count */}
+                
+                {/* Title */}
                 <div>
-                  <h3 className="text-base font-semibold text-gray-900">{device.name}</h3>
+                  <h3 className="text-base font-semibold text-gray-900">
+                    {device.name}
+                  </h3>
                 </div>
 
                 {/* Variant selector */}
                 <div className="bg-gray-50 rounded-xl border border-gray-200 p-3">
-                  <p className="text-xs font-semibold text-gray-500 mb-2.5">Choose a variant</p>
+                  <p className="text-xs font-semibold text-gray-500 mb-2.5">
+                    Choose a variant
+                  </p>
+
                   <div className="flex flex-wrap gap-2">
                     {device.variants.map((v) => (
                       <button
@@ -65,14 +83,17 @@ export default function ChooseVariant() {
                       >
                         {/* Radio dot */}
                         <span
-                          className={`w-3.5 h-3.5 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-colors ${
-                            selected === v ? "border-teal-500" : "border-gray-300"
+                          className={`w-3.5 h-3.5 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
+                            selected === v
+                              ? "border-teal-500"
+                              : "border-gray-300"
                           }`}
                         >
                           {selected === v && (
                             <span className="w-1.5 h-1.5 rounded-full bg-teal-500" />
                           )}
                         </span>
+
                         {v}
                       </button>
                     ))}
@@ -85,17 +106,26 @@ export default function ChooseVariant() {
                   onClick={() => navigate(`/base`)}
                   className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 ${
                     selected
-                      ? "bg-teal-600 text-white hover:bg-teal-700 shadow-sm hover:shadow-md hover:-translate-y-0.5"  
+                      ? "bg-teal-600 text-white hover:bg-teal-700 shadow-sm hover:shadow-md hover:-translate-y-0.5"
                       : "bg-gray-100 text-gray-400 cursor-not-allowed"
-                  }`
-                }
-                  
+                  }`}
                 >
                   Get Exact Value
-                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                  <svg
+                    className="w-4 h-4"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={2.5}
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M17 8l4 4m0 0l-4 4m4-4H3"
+                    />
                   </svg>
                 </button>
+
               </div>
             </div>
           );

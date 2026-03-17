@@ -1,16 +1,16 @@
 import React from 'react'
 import NavMenu from '../../components/NavMenu';
 import SellDevices from '../../components/SellDevices';
-import {onePlus} from "../../../res/Data/Sell-tablets"
+import {apple} from "../../../../res/Data/Sell-Devices-data/Sell-tablets";
 import Brands from '../../components/Brands';
 import DownloadAppBanner from '../../components/Home-page/DownloadAppBanner';
 import Footer from '../../components/Home-page/Footer';
 
-const Oneplus = () => {
+const Apple = () => {
   return (
     <div>
         <NavMenu/>
-        <SellDevices data={onePlus} brand="Oneplus Tablet"/>
+        <SellDevices data={apple} brand="Apple Tablet"/>
         <Brands/>
         <DownloadAppBanner />
         <Footer/>
@@ -18,4 +18,4 @@ const Oneplus = () => {
   )
 }
 
-export default Oneplus
+export default Apple

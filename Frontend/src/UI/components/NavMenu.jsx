@@ -4,8 +4,8 @@ import { useNavigate } from "react-router-dom";
 
 export default function NavMenu({ mobileOpen, setMobileMenuOpen }) {
   const [mobileExpanded, setMobileExpanded] = useState(null);
-  const [openMenu, setOpenMenu]   = useState(null); // which top-level nav item is open
-  const [openSub, setOpenSub]     = useState(null); // "menuIdx-subIdx"
+  const [openMenu, setOpenMenu] = useState(null); // which top-level nav item is open
+  const [openSub, setOpenSub] = useState(null); // "menuIdx-subIdx"
   const navRef = useRef(null);
   const navigate = useNavigate();
 
@@ -50,48 +50,48 @@ export default function NavMenu({ mobileOpen, setMobileMenuOpen }) {
       title: "Sell Gadgets",
       subItems: [
         {
-          label: "Sell Phone", path:'/sell-phone'
-        },
-                {
-          label: "Sell TV", path:'/sell-tv'
-        },
-        { 
-          label: "Sell Laptops", path:'/sell-laptop' 
+          label: "Sell Phone", path: '/sell-phone'
         },
         {
-          label: "Sell Smart Watches", path:'/sell-smartwatch'
+          label: "Sell TV", path: '/sell-tv'
         },
         {
-          label: "Sell Tablets", path:'/sell-tablet'
+          label: "Sell Laptops", path: '/sell-laptop'
         },
         {
-          label: "Sell Gaming Console", path:'/sell-gaming'
+          label: "Sell Smart Watches", path: '/sell-smartwatch'
         },
         {
-          label: "Sell Speakers", path:'/sell-speaker'
+          label: "Sell Tablets", path: '/sell-tablet'
+        },
+        {
+          label: "Sell Gaming Console", path: '/sell-gaming'
+        },
+        {
+          label: "Sell Speakers", path: '/sell-speaker'
         },
       ],
     },
     {
       title: "Buy Refurbished Devices",
       subItems: [
-        { 
-          label: "Buy Phone", path:"/buy-phone"
-        },
-        { 
-          label: "Buy Laptops", path:"/buy-laptop"
+        {
+          label: "Buy Phone", path: "/buy-phone"
         },
         {
-          label: "Buy Smart Watches", path:"/buy-smartwatch"
+          label: "Buy Laptops", path: "/buy-laptop"
         },
         {
-          label: "Buy Tablets", path:"/buy-tablet"
+          label: "Buy Smart Watches", path: "/buy-smartwatch"
         },
         {
-          label: "Buy Gaming Console", path:"/buy-gaming"
+          label: "Buy Tablets", path: "/buy-tablet"
         },
         {
-          label: "Buy Speakers", path:"/buy-speaker"
+          label: "Buy Gaming Console", path: "/buy-gaming"
+        },
+        {
+          label: "Buy Speakers", path: "/buy-speaker"
         },
       ],
     },
@@ -100,7 +100,7 @@ export default function NavMenu({ mobileOpen, setMobileMenuOpen }) {
       subItems: [
         {
           label: "Find New Phone", path: '/find-  phone'
-          
+
         },
         {
           label: "Find New Laptops",
@@ -180,17 +180,15 @@ export default function NavMenu({ mobileOpen, setMobileMenuOpen }) {
                 {/* Nav label — click to open */}
                 <button
                   onMouseEnter={() => handleMenuClick(idx)}
-                  className={`flex items-center gap-1 px-2.5 py-1.5 text-sm font-medium cursor-pointer whitespace-nowrap border-b-2 transition-all duration-150 ${
-                    openMenu === idx
+                  className={`flex items-center gap-1 px-2.5 py-1.5 text-sm font-medium cursor-pointer whitespace-nowrap border-b-2 transition-all duration-150 ${openMenu === idx
                       ? "text-teal-600 border-teal-500"
                       : "text-gray-700 border-transparent hover:text-teal-600 hover:border-teal-400"
-                  }`}
+                    }`}
                 >
                   {item.title}
                   <svg
-                    className={`w-3.5 h-3.5 flex-shrink-0 transition-transform duration-200 ${
-                      openMenu === idx ? "rotate-180 text-teal-500" : "text-gray-400"
-                    }`}
+                    className={`w-3.5 h-3.5 flex-shrink-0 transition-transform duration-200 ${openMenu === idx ? "rotate-180 text-teal-500" : "text-gray-400"
+                      }`}
                     viewBox="0 0 20 20" fill="currentColor"
                   >
                     <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
@@ -217,23 +215,21 @@ export default function NavMenu({ mobileOpen, setMobileMenuOpen }) {
                             {/* Clickable sub row */}
                             <button
                               onMouseEnter={() => handleSubClick(subKey)}
-                              className={`w-full flex items-center justify-between px-4 py-2.5 text-sm font-medium transition-colors duration-100 ${
-                                isSubOpen
+                              className={`w-full flex items-center justify-between px-4 py-2.5 text-sm font-medium transition-colors duration-100 ${isSubOpen
                                   ? "bg-teal-50 text-teal-700"
                                   : "text-gray-700 hover:bg-teal-50 hover:text-teal-700"
-                              }`}
+                                }`}
                             >
-                              
+
                               <span
-                              onClick={() => sub.path && navigate(sub.path)}
-                              className={sub.path ? "cursor-pointer" : ""}
+                                onClick={() => sub.path && navigate(sub.path)}
+                                className={sub.path ? "cursor-pointer" : ""}
                               >{sub.label}</span>
-                  
+
                               {sub.subs?.length > 0 && (
                                 <svg
-                                  className={`w-3.5 h-3.5 flex-shrink-0 transition-transform duration-200 ${
-                                    isSubOpen ? "rotate-90 text-teal-500" : "text-gray-300"
-                                  }`}
+                                  className={`w-3.5 h-3.5 flex-shrink-0 transition-transform duration-200 ${isSubOpen ? "rotate-90 text-teal-500" : "text-gray-300"
+                                    }`}
                                   viewBox="0 0 20 20" fill="currentColor"
                                 >
                                   <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
@@ -282,9 +278,8 @@ export default function NavMenu({ mobileOpen, setMobileMenuOpen }) {
 
       {/* ═══════════════ MOBILE DRAWER ═══════════════ */}
       <div
-        className={`fixed top-0 left-0 h-full w-[300px] bg-white z-50 shadow-2xl transform transition-transform duration-300 md:hidden overflow-y-auto ${
-          mobileOpen ? "translate-x-0" : "-translate-x-full"
-        }`}
+        className={`fixed top-0 left-0 h-full w-[300px] bg-white z-50 shadow-2xl transform transition-transform duration-300 md:hidden overflow-y-auto ${mobileOpen ? "translate-x-0" : "-translate-x-full"
+          }`}
       >
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">

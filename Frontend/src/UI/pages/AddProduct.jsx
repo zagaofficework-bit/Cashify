@@ -195,7 +195,7 @@ function FileUpload({ label, accept, type, onFileSelect }) {
 }
 
 // Main App Component
-export default function App() {
+export default function AddProduct() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("");
