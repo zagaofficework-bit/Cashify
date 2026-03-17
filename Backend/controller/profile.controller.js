@@ -160,12 +160,13 @@ async function syncUserAddress(userId) {
   await UserModel.findByIdAndUpdate(userId, {
     defaultAddress: def
       ? {
+          street:  def.street,
           city:    def.city,
           state:   def.state,
           pincode: def.pincode,                           
           full:    `${def.street}, ${def.city}, ${def.state} - ${def.pincode}`, 
         }
-      : { city: null, state: null, pincode: null, full: null },
+      : { street: null, city: null, state: null, pincode: null, full: null },
   });
 }
 

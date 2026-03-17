@@ -61,6 +61,7 @@ const userSchema = new mongoose.Schema(
     // Used by product listings and geo queries to avoid extra joins.
 
     defaultAddress: {
+      street: { type: String, default: null },
       city: { type: String, default: null },
       state: { type: String, default: null },
       pincode: { type: String, default: null },
