@@ -97,6 +97,18 @@ const reviewUpload = multer({
   { name: "video",  maxCount: 1 },
 ]);
 
+
+// Chat Images 
+const ChatUpload = multer({
+  storage,
+  fileFilter,
+  limits: {
+    fileSize: MAX_IMAGE_SIZE,  // 5MB max
+    files: 1,
+  },
+}).single("image");
+
+
 // VALIDATE REVIEW FILE SIZES
 function validateReviewFiles(req, res, next) {
   if (req.files?.images) {
@@ -128,4 +140,5 @@ module.exports = {
   profileUpload,
   reviewUpload,
   validateReviewFiles,
+  ChatUpload,
 };

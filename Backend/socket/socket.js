@@ -1,15 +1,20 @@
 function socketHandler(io) {
-
   io.on("connection", (socket) => {
     console.log("User connected:", socket.id);
 
-    /* Join chat room */
+    // Join a chat room
     socket.on("joinRoom", (roomId) => {
       socket.join(roomId);
       console.log(`User joined room: ${roomId}`);
     });
 
-    /* typing indicator */
+    // Leave a chat room
+    socket.on("leaveRoom", (roomId) => {
+      socket.leave(roomId);
+      console.log(`User left room: ${roomId}`);
+    });
+
+    // Typing indicators
     socket.on("typing", (roomId) => {
       socket.to(roomId).emit("typing");
     });
@@ -21,9 +26,7 @@ function socketHandler(io) {
     socket.on("disconnect", () => {
       console.log("User disconnected:", socket.id);
     });
-
   });
-
 }
 
 module.exports = socketHandler;

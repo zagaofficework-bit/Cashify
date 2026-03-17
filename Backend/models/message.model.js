@@ -6,25 +6,16 @@ const messageSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
     },
-
     to: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
     },
-
-    product: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Product",
-    },
-
     message: {
       type: String,
     },
-
     image: {
       type: String,
     },
-
     messageType: {
       type: String,
       enum: ["text", "image"],

@@ -18,11 +18,8 @@ const io = new Server(server, {
   },
 });
 
-
-/* Make io available in controllers */
+// Socket 
 app.set("io", io);
-
-/* Handle socket events */
 socketHandler(io);
 
 server.listen(3000, () => {

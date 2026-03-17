@@ -1,14 +1,23 @@
 const Message = require("../models/message.model");
-const Product = require("../models/product.model");
-const cloudinary = require("../config/cloudinary");
+const uploadToCloudinary = require("../helper/cloudinaryUpload");
 const User = require("../models/user.model");
 
+/* ─────────────────────────────────────────
+   HELPER — build deterministic room ID
+───────────────────────────────────────── */
+const getRoomId = (userId1, userId2) => {
+  const users = [userId1.toString(), userId2.toString()].sort();
+  return `${users[0]}_${users[1]}`;
+};
+
+/* ─────────────────────────────────────────
+   SEND MESSAGE
+───────────────────────────────────────── */
 async function sendMessage(req, res) {
   try {
-    const { productId, receiverId, message } = req.body;
+    const { receiverId, message } = req.body;
     const senderId = req.user._id;
 
-     /* get sender and receiver */
     const sender = await User.findById(senderId);
     const receiver = await User.findById(receiverId);
 
@@ -19,49 +28,47 @@ async function sendMessage(req, res) {
       });
     }
 
-    /* ROLE VALIDATION */
-    if (sender.role === "user" && receiver.role === "user") {
+    if (sender.role === "seller" && receiver.role === "seller") {
       return res.status(403).json({
         success: false,
-        message: "Users can only chat with admin",
+        message: "Sellers can only chat with admin",
       });
     }
 
     let imageUrl = "";
-
     if (req.file) {
-      const upload = await cloudinary.uploader.upload(req.file.path, {
+      const upload = await uploadToCloudinary(req.file.buffer, {
+        resourceType: "image",
         folder: "cashify_chat",
       });
-
       imageUrl = upload.secure_url;
     }
 
     const newMessage = await Message.create({
       from: senderId,
       to: receiverId,
-      product: productId,
       message,
       image: imageUrl,
       messageType: imageUrl ? "image" : "text",
     });
 
-    /* deterministic room id */
-    const users = [senderId.toString(), receiverId.toString()].sort();
-    const roomId = `${productId}_${users[0]}_${users[1]}`;
+    const populatedMessage = await newMessage.populate([
+      { path: "from", select: "firstname lastname role" },
+      { path: "to", select: "firstname lastname role" },
+    ]);
 
+    const roomId = getRoomId(senderId, receiverId);
     const io = req.app.get("io");
-
-    io.to(roomId).emit("newMessage", newMessage);
+    io.to(roomId).emit("newMessage", populatedMessage);
 
     res.status(201).json({
       success: true,
       message: "Message sent",
-      data: newMessage,
+      data: populatedMessage,
     });
 
   } catch (error) {
-    console.error(error);
+    console.error("sendMessage error:", error);
     res.status(500).json({
       success: false,
       message: "Failed to send message",
@@ -69,15 +76,18 @@ async function sendMessage(req, res) {
   }
 }
 
+/* ─────────────────────────────────────────
+   GET MESSAGES
+───────────────────────────────────────── */
 async function getMessages(req, res) {
   try {
-    const { productId, receiverId } = req.query;
+    const { receiverId } = req.query;
     const currentUserId = req.user._id;
 
-    if (!productId || !receiverId) {
+    if (!receiverId) {
       return res.status(400).json({
         success: false,
-        message: "productId and receiverId are required",
+        message: "receiverId is required",
       });
     }
 
@@ -91,33 +101,21 @@ async function getMessages(req, res) {
       });
     }
 
-    /* enforce role restriction */
-    if (currentUser.role === "user" && receiver.role !== "admin") {
+    if (currentUser.role === "seller" && receiver.role !== "admin") {
       return res.status(403).json({
         success: false,
-        message: "Users can only fetch messages with admin",
+        message: "Sellers can only fetch messages with admin",
       });
     }
 
-    if (currentUser.role === "admin" && receiver.role !== "user") {
+    if (currentUser.role === "admin" && receiver.role !== "seller") {
       return res.status(403).json({
         success: false,
-        message: "Admin can only fetch messages with users",
-      });
-    }
-
-    /* check product exists */
-    const product = await Product.findById(productId);
-
-    if (!product) {
-      return res.status(404).json({
-        success: false,
-        message: "Product not found",
+        message: "Admin can only fetch messages with sellers",
       });
     }
 
     const messages = await Message.find({
-      product: productId,
       $or: [
         { from: currentUserId, to: receiverId },
         { from: receiverId, to: currentUserId },
@@ -127,15 +125,17 @@ async function getMessages(req, res) {
       .populate("from", "firstname lastname role")
       .populate("to", "firstname lastname role");
 
+    const roomId = getRoomId(currentUserId, receiverId);
+
     res.status(200).json({
       success: true,
+      roomId,
       count: messages.length,
       messages,
     });
 
   } catch (error) {
-    console.error(error);
-
+    console.error("getMessages error:", error);
     res.status(500).json({
       success: false,
       message: "Error fetching messages",
@@ -143,83 +143,46 @@ async function getMessages(req, res) {
   }
 }
 
-
-async function getChats(req, res) {
+/* ─────────────────────────────────────────
+   DELETE MESSAGE
+───────────────────────────────────────── */
+async function deleteMessage(req, res) {
   try {
-    const userId = req.user._id;
-
-    const chats = await Message.aggregate([
-      {
-        $match: {
-          $or: [{ from: userId }, { to: userId }],
-        },
-      },
-      { $sort: { createdAt: -1 } },
-
-      {
-        $group: {
-          _id: {
-            product: "$product",
-            user: {
-              $cond: [
-                { $eq: ["$from", userId] },
-                "$to",
-                "$from",
-              ],
-            },
-          },
-          latestMessage: { $first: "$$ROOT" },
-        },
-      },
-
-      {
-        $replaceRoot: { newRoot: "$latestMessage" },
-      },
-    ]);
-
-    res.json({
-      success: true,
-      chats,
-    });
-  } catch (error) {
-    res.status(500).json({
-      message: "Error fetching chats",
-    });
-  }
-};
-
-async function deleteChat(req, res) {
-  try {
-    const { productId, receiverId } = req.body;
+    const { messageId } = req.params;
     const currentUserId = req.user._id;
 
-    if (!productId || !receiverId) {
-      return res.status(400).json({
+    const message = await Message.findById(messageId);
+
+    if (!message) {
+      return res.status(404).json({
         success: false,
-        message: "productId and receiverId are required",
+        message: "Message not found",
       });
     }
 
-    const deletedMessages = await Message.deleteMany({
-      product: productId,
-      $or: [
-        { from: currentUserId, to: receiverId },
-        { from: receiverId, to: currentUserId },
-      ],
-    });
+    if (message.from.toString() !== currentUserId.toString()) {
+      return res.status(403).json({
+        success: false,
+        message: "You can only delete your own messages",
+      });
+    }
+
+    await Message.findByIdAndDelete(messageId);
+
+    const roomId = getRoomId(message.from, message.to);
+    const io = req.app.get("io");
+    io.to(roomId).emit("messageDeleted", { messageId });
 
     res.status(200).json({
       success: true,
-      message: "Chat deleted successfully",
-      deletedCount: deletedMessages.deletedCount,
+      message: "Message deleted",
     });
 
   } catch (error) {
-    console.error(error);
-
+    console.error("deleteMessage error:", error);
     res.status(500).json({
       success: false,
-      message: "Error deleting chat",
+      message: "Error deleting message",
     });
   }
 }
@@ -227,6 +190,5 @@ async function deleteChat(req, res) {
 module.exports = {
   sendMessage,
   getMessages,
-  getChats,
-  deleteChat,
+  deleteMessage,
 };

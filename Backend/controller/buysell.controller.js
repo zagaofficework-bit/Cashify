@@ -24,8 +24,8 @@ function calculateCommission(price, role) {
 }
 
 // ─── Buyer populate fields — includes phone + address for seller order view ───
-const BUYER_FIELDS  = "firstname lastname email mobile phone address";
-const SELLER_FIELDS = "firstname lastname email";
+const BUYER_FIELDS  = "firstname lastname email mobile phone defaultAddress";
+const SELLER_FIELDS = "firstname lastname email defaultAddress";
 
 
 // ─── PLACE BUY ORDER ──────────────────────────────────────────────────────────
