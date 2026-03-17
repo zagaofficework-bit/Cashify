@@ -4,7 +4,7 @@ export const services = [
   { title: "Buy Phone", image: "/assets/mobile.png", path: "/buy-phone" },
   { title: "Buy Laptops", image: "/assets/laptop.png", path: "/buy-laptops" },
   { title: "Find New Phone", image: "/assets/mobile.png", path: "/find-phone" },
-   { title: "Buy Smartwatches", image: "/assets/watch.png", path: "/smartwatch" },
+   { title: "Buy Smartwatches", image: "/assets/watch.png", path: "/buy-smartwatch" },
   { title: "New Accessories", image: "/assets/acc.png", path: "/accessories" },
  
 ];

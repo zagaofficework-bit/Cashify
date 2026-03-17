@@ -32,59 +32,40 @@ import YesNo from "./UI/pages/SellUserProduct/YesNo";
 import ChooseVariant from "./UI/pages/SellUserProduct/ChooseVariant"
 import DefectSelection from "./UI/pages/SellUserProduct/DefectSelection";
 import Wishlist from "./UI/pages/Wishlist";
-import Apple_watch from "./UI/pages/SellUserProduct/Sell-smart-watches/Apple_watch";
-import Samsung_watch from "./UI/pages/SellUserProduct/Sell-smart-watches/Samsung_watch";
-import Boat_watches from "./UI/pages/SellUserProduct/Sell-smart-watches/Boat_watches";
-import { Noise_watches } from "./UI/pages/SellUserProduct/Sell-smart-watches/Noise_watches";
-import Sony_speaker from "./UI/pages/SellUserProduct/Sell-smart-speaker/Sony_speaker";
-import Apple_speaker from "./UI/pages/SellUserProduct/Sell-smart-speaker/Apple_speaker";
-import Google_speaker from "./UI/pages/SellUserProduct/Sell-smart-speaker/Google_speaker";
-import Amazon_speaker from "./UI/pages/SellUserProduct/Sell-smart-speaker/Amazon_speaker";
-import Microsoft_game from "./UI/pages/SellUserProduct/Sell-gaming-console/Microsoft_game";
-import Sony_game from "./UI/pages/SellUserProduct/Sell-gaming-console/Sony_game";
-import Apple from "./UI/pages/Buy-Mobile-Brands/Apple";
-import AddProduct from "./UI/pages/AddProduct";
-import SearchByModel from "./UI/components/SearchByModel";
-import PhoneDetail from "./UI/pages/DetailedProduct/PhoneDetail"
+import Devices from "./UI/components/Devices";
 
 function App() {
 
   return (
     <>
-      <BrowserRouter>
-        <ScrollToTop />
-        <NavBar />
-        <Routes>
-          {/* Our Services Routes */}
-          <Route path="/" element={<Home />} />
-          <Route path="/home" element={<Home />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/otp" element={<OtpGeneration />} />
-          <Route path="/sell-phone" element={<SellPhones />} />
-          <Route path="/buy-gadgets" element={<BuyGadgets />} />
-          <Route path="/buy-phone" element={<BuyPhone />} />
-          <Route path="/buy-laptops" element={<BuyLaptops />} />
-          <Route path="/find-phone" element={<FindNewPhone />} />
-          <Route path="/buy-smartwatch" element={<BuyWatches />} />
-          <Route path="/accessories" element={<BuyAccessories />} />
-          <Route path="/buy-cam" element={<BuyCamera />} />
-          <Route path="/buy-audio" element={<BuyAudioDevices />} />
-          <Route path="/buy-tablet" element={<BuyTablets />} />
-          <Route path="/buy-gaming" element={<BuyGamingConsole />} />
-          <Route path="/yesno" element={<YesNo />} />
-          <Route path="/variant" element={<ChooseVariant />} />
-          <Route path="/base" element={<BasePrice />} />
-          <Route path="/defects" element={<DefectSelection />} />
-
-          {/* Sell Devices Routes */}
-          <Route path="/sell-phone" element={<SellPhones />} />
-          <Route path="/sell-laptop" element={<SellLaptops />} />
-          <Route path="/sell-tv" element={<SellTV />} />
-          <Route path="/sell-tablet" element={<SellTablet />} />
-          <Route path="/sell-gaming" element={<SellGamingConsole />} />
-          <Route path="/sell-smartwatch" element={<SellLSmartWatch />} />
-          <Route path="/sell-speaker" element={<SellSmartSpeaker />} />
+   <BrowserRouter>
+   <NavBar/>
+   <ScrollToTop/>
+    
+      <Routes>
+        {/* Our Services Routes */}
+        <Route path="/" element={<Home />} />
+        <Route path="/home" element={<Home />} />
+        <Route path="/login" element={<Login/>}/>
+        <Route path="/signup" element={<Signup/>}/>
+        <Route path="/otp" element={<OtpGeneration/>}/>
+        <Route path="/sell-phone" element={<SellPhones/>} />
+        <Route path="/buy-gadgets" element={<BuyGadgets/>} />
+        <Route path="/buy-phone" element={<BuyPhone/>} />
+        <Route path="/buy-laptops" element={<BuyLaptops/>} />
+        <Route path="/find-phone" element={<FindNewPhone/>} />
+        <Route path="/buy-smartwatch" element={<BuyWatches/>} />
+        <Route path="/accessories" element={<BuyAccessories/>} />
+        <Route path="/buy-cam" element={<BuyCamera/>} />
+        <Route path="/buy-audio" element={<BuyAudioDevices/>} />
+        <Route path="/buy-tablet" element={<BuyTablets/>} />
+        <Route path="/buy-gaming" element={<BuyGamingConsole/>} />
+        <Route path="/yesno" element={<YesNo/>} />
+        <Route path="/variant" element={<ChooseVariant/>} />
+        <Route path="/base" element={<BasePrice/>} />
+        <Route path="/defects" element={<DefectSelection/>} />
+        
+        
 
 
 

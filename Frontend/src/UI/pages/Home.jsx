@@ -34,28 +34,6 @@ import Apple from "./SellUserProduct/Sell-laptop/Apple";
 
 export default function Home() {
   return (
-    <div className="overflow-x-hidden">
-{/* 
-      <ProductDetails /> */}
-       <NavMenu />
-      <Chatbot />
-      <SlidingAnimation />
-      <Chatbot />
-      <ServiceSection />
-      <SellOldDevices />
-      <BuyRefurbishedDevices products={refurbishedProducts} />
-      <RefurbishedLaptops products={refurbishedlaptops} />
-      <StoreSection />
-      <Feedback />
-      <ArticleSection />
-      <DealComponent />
-      <FAQ />
-      <TrendingSection />
-      <Recents />
-      <DownloadAppBanner />
-      <Info />
-      <Footer /> 
-  
-    </div>
+    <></>
   );
 }

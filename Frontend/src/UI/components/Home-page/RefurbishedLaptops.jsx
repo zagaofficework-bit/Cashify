@@ -6,14 +6,12 @@ export default function BuyRefurbishedDevices({ title, products = [] }) {
     typeof window !== "undefined" ? window.innerWidth : 1200
   );
 
-  // detect screen resize
   useEffect(() => {
     const handleResize = () => setScreenWidth(window.innerWidth);
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  // Responsive visible items
   const getVisibleItems = () => {
     if (screenWidth < 640) return 2;
     if (screenWidth < 768) return 3;
@@ -24,9 +22,7 @@ export default function BuyRefurbishedDevices({ title, products = [] }) {
   const visibleItems = getVisibleItems();
 
   const next = () =>
-    setCurrentIndex((p) =>
-      p < products.length - visibleItems ? p + 1 : p
-    );
+    setCurrentIndex((p) => (p < products.length - visibleItems ? p + 1 : p));
 
   const prev = () => setCurrentIndex((p) => (p > 0 ? p - 1 : 0));
 
@@ -47,15 +43,21 @@ export default function BuyRefurbishedDevices({ title, products = [] }) {
             {products.map((product, index) => (
               <div
                 key={index}
-                className="flex-shrink-0 w-1/2 sm:w-1/3 md:w-1/4 lg:basis-1/5 p-2 md:p-4 bg-white rounded-lg shadow-md mx-1"
+                className="group flex-shrink-0 w-1/2 sm:w-1/3 md:w-1/4 lg:basis-1/5 p-2 md:p-3 bg-white rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 mx-1 cursor-pointer border border-transparent hover:border-teal-200 overflow-hidden"
               >
-                <img
-                  src={product.img}
-                  alt={product.name}
-                  className="w-full object-contain h-28 md:h-40"
-                />
+                {/* Image with zoom + teal backdrop */}
+                <div className="overflow-hidden rounded-xl bg-gray-50 group-hover:bg-teal-50 transition-colors duration-300 flex items-center justify-center h-28 md:h-40">
+                  <img
+                    src={product.img}
+                    alt={product.name}
+                    className="w-full object-contain h-28 md:h-40 group-hover:scale-110 transition-transform duration-500 ease-in-out"
+                  />
+                </div>
 
-                <h3 className="text-sm md:text-lg font-semibold text-gray-800 mb-1 md:mb-2 line-clamp-2">
+                {/* Sliding teal underline */}
+                <div className="h-0.5 w-0 group-hover:w-full bg-teal-400 transition-all duration-300 rounded-full mt-2" />
+
+                <h3 className="text-sm md:text-lg font-semibold text-gray-800 mb-1 md:mb-2 line-clamp-2 mt-2">
                   {product.name}
                 </h3>
 
@@ -94,7 +96,7 @@ export default function BuyRefurbishedDevices({ title, products = [] }) {
           <button
             onClick={prev}
             disabled={currentIndex === 0}
-            className="absolute left-0 top-1/2 -translate-y-1/2 bg-white shadow-md rounded-full w-8 h-8 md:w-10 md:h-10 flex items-center justify-center disabled:opacity-40 z-10"
+            className="absolute left-0 top-1/2 -translate-y-1/2 bg-white shadow-md rounded-full w-8 h-8 md:w-10 md:h-10 flex items-center justify-center disabled:opacity-40 z-10 hover:bg-teal-500 hover:text-white transition-colors duration-200"
           >
             &#x3c;
           </button>
@@ -102,7 +104,7 @@ export default function BuyRefurbishedDevices({ title, products = [] }) {
           <button
             onClick={next}
             disabled={currentIndex >= products.length - visibleItems}
-            className="absolute right-0 top-1/2 -translate-y-1/2 bg-white shadow-md rounded-full w-8 h-8 md:w-10 md:h-10 flex items-center justify-center disabled:opacity-40 z-10"
+            className="absolute right-0 top-1/2 -translate-y-1/2 bg-white shadow-md rounded-full w-8 h-8 md:w-10 md:h-10 flex items-center justify-center disabled:opacity-40 z-10 hover:bg-teal-500 hover:text-white transition-colors duration-200"
           >
             &#x3e;
           </button>
@@ -110,4 +112,4 @@ export default function BuyRefurbishedDevices({ title, products = [] }) {
       </div>
     </section>
   );
-}
+} 

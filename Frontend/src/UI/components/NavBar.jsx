@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import NavMenu from "./NavMenu";
@@ -72,46 +71,78 @@ export default function NavBar() {
   }, []);
 
   const handleDetectLocation = () => {
-    if (!navigator.geolocation) { alert("Geolocation not supported."); return; }
+    if (!navigator.geolocation) {
+      alert("Geolocation not supported.");
+      return;
+    }
     setLoadingGPS(true);
     navigator.geolocation.getCurrentPosition(
       async (position) => {
         const { latitude, longitude } = position.coords;
         try {
-          const res = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`);
+          const res = await fetch(
+            `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`,
+          );
           const data = await res.json();
           const addr = data.address;
-          const city = addr.city || addr.town || addr.village || addr.county || "Unknown";
+          const city =
+            addr.city || addr.town || addr.village || addr.county || "Unknown";
           const postcode = addr.postcode || "";
           setLocationLabel(postcode ? `${city} - ${postcode}` : city);
           setShowDropdown(false);
-        } catch { setLocationLabel("Location found"); setShowDropdown(false); }
-        finally { setLoadingGPS(false); }
+        } catch {
+          setLocationLabel("Location found");
+          setShowDropdown(false);
+        } finally {
+          setLoadingGPS(false);
+        }
       },
       (err) => {
         setLoadingGPS(false);
-        alert(err.code === 1 ? "Location denied. Enter pincode manually." : "Unable to get location.");
-      }
+        alert(
+          err.code === 1
+            ? "Location denied. Enter pincode manually."
+            : "Unable to get location.",
+        );
+      },
     );
   };
 
   const handlePincodeSearch = async () => {
     const trimmed = pincode.trim();
-    if (!/^\d{6}$/.test(trimmed)) { setPincodeError("Please enter a valid 6-digit pincode."); setPincodeCity(""); return; }
-    setPincodeError(""); setPincodeCity(""); setLoadingPincode(true);
+    if (!/^\d{6}$/.test(trimmed)) {
+      setPincodeError("Please enter a valid 6-digit pincode.");
+      setPincodeCity("");
+      return;
+    }
+    setPincodeError("");
+    setPincodeCity("");
+    setLoadingPincode(true);
     try {
-      const res = await fetch(`https://api.postalpincode.in/pincode/${trimmed}`);
+      const res = await fetch(
+        `https://api.postalpincode.in/pincode/${trimmed}`,
+      );
       const data = await res.json();
       if (data[0].Status === "Success" && data[0].PostOffice?.length > 0) {
         const po = data[0].PostOffice[0];
         setPincodeCity(`${po.District || po.Name}, ${po.State}`);
-      } else { setPincodeError("No city found for this pincode."); }
-    } catch { setPincodeError("Error fetching pincode data."); }
-    finally { setLoadingPincode(false); }
+      } else {
+        setPincodeError("No city found for this pincode.");
+      }
+    } catch {
+      setPincodeError("Error fetching pincode data.");
+    } finally {
+      setLoadingPincode(false);
+    }
   };
 
   const handleConfirmPincode = () => {
-    if (pincodeCity) { setLocationLabel(`${pincodeCity} - ${pincode}`); setPincode(""); setPincodeCity(""); setShowDropdown(false); }
+    if (pincodeCity) {
+      setLocationLabel(`${pincodeCity} - ${pincode}`);
+      setPincode("");
+      setPincodeCity("");
+      setShowDropdown(false);
+    }
   };
 
 
