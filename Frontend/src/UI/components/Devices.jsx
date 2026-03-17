@@ -3,28 +3,32 @@ import { devices } from "../../res/Data/Data.js"
 
 const Devices = () => {
   return (
-    <div className="max-w-7xl mx-auto px-6 py-6">
+    <div className="max-w-7xl mx-auto px-6 py-8">
 
-      <div className="grid grid-cols-4 md:grid-cols-6 lg:grid-cols-9 gap-6">
+      <div className="grid grid-cols-4 md:grid-cols-6 lg:grid-cols-9 gap-4">
 
         {devices.map((item, index) => (
-          <div key={index} className="flex flex-col items-center text-center cursor-pointer">
+          <div key={index} className="flex flex-col items-center text-center cursor-pointer group">
 
-            <div className="relative bg-gray-100 rounded-xl p-3 w-20 h-20 flex items-center justify-center hover:shadow-md transition">
+            {/* Icon box */}
+            <div className="relative bg-gray-50 border border-gray-100 rounded-2xl p-3 w-20 h-20 flex items-center justify-center shadow-sm group-hover:shadow-md group-hover:border-teal-200 group-hover:bg-teal-50 transition-all duration-200">
 
               <img
                 src={item.image}
                 alt={item.title}
-                className="w-14 h-14 object-contain"
+                className="w-12 h-12 object-contain group-hover:scale-110 transition-transform duration-200"
               />
 
-              <span className="absolute bottom-1 left-1/2 -translate-x-1/2 bg-black text-white text-[9px] px-2 py-[2px] rounded">
-                {item.tag}
-              </span>
+              {item.tag && (
+                <span className="absolute -top-2 -right-2 bg-teal-500 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full shadow-sm">
+                  {item.tag}
+                </span>
+              )}
 
             </div>
 
-            <p className="text-xs mt-2 w-24 leading-tight">
+            {/* Title */}
+            <p className="text-xs font-medium text-gray-600 mt-2 w-20 leading-tight group-hover:text-teal-600 transition-colors duration-150">
               {item.title}
             </p>
 

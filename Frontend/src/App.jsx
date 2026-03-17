@@ -32,14 +32,16 @@ import YesNo from "./UI/pages/SellUserProduct/YesNo";
 import ChooseVariant from "./UI/pages/SellUserProduct/ChooseVariant"
 import DefectSelection from "./UI/pages/SellUserProduct/DefectSelection";
 import Wishlist from "./UI/pages/Wishlist";
+import Devices from "./UI/components/Devices";
 
 function App() {
    
   return (
     <>
    <BrowserRouter>
+   <NavBar/>
    <ScrollToTop/>
-    <NavBar/>
+    
       <Routes>
         {/* Our Services Routes */}
         <Route path="/" element={<Home />} />
