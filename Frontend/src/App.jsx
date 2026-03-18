@@ -33,6 +33,7 @@ import ChooseVariant from "./UI/pages/SellUserProduct/ChooseVariant"
 import DefectSelection from "./UI/pages/SellUserProduct/DefectSelection";
 import Wishlist from "./UI/pages/Wishlist";
 import Devices from "./UI/components/Devices";
+import CompareDevices from "./UI/components/CompareDevice/CompareDevice";
 
 function App() {
 
@@ -65,6 +66,7 @@ function App() {
         <Route path="/base" element={<BasePrice/>} />
         <Route path="/defects" element={<DefectSelection/>} />
         
+        <Route path="/compare" element={<CompareDevices/>} />
         
 
 
@@ -72,9 +74,9 @@ function App() {
           <Route path="/wishlist" element={<Wishlist />} />
 
 
-          <Route path="/:id" element={<PhoneDetail />} />
+          {/* <Route path="/:id" element={<PhoneDetail />} /> */}
 
-          {/* Sell-watches-brands */}
+          {/* Sell-watches-brands
           <Route path="/apple-watch" element={<Apple_watch />} />
           <Route path="/samsung-watch" element={<Samsung_watch />} />
           <Route path="/boat-watch" element={<Boat_watches />} />
@@ -82,24 +84,24 @@ function App() {
 
 
           {/* Sell-watches-brands */}
-          <Route path="/apple-speakers" element={<Apple_speaker />} />
+          {/* <Route path="/apple-speakers" element={<Apple_speaker />} />
           <Route path="/google-speakers" element={<Google_speaker />} />
           <Route path="/sony-speakers" element={<Sony_speaker />} />
-          <Route path="/amazon-speakers" element={<Amazon_speaker />} />
+          <Route path="/amazon-speakers" element={<Amazon_speaker />} /> */}
 
           {/* Sell-Gaming-console-brands */}
-          <Route path="/microsoft-game" element={<Microsoft_game />} />
-          <Route path="/sony-game" element={<Sony_game />} />
+          {/* <Route path="/microsoft-game" element={<Microsoft_game />} />
+          <Route path="/sony-game" element={<Sony_game />} /> */}
 
           {/* Buy-mobile-brands */}
-          <Route path="/buy-apple-mobile" element={<Apple />} />
+          {/* <Route path="/buy-apple-mobile" element={<Apple />} />
           <Route path="/google-speakers" element={<Google_speaker />} />
           <Route path="/sony-speakers" element={<Sony_speaker />} />
           <Route path="/amazon-speakers" element={<Amazon_speaker />} />
 
           <Route path="/choose-variant" element={<ChooseVariant />} />
           <Route path="/add-product" element={<AddProduct />} />
-          <Route path="/serachbymodel" element={<SearchByModel />} />
+          <Route path="/serachbymodel" element={<SearchByModel />} />  */}
 
         </Routes>
 
