@@ -132,20 +132,23 @@ exports.saveLocation = async (req, res) => {
 
 
 ////////////////////////////////////////////////////////////////////
-//// SAVE AS ADDRESS — saves GPS location as a new Address document
-//// POST /api/location/save-as-address
-//// User gets GPS location → confirm → saved as address in profile
+//// SAVE AS ADDRESS — POST /api/location/save-as-address
+////
+//// Frontend sends back the pre-fetched geocoded fields so we never
+//// call reverseGeocode() again — what the user confirmed = what's saved.
 ////////////////////////////////////////////////////////////////////
 
 exports.saveAsAddress = async (req, res) => {
   try {
-    const { latitude, longitude, isDefault } = req.body;
-    const userId                             = req.user._id;
+    const {
+      latitude, longitude, isDefault,
+      street, city, state, pincode, country, full,
+    } = req.body;
+
+    const userId = req.user._id;
 
     if (!latitude || !longitude) {
-      return res.status(400).json({
-        message: "latitude and longitude are required",
-      });
+      return res.status(400).json({ message: "latitude and longitude are required" });
     }
 
     const lat = parseFloat(latitude);
@@ -155,12 +158,9 @@ exports.saveAsAddress = async (req, res) => {
       return res.status(400).json({ message: "Invalid coordinates" });
     }
 
-    // Reverse geocode
-    const geocoded = await reverseGeocode(lat, lng);
-
-    if (!geocoded.city || !geocoded.state) {
+    if (!city || !state) {
       return res.status(400).json({
-        message: "Could not determine city/state from these coordinates. Try entering address manually.",
+        message: "Could not determine city/state. Try entering your address manually.",
       });
     }
 
@@ -171,30 +171,26 @@ exports.saveAsAddress = async (req, res) => {
       await Address.updateMany({ userId }, { isDefault: false });
     }
 
+    // Prefer OpenCage's formatted string; build one if missing
+    const fullDisplay = full
+      || [street, city, state, pincode, country].filter(Boolean).join(", ");
+
     const address = await Address.create({
       userId,
-      street:    geocoded.street  || "Detected via GPS",
-      city:      geocoded.city,
-      state:     geocoded.state,
-      pincode:   geocoded.pincode || "",
-      country:   geocoded.country || "India",
+      street:    street  || "Detected via GPS",
+      city,
+      state,
+      pincode:   pincode || "",
+      country:   country || "India",
+      full:      fullDisplay,   // ← NOW saved on the Address document
       isDefault: shouldBeDefault,
     });
 
-    // Also update user's GeoJSON location + defaultAddress snapshot
     await UserModel.findByIdAndUpdate(userId, {
       $set: {
-        location: {
-          type:        "Point",
-          coordinates: [lng, lat],
-        },
+        location: { type: "Point", coordinates: [lng, lat] },
         ...(shouldBeDefault && {
-          defaultAddress: {
-            city:    geocoded.city,
-            state:   geocoded.state,
-            pincode: geocoded.pincode || null,
-            full:    geocoded.full    || null,
-          },
+          defaultAddress: { city, state, pincode: pincode || null, full: fullDisplay },
         }),
       },
     });
@@ -202,17 +198,65 @@ exports.saveAsAddress = async (req, res) => {
     res.status(201).json({
       success: true,
       message: "Location detected and saved as address",
-      data: {
-        address,
-        detectedFrom: {
-          latitude:  lat,
-          longitude: lng,
-          full:      geocoded.full,
-        },
-      },
+      data: { address, detectedFrom: { latitude: lat, longitude: lng, full: fullDisplay } },
     });
   } catch (error) {
     console.error("saveAsAddress error:", error);
     res.status(500).json({ message: "Failed to save location as address" });
+  }
+};
+
+
+////////////////////////////////////////////////////////////////////
+//// ADD ADDRESS (manual) — POST /api/profile/address
+////
+//// Builds the `full` string from the entered fields so the card
+//// displays consistently whether saved via GPS or manually.
+////////////////////////////////////////////////////////////////////
+
+exports.addAddress = async (req, res) => {
+  try {
+    const userId = req.user._id;
+    const { street, city, state, pincode, country, isDefault } = req.body;
+
+    if (!street || !city || !state || !pincode) {
+      return res.status(400).json({
+        message: "street, city, state and pincode are required",
+      });
+    }
+
+    const existingCount   = await Address.countDocuments({ userId });
+    const shouldBeDefault = existingCount === 0 ? true : !!isDefault;
+
+    if (shouldBeDefault) {
+      await Address.updateMany({ userId }, { isDefault: false });
+    }
+
+    // Build full display string for manually entered addresses
+    const fullDisplay = [street, city, state, pincode, country || "India"]
+      .filter(Boolean)
+      .join(", ");
+
+    const address = await Address.create({
+      userId,
+      street,
+      city,
+      state,
+      pincode,
+      country:   country   || "India",
+      full:      fullDisplay,
+      isDefault: shouldBeDefault,
+    });
+
+    if (shouldBeDefault) await syncUserAddress(userId);
+
+    res.status(201).json({
+      success: true,
+      message: "Address added successfully",
+      data:    address,
+    });
+  } catch (error) {
+    console.error("addAddress error:", error);
+    res.status(500).json({ message: "Failed to add address" });
   }
 };

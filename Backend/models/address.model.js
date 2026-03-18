@@ -4,50 +4,56 @@ const addressSchema = new mongoose.Schema(
   {
     // ─── OWNER ─────────────────────────────────────────────────────────────────
     userId: {
-      type:     mongoose.Schema.Types.ObjectId,
-      ref:      "User",
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
       required: [true, "User ID is required"],
     },
 
     // ─── ADDRESS FIELDS ────────────────────────────────────────────────────────
     street: {
-      type:     String,
+      type: String,
       required: [true, "Street is required"],
-      trim:     true,
+      trim: true,
     },
 
     city: {
-      type:     String,
+      type: String,
       required: [true, "City is required"],
-      trim:     true,
+      trim: true,
     },
 
     state: {
-      type:     String,
+      type: String,
       required: [true, "State is required"],
-      trim:     true,
+      trim: true,
     },
 
     pincode: {
-      type:     String,
+      type: String,
       required: [true, "Pincode is required"],
-      trim:     true,
+      trim: true,
     },
 
     country: {
-      type:     String,
+      type: String,
       required: [true, "Country is required"],
-      trim:     true,
-      default:  "India",
+      trim: true,
+      default: "India",
+    },
+
+    full: {
+      type: String,
+      trim: true,
+      default: null,
     },
 
     // ─── DEFAULT FLAG ──────────────────────────────────────────────────────────
     isDefault: {
-      type:    Boolean,
+      type: Boolean,
       default: false,
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 addressSchema.index({ userId: 1 });
