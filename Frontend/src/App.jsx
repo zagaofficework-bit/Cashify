@@ -13,93 +13,109 @@ import BuyAudioDevices from "./UI/pages/Our-Services-pages/BuyAudioDevices";
 import BuyTablets from "./UI/pages/Our-Services-pages/BuyTablets";
 import BuyGamingConsole from "./UI/pages/Our-Services-pages/BuyGamingConsole"
 
-import SellLaptops from "./UI/pages/SellDevices-pages/SellOldLaptops"
-import SellTV from "./UI/pages/SellDevices-pages/SellTV"
-import SellTablet from "./UI/pages/SellDevices-pages/SellTablet"
+import SellOldLaptops from "./UI/pages/SellDevices-pages/SellOldLaptops"
+import SellSmartWatch from "./UI/pages/SellDevices-pages/SellSmartWatch"
 import SellGamingConsole from "./UI/pages/SellDevices-pages/SellGamingConsole"
-import SellLSmartWatch from "./UI/pages/SellDevices-pages/SellSmartWatch"
+import SellTablet from "./UI/pages/SellDevices-pages/SellTablet"
 import SellSmartSpeaker from "./UI/pages/SellDevices-pages/SellSmartSpeakers"
+import SellTV from "./UI/pages/SellDevices-pages/SellTV"
+
 import Login from "./UI/pages/Login";
 import Signup from "./UI/pages/Signup";
 import OtpGeneration from "./UI/pages/OtpGeneration";
 import ScrollToTop from "./UI/components/ScrollToTop";
-import ProductDetails from "./UI/pages/ProductDetails";
-import { refurbishedProducts } from "./res/Data/DevicesData";
-import Test from "./UI/pages/test";
-import ServiceSection from "./UI/components/Home-page/ServiceSection";
+
 import BasePrice from "./UI/pages/SellUserProduct/BasePrice"
 import YesNo from "./UI/pages/SellUserProduct/YesNo";
 import ChooseVariant from "./UI/pages/SellUserProduct/ChooseVariant"
 import DefectSelection from "./UI/pages/SellUserProduct/DefectSelection";
 import Wishlist from "./UI/pages/Wishlist";
-import Devices from "./UI/components/Devices";
 
+import Apple from "./UI/pages/Buy-Mobile-Brands(Offer-pages)/Apple"
+import SearchByModel from "./UI/components/SearchByModel";
+import { phonesFilterData } from "./res/Data/SearchFilter";
+import Filter from "./UI/components/Filter";
+import {laptopsData} from "./res/Data/DeviceDetail"
+import Apple_laptops from "./UI/pages/Buy-refurbished-devices/buy-refurbished-laptops/Apple_laptops";
+import Lenovo_laptops from "./UI/pages/Buy-refurbished-devices/buy-refurbished-laptops/Lenovo_laptops";
 function App() {
 
   return (
     <>
-   <BrowserRouter>
-   <NavBar/>
-   <ScrollToTop/>
-    
-      <Routes>
-        {/* Our Services Routes */}
-        <Route path="/" element={<Home />} />
-        <Route path="/home" element={<Home />} />
-        <Route path="/login" element={<Login/>}/>
-        <Route path="/signup" element={<Signup/>}/>
-        <Route path="/otp" element={<OtpGeneration/>}/>
-        <Route path="/sell-phone" element={<SellPhones/>} />
-        <Route path="/buy-gadgets" element={<BuyGadgets/>} />
-        <Route path="/buy-phone" element={<BuyPhone/>} />
-        <Route path="/buy-laptops" element={<BuyLaptops/>} />
-        <Route path="/find-phone" element={<FindNewPhone/>} />
-        <Route path="/buy-smartwatch" element={<BuyWatches/>} />
-        <Route path="/accessories" element={<BuyAccessories/>} />
-        <Route path="/buy-cam" element={<BuyCamera/>} />
-        <Route path="/buy-audio" element={<BuyAudioDevices/>} />
-        <Route path="/buy-tablet" element={<BuyTablets/>} />
-        <Route path="/buy-gaming" element={<BuyGamingConsole/>} />
-        <Route path="/yesno" element={<YesNo/>} />
-        <Route path="/variant" element={<ChooseVariant/>} />
-        <Route path="/base" element={<BasePrice/>} />
-        <Route path="/defects" element={<DefectSelection/>} />
-        
-        
+      <BrowserRouter>
+        <NavBar />
+        <ScrollToTop />
 
+        <Routes>
+          {/* Our Services Routes */}
+          <Route path="/" element={<Home />} />
+          <Route path="/home" element={<Home />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/otp" element={<OtpGeneration />} />
 
+          {/* Sell-gadgets */}
+          <Route path="/sell-old-phone" element={<SellPhones />} />
+          <Route path="/sell-old-laptop" element={<SellOldLaptops />} />
+          <Route path="/sell-old-smartwatch" element={<SellSmartWatch />} />
+          <Route path="/sell-old-tablet" element={<SellTablet />} />
+          <Route path="/sell-old-gaming" element={<SellGamingConsole />} />
+          <Route path="/sell-old-speaker" element={<SellSmartSpeaker />} />
+          <Route path="/sell-old-tv" element={<SellTV />} />
 
+          {/* buy-gadgets */}
+          <Route path="/buy-refurbished-gadgets" element={<BuyGadgets />} />
+          <Route path="/buy-refurbished-phone" element={<BuyPhone />} />
+          <Route path="/buy-refurbished-laptop" element={<BuyLaptops />} />
+          <Route path="/buy-refurbished-smartwatch" element={<BuyWatches />} />
+          <Route path="/buy-refurbished-cam" element={<BuyCamera />} />
+          <Route path="/buy-refurbished-tablet" element={<BuyTablets />} />
+          <Route path="/buy-refurbished-gaming" element={<BuyGamingConsole />} />
+
+          <Route path="/find-new-phone" element={<FindNewPhone />} />
+          <Route path="/accessories" element={<BuyAccessories />} />
+          <Route path="/buy-audio" element={<BuyAudioDevices />} />
+
+          <Route path="/yesno" element={<YesNo />} />
+          <Route path="/variant" element={<ChooseVariant />} />
+          <Route path="/base" element={<BasePrice />} />
+          <Route path="/defects" element={<DefectSelection />} />
           <Route path="/wishlist" element={<Wishlist />} />
 
 
-          <Route path="/:id" element={<PhoneDetail />} />
+          {/* <Route path="/:id" element={<PhoneDetail />} /> */}
 
           {/* Sell-watches-brands */}
-          <Route path="/apple-watch" element={<Apple_watch />} />
+          {/* <Route path="/apple-watch" element={<Apple_watch />} />
           <Route path="/samsung-watch" element={<Samsung_watch />} />
           <Route path="/boat-watch" element={<Boat_watches />} />
-          <Route path="/noise-watch" element={<Noise_watches />} />
+          <Route path="/noise-watch" element={<Noise_watches />} /> */}
 
 
           {/* Sell-watches-brands */}
-          <Route path="/apple-speakers" element={<Apple_speaker />} />
+          {/* <Route path="/apple-speakers" element={<Apple_speaker />} />
           <Route path="/google-speakers" element={<Google_speaker />} />
           <Route path="/sony-speakers" element={<Sony_speaker />} />
-          <Route path="/amazon-speakers" element={<Amazon_speaker />} />
+          <Route path="/amazon-speakers" element={<Amazon_speaker />} /> */}
 
           {/* Sell-Gaming-console-brands */}
-          <Route path="/microsoft-game" element={<Microsoft_game />} />
-          <Route path="/sony-game" element={<Sony_game />} />
+          {/* <Route path="/microsoft-game" element={<Microsoft_game />} />
+          <Route path="/sony-game" element={<Sony_game />} /> */}
 
           {/* Buy-mobile-brands */}
-          <Route path="/buy-apple-mobile" element={<Apple />} />
+          {/* <Route path="/buy-apple-mobile" element={<Apple />} />
           <Route path="/google-speakers" element={<Google_speaker />} />
           <Route path="/sony-speakers" element={<Sony_speaker />} />
           <Route path="/amazon-speakers" element={<Amazon_speaker />} />
 
           <Route path="/choose-variant" element={<ChooseVariant />} />
-          <Route path="/add-product" element={<AddProduct />} />
-          <Route path="/serachbymodel" element={<SearchByModel />} />
+          <Route path="/add-product" element={<AddProduct />} />*/}
+
+          <Route path="/by-mobile-brand-apple" element={<Apple />} />
+          <Route path="/searchbymodel" element={<SearchByModel data={phonesFilterData} />} />
+           <Route path="/filter" element={<Filter data={laptopsData} />} />
+           <Route path="/apple-laptops" element={<Apple_laptops/>}/>
+            <Route path="/lenovo-laptops" element={<Lenovo_laptops/>}/>
 
         </Routes>
 

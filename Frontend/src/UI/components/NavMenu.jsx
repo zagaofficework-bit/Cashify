@@ -50,25 +50,25 @@ export default function NavMenu({ mobileOpen, setMobileMenuOpen }) {
       title: "Sell Gadgets",
       subItems: [
         {
-          label: "Sell Phone", path: '/sell-phone'
+          label: "Sell Phone", path: '/sell-old-phone'
         },
         {
-          label: "Sell TV", path: '/sell-tv'
+          label: "Sell TV", path: '/sell-old-tv'
         },
         {
-          label: "Sell Laptops", path: '/sell-laptop'
+          label: "Sell Laptops", path: '/sell-old-laptop'
         },
         {
-          label: "Sell Smart Watches", path: '/sell-smartwatch'
+          label: "Sell Smart Watches", path: '/sell-old-smartwatch'
         },
         {
-          label: "Sell Tablets", path: '/sell-tablet'
+          label: "Sell Tablets", path: '/sell-old-tablet'
         },
         {
-          label: "Sell Gaming Console", path: '/sell-gaming'
+          label: "Sell Gaming Console", path: '/sell-old-gaming'
         },
         {
-          label: "Sell Speakers", path: '/sell-speaker'
+          label: "Sell Speakers", path: '/sell-old-speaker'
         },
       ],
     },
@@ -76,22 +76,22 @@ export default function NavMenu({ mobileOpen, setMobileMenuOpen }) {
       title: "Buy Refurbished Devices",
       subItems: [
         {
-          label: "Buy Phone", path: "/buy-phone"
+          label: "Buy Phone", path: "/buy-refurbished-phone"
         },
         {
-          label: "Buy Laptops", path: "/buy-laptop"
+          label: "Buy Laptops", path: "/buy-refurbished-laptop"
         },
         {
-          label: "Buy Smart Watches", path: "/buy-smartwatch"
+          label: "Buy Smart Watches", path: "/buy-refurbished-smartwatch"
         },
         {
-          label: "Buy Tablets", path: "/buy-tablet"
+          label: "Buy Tablets", path: "/buy-refurbished-tablet"
         },
         {
-          label: "Buy Gaming Console", path: "/buy-gaming"
+          label: "Buy Gaming Console", path: "/buy-refurbished-gaming"
         },
         {
-          label: "Buy Speakers", path: "/buy-speaker"
+          label: "Buy Speakers", path: "/buy-refurbished-speaker"
         },
       ],
     },
@@ -99,28 +99,28 @@ export default function NavMenu({ mobileOpen, setMobileMenuOpen }) {
       title: "Find New Gadget",
       subItems: [
         {
-          label: "Find New Phone", path: '/find-  phone'
+          label: "Find New Phone", path: '/find-new-phone'
 
         },
         {
-          label: "Find New Laptops",
-          subs: ["MacBook", "HP", "Dell", "Lenovo"],
+          label: "Find New Laptops", path:"/find-new-laptop"
+          // subs: ["MacBook", "HP", "Dell", "Lenovo"],
         },
         {
-          label: "Find New Smart Watches",
-          subs: ["Apple Watch", "Amazefit", "Boat", "Bolt"],
+          label: "Find New Smart Watches",path:"/find-new-laptop"
+          // subs: ["Apple Watch", "Amazefit", "Boat", "Bolt"],
         },
         {
-          label: "Find New Tablets",
-          subs: ["iPad", "Samsung", "Lenovo", "Oneplus"],
+          label: "Find New Tablets",path:"/find-new-laptop"
+          // subs: ["iPad", "Samsung", "Lenovo", "Oneplus"],
         },
         {
-          label: "Find New Gaming Console",
-          subs: ["PlayStation", "Xbox", "Nintendo Switch", "Sony"],
+          label: "Find New Gaming Console",path:"/find-new-laptop"
+          // subs: ["PlayStation", "Xbox", "Nintendo Switch", "Sony"],
         },
         {
-          label: "Find New Speakers",
-          subs: ["Boat", "JBL", "Marshall", "Zebronics"],
+          label: "Find New Speakers",path:"/find-new-laptop"
+          // subs: ["Boat", "JBL", "Marshall", "Zebronics"],
         },
       ],
     },
@@ -130,24 +130,24 @@ export default function NavMenu({ mobileOpen, setMobileMenuOpen }) {
       subItems: [
         {
           label: "MacBook",
-          subs: [
-            "MacBook Air M2",
-            "MacBook Air M3",
-            'MacBook Pro 14"',
-            'MacBook Pro 16"',
-          ],
+          // subs: [
+          //   "MacBook Air M2",
+          //   "MacBook Air M3",
+          //   'MacBook Pro 14"',
+          //   'MacBook Pro 16"',
+          // ],
         },
         {
           label: "HP",
-          subs: ["Dell XPS", "HP Spectre", "Lenovo ThinkPad", "Asus ZenBook"],
+          // subs: ["Dell XPS", "HP Spectre", "Lenovo ThinkPad", "Asus ZenBook"],
         },
         {
           label: "Dell",
-          subs: ["ASUS ROG", "MSI Gaming", "Alienware", "Razer Blade"],
+          // subs: ["ASUS ROG", "MSI Gaming", "Alienware", "Razer Blade"],
         },
         {
           label: "Lenovo",
-          subs: ["ASUS ROG", "MSI Gaming", "Alienware", "Razer Blade"],
+          // subs: ["ASUS ROG", "MSI Gaming", "Alienware", "Razer Blade"],
         },
       ],
     },

@@ -34,6 +34,7 @@ import Apple from "./SellUserProduct/Sell-laptop/Apple";
 
 export default function Home() {
   return (
-    <></>
+    <>
+    <NavMenu/></>
   );
 }

@@ -5,6 +5,7 @@ import NavMenu from '../../components/NavMenu'
 import SearchByModel from '../../components/SearchByModel'
 import Recents from '../../components/Home-page/Recents'
 import Footer from '../../components/Home-page/Footer'
+import {phonesFilterData} from "../../../res/Data/SearchFilter";
 
 const FindNewPhone = () => {
     const videos = [
@@ -23,7 +24,7 @@ const FindNewPhone = () => {
     <div>
         <NavMenu/>
       <SlidingAnimations/>
-      <SearchByModel/>
+      <SearchByModel data={phonesFilterData}/>
       <Recents/>
        <section className="bg-gray-50 px-6 py-12">
       <div className="max-w-6xl mx-auto">
