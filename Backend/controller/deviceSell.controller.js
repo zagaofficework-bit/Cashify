@@ -634,6 +634,37 @@ exports.rejectListing = async (req, res) => {
 
 
 ////////////////////////////////////////////////////////////////////
+//// SELLER — GET THEIR OWN ACCEPTED/COMPLETED LISTINGS
+//// GET /api/device-sell/my-accepted-listings
+////////////////////////////////////////////////////////////////////
+ 
+exports.getMyAcceptedListings = async (req, res) => {
+  try {
+    const sellerId = req.user._id;
+ 
+    // Fetch all listings this seller has accepted or completed.
+    // "rejected" is excluded because the backend resets those back to "available"
+    // and clears acceptedBy, so they'd never match this seller anyway.
+    const listings = await DeviceListing.find({
+      acceptedBy: sellerId,
+      status:     { $in: ["accepted", "completed"] },
+    })
+      .sort({ acceptedAt: -1 })
+      .populate("listedBy", "firstname lastname mobile defaultAddress")
+      .lean();
+ 
+    res.status(200).json({
+      success: true,
+      count:   listings.length,
+      data:    listings,
+    });
+  } catch (error) {
+    console.error("getMyAcceptedListings error:", error);
+    res.status(500).json({ message: "Failed to fetch your accepted listings" });
+  }
+};
+
+////////////////////////////////////////////////////////////////////
 //// USER CANCELS THEIR OWN LISTING
 //// DELETE /api/device-sell/listings/:listingId
 ////////////////////////////////////////////////////////////////////

@@ -51,6 +51,13 @@ router.get(
   DeviceSellController.getMyListings
 );
 
+router.get(
+  "/my-accepted-listings",
+  authMiddleware,
+  authorize("seller"),
+  DeviceSellController.getMyAcceptedListings
+);
+
 // DELETE /api/device-sell/listings/:listingId — user cancels listing
 router.delete(
   "/listings/:listingId",

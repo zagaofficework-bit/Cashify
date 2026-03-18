@@ -41,59 +41,64 @@ exports.adminDeleteProduct = async (req, res) => {
 exports.getAllOrders = async (req, res) => {
   try {
     const { type, status, page = 1, limit = 20 } = req.query;
-
+ 
     const filter = {};
-    if (type) filter.transactionType = type;
-    if (status) filter.status = status;
-
-    const pageNum = Math.max(1, parseInt(page));
+    if (type)   filter.transactionType = type;
+    if (status) filter.status          = status;
+ 
+    const pageNum  = Math.max(1, parseInt(page));
     const limitNum = Math.min(50, Math.max(1, parseInt(limit)));
-    const skip = (pageNum - 1) * limitNum;
-
+    const skip     = (pageNum - 1) * limitNum;
+ 
     const [orders, total, commissionData] = await Promise.all([
       OrderModel.find(filter)
         .sort({ createdAt: -1 })
         .skip(skip)
         .limit(limitNum)
         .populate("product", "title price")
-        .populate("buyer", "firstname lastname role")
-        .populate("seller", "firstname lastname role")
+        .populate("buyer",   "firstname lastname role")
+        .populate("seller",  "firstname lastname role")
         .lean(),
+ 
       OrderModel.countDocuments(filter),
+ 
+      // ── Commission aggregation ──────────────────────────────────────────────
+      // Commission is ONLY earned after status === "delivered"
+      // (order model enum: "pending"|"confirmed"|"shipped"|"delivered"|"rejected"|"cancelled")
       OrderModel.aggregate([
-        { $match: { paymentStatus: "completed" } },
+        { $match: { status: "delivered" } },   // ← fixed: was paymentStatus:"completed"
         {
           $group: {
-            _id: null,
-            totalCommission: { $sum: "$commissionAmount" },
-            totalOrders: { $sum: 1 },
-            totalSaleValue: { $sum: "$salePrice" },
+            _id:            null,
+            totalCommission:  { $sum: "$commissionAmount" },
+            totalOrders:      { $sum: 1 },
+            totalSaleValue:   { $sum: "$salePrice" },
           },
         },
       ]),
     ]);
-
+ 
     const commission = commissionData[0] || {
       totalCommission: 0,
-      totalOrders: 0,
-      totalSaleValue: 0,
+      totalOrders:     0,
+      totalSaleValue:  0,
     };
-
+ 
     res.status(200).json({
       success: true,
       orders,
       commissionSummary: {
         totalCommissionEarned: commission.totalCommission,
-        totalCompletedOrders: commission.totalOrders,
-        totalPlatformSales: commission.totalSaleValue,
+        totalCompletedOrders:  commission.totalOrders,      // count of delivered orders
+        totalPlatformSales:    commission.totalSaleValue,
       },
       pagination: {
         total,
-        page: pageNum,
-        limit: limitNum,
+        page:       pageNum,
+        limit:      limitNum,
         totalPages: Math.ceil(total / limitNum),
-        hasNext: pageNum < Math.ceil(total / limitNum),
-        hasPrev: pageNum > 1,
+        hasNext:    pageNum < Math.ceil(total / limitNum),
+        hasPrev:    pageNum > 1,
       },
     });
   } catch (error) {
