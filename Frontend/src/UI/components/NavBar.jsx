@@ -147,7 +147,7 @@ export default function NavBar() {
 
 
   return (
-    <div>
+    <div className="sticky top-0 z-50" >
       <nav className="w-full bg-white shadow-md px-4 md:px-6 py-3">
         <div className="flex items-center justify-between gap-3">
           {/* Logo */}
