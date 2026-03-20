@@ -1,8 +1,8 @@
 import React from 'react'
 import { samsung } from "../../../../res/Data/Sell-Devices-data/SellBrandData";
-import SellDevices from '../../components/SellDevices'
+import SellDevices from '../../../components/SellDevices'
 
-const Samsung = () => {
+const SamsungPhone = () => {
   return (
     <div>
       <SellDevices data={samsung} brand="Samsung" />
@@ -10,4 +10,4 @@ const Samsung = () => {
   )
 }
 
-export default Samsung
+export default SamsungPhone

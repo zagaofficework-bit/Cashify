@@ -1,6 +1,6 @@
 import React from "react";
 import { apple } from "../../../../res/Data/Sell-Devices-data/SellBrandData";
-import NavMenu from "../../../components/NavMenu";
+import NavMenu from "../../../components/Header/NavMenu";
 
 
 import Brands from "../../../components/Brands";
@@ -8,7 +8,7 @@ import DownloadAppBanner from "../../../components/Home-page/DownloadAppBanner";
 import Footer from "../../../components/Home-page/Footer";
 import SellDevices from "../../../components/SellDevices";
 
-const Apple = () => {
+const ApplePhone = () => {
   
   return (
     <div>
@@ -23,4 +23,4 @@ const Apple = () => {
   );
 };
 
-export default Apple;
+export default ApplePhone;

@@ -38,7 +38,6 @@ import Filter from "./UI/components/Filter";
 import { laptopsData } from "./res/Data/DeviceDetail"
 import Apple_laptops from "./UI/pages/Buy-refurbished-devices/buy-refurbished-laptops/Apple_laptops";
 import Lenovo_laptops from "./UI/pages/Buy-refurbished-devices/buy-refurbished-laptops/Lenovo_laptops";
-<<<<<<< HEAD
 import Acer_laptops from "./UI/pages/Buy-refurbished-devices/buy-refurbished-laptops/Acer_laptops";
 import Dell_laptops from "./UI/pages/Buy-refurbished-devices/buy-refurbished-laptops/Dell_laptops";
 import FindNewLaptops from "./UI/pages/find-new-devices/findNewLaptops";
@@ -46,12 +45,11 @@ import FindNewCamera from "./UI/pages/find-new-devices/FindNewCamera";
 import FindNewSmartwatch from "./UI/pages/find-new-devices/FindNewSmartwatch";
 import FindNewTablet from "./UI/pages/find-new-devices/FindNewTablet";
 import FindNewSpeakers from "./UI/pages/find-new-devices/FindNewSpeakers";
-=======
-import PhoneDetail from "./UI/pages/DetailedProduct/PhoneDetail"
-import Category from "./UI/components/Category";
-import Shopbuy from "./UI/components/PriceUpto";
 
->>>>>>> e7ac4db530f5c874355fbfcea11e61e6d569e7c2
+import ApplePhone from "./UI/pages/SellUserProduct/sell-mobile-brands/ApplePhone"
+import Samsung from "./UI/pages/SellUserProduct/sell-mobile-brands/SamsungPhone";
+import OneplusPhone from "./UI/pages/SellUserProduct/sell-mobile-brands/OneplusPhone";
+import XiaomiPhone from "./UI/pages/SellUserProduct/sell-mobile-brands/XiaomiPhone";
 function App() {
 
   return (
@@ -77,6 +75,12 @@ function App() {
           <Route path="/sell-old-speaker" element={<SellSmartSpeaker />} />
           <Route path="/sell-old-tv" element={<SellTV />} />
 
+          {/* sell-old-phones-brands */}
+          <Route path="/sell-apple" element={<ApplePhone />} />
+          <Route path="/sell-samsung" element={<Samsung />} />
+          <Route path="/sell-oneplus" element={<OneplusPhone />} />
+          <Route path="/sell-xiaomi" element={<XiaomiPhone />} />
+
           {/* buy-gadgets */}
           <Route path="/buy-refurbished-gadgets" element={<BuyGadgets />} />
           <Route path="/buy-refurbished-phone" element={<BuyPhone />} />
@@ -95,14 +99,9 @@ function App() {
           <Route path="/base" element={<BasePrice />} />
           <Route path="/defects" element={<DefectSelection />} />
           <Route path="/wishlist" element={<Wishlist />} />
-         
+          
 
 
-<<<<<<< HEAD
-          <Route path="/:id" element={<PhoneDetail />} />
-
-=======
->>>>>>> e7ac4db530f5c874355fbfcea11e61e6d569e7c2
           {/* Sell-watches-brands */}
           {/* <Route path="/apple-watch" element={<Apple_watch />} />
           <Route path="/samsung-watch" element={<Samsung_watch />} />
@@ -130,19 +129,19 @@ function App() {
           <Route path="/buy-refurbished-laptop/apple-laptops" element={<Apple_laptops />} />
           <Route path="/buy-refurbished-laptop/lenovo-laptops" element={<Lenovo_laptops />} />
           <Route path="/buy-refurbished-laptop/acer-laptops" element={<Acer_laptops />} />
-          <Route path="/buy-refurbished-laptop/dell-laptops" element={<Dell_laptops/>} />
+          <Route path="/buy-refurbished-laptop/dell-laptops" element={<Dell_laptops />} />
 
-          {/* <Route path="/choose-variant" element={<ChooseVariant />} />
-          <Route path="/add-product" element={<AddProduct />} /> */}
+          <Route path="/choose-variant" element={<ChooseVariant />} />
+          {/* <Route path="/add-product" element={<AddProduct />} /> */}
 
           <Route path="/by-mobile-brand-apple" element={<Apple />} />
           <Route path="/searchbymodel" element={<SearchByModel data={phonesFilterData} />} />
           <Route path="/filter" element={<Filter data={laptopsData} />} />
 
-            {/* find new devices */}
-           <Route path="/find-new-laptops" element={<FindNewLaptops />} />
+          {/* find new devices */}
+          <Route path="/find-new-laptops" element={<FindNewLaptops />} />
           <Route path="/find-new-cameras" element={<FindNewCamera />} />
-           <Route path="/find-new-tablets" element={<FindNewTablet />} />
+          <Route path="/find-new-tablets" element={<FindNewTablet />} />
           <Route path="/find-new-smartwatches" element={<FindNewSmartwatch />} />
           <Route path="/find-new-gamingconsoles" element={<FindNewSpeakers />} />
           <Route path="/find-new-speakers" element={<FindNewSpeakers />} />
