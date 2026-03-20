@@ -1,6 +1,6 @@
 import React from "react";
-import VideoCard from "./VideoCard.jsx";
-import { flashSaleData } from "../../res/Data/Data.js";
+import VideoCard from "../Card/VideoCard.jsx";
+import { flashSaleData } from "../../../res/Data/Data.js";
 
 const VideoComponent = () => {
   return (

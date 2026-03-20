@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import NavMenu from "../components/NavMenu";
+import NavMenu from "../components/Header/NavMenu";
 import ServiceSection from "../components/Home-page/ServiceSection";
 import SlidingAnimation from "../components/Home-page/SlidingAnimation";
 import Chatbot from "../components/ChatBot";

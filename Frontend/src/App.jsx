@@ -1,5 +1,5 @@
 import Home from "./UI/pages/Home";
-import NavBar from "./UI/components/NavBar";
+import NavBar from "./UI/components/Header/NavBar";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import SellPhones from "./UI/pages/SellDevices-pages/SellPhones";
 import BuyPhone from "./UI/pages/Our-Services-pages/BuyPhone";
@@ -38,6 +38,7 @@ import Filter from "./UI/components/Filter";
 import { laptopsData } from "./res/Data/DeviceDetail"
 import Apple_laptops from "./UI/pages/Buy-refurbished-devices/buy-refurbished-laptops/Apple_laptops";
 import Lenovo_laptops from "./UI/pages/Buy-refurbished-devices/buy-refurbished-laptops/Lenovo_laptops";
+<<<<<<< HEAD
 import Acer_laptops from "./UI/pages/Buy-refurbished-devices/buy-refurbished-laptops/Acer_laptops";
 import Dell_laptops from "./UI/pages/Buy-refurbished-devices/buy-refurbished-laptops/Dell_laptops";
 import FindNewLaptops from "./UI/pages/find-new-devices/findNewLaptops";
@@ -45,6 +46,12 @@ import FindNewCamera from "./UI/pages/find-new-devices/FindNewCamera";
 import FindNewSmartwatch from "./UI/pages/find-new-devices/FindNewSmartwatch";
 import FindNewTablet from "./UI/pages/find-new-devices/FindNewTablet";
 import FindNewSpeakers from "./UI/pages/find-new-devices/FindNewSpeakers";
+=======
+import PhoneDetail from "./UI/pages/DetailedProduct/PhoneDetail"
+import Category from "./UI/components/Category";
+import Shopbuy from "./UI/components/PriceUpto";
+
+>>>>>>> e7ac4db530f5c874355fbfcea11e61e6d569e7c2
 function App() {
 
   return (
@@ -88,10 +95,14 @@ function App() {
           <Route path="/base" element={<BasePrice />} />
           <Route path="/defects" element={<DefectSelection />} />
           <Route path="/wishlist" element={<Wishlist />} />
+         
 
 
+<<<<<<< HEAD
           <Route path="/:id" element={<PhoneDetail />} />
 
+=======
+>>>>>>> e7ac4db530f5c874355fbfcea11e61e6d569e7c2
           {/* Sell-watches-brands */}
           {/* <Route path="/apple-watch" element={<Apple_watch />} />
           <Route path="/samsung-watch" element={<Samsung_watch />} />
