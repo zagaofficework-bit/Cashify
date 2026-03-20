@@ -1,6 +1,6 @@
 import React from 'react'
-import { google } from '../../../res/Data/PromoCards';
-import MobileBrand from '../../components/MobileBrand';
+import { google } from '../../../../../res/Data/PromoCards';
+import MobileBrand from '../../../../components/MobileBrand';
 
 const Google = () => {
   return (

@@ -103,23 +103,23 @@ export default function NavMenu({ mobileOpen, setMobileMenuOpen }) {
 
         },
         {
-          label: "Find New Laptops", path:"/find-new-laptop"
+          label: "Find New Laptops", path:"/find-new-laptops"
           // subs: ["MacBook", "HP", "Dell", "Lenovo"],
         },
         {
-          label: "Find New Smart Watches",path:"/find-new-laptop"
+          label: "Find New Smart Watches",path:"/find-new-smartwatches"
           // subs: ["Apple Watch", "Amazefit", "Boat", "Bolt"],
         },
         {
-          label: "Find New Tablets",path:"/find-new-laptop"
+          label: "Find New Tablets",path:"/find-new-tablets"
           // subs: ["iPad", "Samsung", "Lenovo", "Oneplus"],
         },
         {
-          label: "Find New Gaming Console",path:"/find-new-laptop"
+          label: "Find New Gaming Console",path:"/find-new-gamingconsoles"
           // subs: ["PlayStation", "Xbox", "Nintendo Switch", "Sony"],
         },
         {
-          label: "Find New Speakers",path:"/find-new-laptop"
+          label: "Find New Speakers",path:"/find-new-speakers"
           // subs: ["Boat", "JBL", "Marshall", "Zebronics"],
         },
       ],
@@ -129,7 +129,7 @@ export default function NavMenu({ mobileOpen, setMobileMenuOpen }) {
       tit: "Top Brands",
       subItems: [
         {
-          label: "MacBook",
+          label: "Apple",path:"/buy-refurbished-laptop/apple-laptops"
           // subs: [
           //   "MacBook Air M2",
           //   "MacBook Air M3",
@@ -138,15 +138,15 @@ export default function NavMenu({ mobileOpen, setMobileMenuOpen }) {
           // ],
         },
         {
-          label: "HP",
+          label: "Acer",path:"/buy-refurbished-laptop/acer-laptops"
           // subs: ["Dell XPS", "HP Spectre", "Lenovo ThinkPad", "Asus ZenBook"],
         },
         {
-          label: "Dell",
+          label: "Dell",path:"/buy-refurbished-laptop/dell-laptops"
           // subs: ["ASUS ROG", "MSI Gaming", "Alienware", "Razer Blade"],
         },
         {
-          label: "Lenovo",
+          label: "Lenovo",path:"/buy-refurbished-laptop/lenovo-laptops"
           // subs: ["ASUS ROG", "MSI Gaming", "Alienware", "Razer Blade"],
         },
       ],

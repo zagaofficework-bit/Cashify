@@ -30,14 +30,21 @@ import YesNo from "./UI/pages/SellUserProduct/YesNo";
 import ChooseVariant from "./UI/pages/SellUserProduct/ChooseVariant"
 import DefectSelection from "./UI/pages/SellUserProduct/DefectSelection";
 import Wishlist from "./UI/pages/Wishlist";
-
-import Apple from "./UI/pages/Buy-Mobile-Brands(Offer-pages)/Apple"
+import PhoneDetail from "./UI/pages/DetailedProduct/PhoneDetail";
+import Apple from "./UI/pages/Buy-Devices/Buy-Mobile-Brands(Offer-pages)/Apple"
 import SearchByModel from "./UI/components/SearchByModel";
 import { phonesFilterData } from "./res/Data/SearchFilter";
 import Filter from "./UI/components/Filter";
-import {laptopsData} from "./res/Data/DeviceDetail"
+import { laptopsData } from "./res/Data/DeviceDetail"
 import Apple_laptops from "./UI/pages/Buy-refurbished-devices/buy-refurbished-laptops/Apple_laptops";
 import Lenovo_laptops from "./UI/pages/Buy-refurbished-devices/buy-refurbished-laptops/Lenovo_laptops";
+import Acer_laptops from "./UI/pages/Buy-refurbished-devices/buy-refurbished-laptops/Acer_laptops";
+import Dell_laptops from "./UI/pages/Buy-refurbished-devices/buy-refurbished-laptops/Dell_laptops";
+import FindNewLaptops from "./UI/pages/find-new-devices/findNewLaptops";
+import FindNewCamera from "./UI/pages/find-new-devices/FindNewCamera";
+import FindNewSmartwatch from "./UI/pages/find-new-devices/FindNewSmartwatch";
+import FindNewTablet from "./UI/pages/find-new-devices/FindNewTablet";
+import FindNewSpeakers from "./UI/pages/find-new-devices/FindNewSpeakers";
 function App() {
 
   return (
@@ -83,7 +90,7 @@ function App() {
           <Route path="/wishlist" element={<Wishlist />} />
 
 
-          {/* <Route path="/:id" element={<PhoneDetail />} /> */}
+          <Route path="/:id" element={<PhoneDetail />} />
 
           {/* Sell-watches-brands */}
           {/* <Route path="/apple-watch" element={<Apple_watch />} />
@@ -106,16 +113,28 @@ function App() {
           {/* <Route path="/buy-apple-mobile" element={<Apple />} />
           <Route path="/google-speakers" element={<Google_speaker />} />
           <Route path="/sony-speakers" element={<Sony_speaker />} />
-          <Route path="/amazon-speakers" element={<Amazon_speaker />} />
+          <Route path="/amazon-speakers" element={<Amazon_speaker />} />*/}
 
-          <Route path="/choose-variant" element={<ChooseVariant />} />
-          <Route path="/add-product" element={<AddProduct />} />*/}
+          {/* Buy Refurbished laptops brands */}
+          <Route path="/buy-refurbished-laptop/apple-laptops" element={<Apple_laptops />} />
+          <Route path="/buy-refurbished-laptop/lenovo-laptops" element={<Lenovo_laptops />} />
+          <Route path="/buy-refurbished-laptop/acer-laptops" element={<Acer_laptops />} />
+          <Route path="/buy-refurbished-laptop/dell-laptops" element={<Dell_laptops/>} />
+
+          {/* <Route path="/choose-variant" element={<ChooseVariant />} />
+          <Route path="/add-product" element={<AddProduct />} /> */}
 
           <Route path="/by-mobile-brand-apple" element={<Apple />} />
           <Route path="/searchbymodel" element={<SearchByModel data={phonesFilterData} />} />
-           <Route path="/filter" element={<Filter data={laptopsData} />} />
-           <Route path="/apple-laptops" element={<Apple_laptops/>}/>
-            <Route path="/lenovo-laptops" element={<Lenovo_laptops/>}/>
+          <Route path="/filter" element={<Filter data={laptopsData} />} />
+
+            {/* find new devices */}
+           <Route path="/find-new-laptops" element={<FindNewLaptops />} />
+          <Route path="/find-new-cameras" element={<FindNewCamera />} />
+           <Route path="/find-new-tablets" element={<FindNewTablet />} />
+          <Route path="/find-new-smartwatches" element={<FindNewSmartwatch />} />
+          <Route path="/find-new-gamingconsoles" element={<FindNewSpeakers />} />
+          <Route path="/find-new-speakers" element={<FindNewSpeakers />} />
 
         </Routes>
 
