@@ -1,6 +1,6 @@
 import React from "react";
-import NavBar from "../../components/NavBar";
-import NavMenu from "../../components/NavMenu";
+import NavBar from "../../components/Header/NavBar";
+import NavMenu from "../../components/Header/NavMenu";
 import SlidingAnimation from "../../components/Home-page/SlidingAnimation";
 
 import Devices from "../../components/Devices";

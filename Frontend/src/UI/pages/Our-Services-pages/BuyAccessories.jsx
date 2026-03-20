@@ -1,5 +1,5 @@
 import React from "react";
-import NavMenu from "../../components/NavMenu";
+import NavMenu from "../../components/Header/NavMenu";
 import BuyRefurbishedDevices from "../../components/Home-page/BuyRefurbishedDevices";
 import Footer from "../../components/Home-page/Footer";
 import {refurbishedProducts} from "../../../res/Data/DevicesData";
