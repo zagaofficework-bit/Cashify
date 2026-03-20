@@ -12,7 +12,7 @@ import BuyCamera from "./UI/pages/Our-Services-pages/BuyCamera";
 import BuyAudioDevices from "./UI/pages/Our-Services-pages/BuyAudioDevices";
 import BuyTablets from "./UI/pages/Our-Services-pages/BuyTablets";
 import BuyGamingConsole from "./UI/pages/Our-Services-pages/BuyGamingConsole"
-
+import PhoneDetail from './UI/pages/DetailedProduct/PhoneDetail'
 import SellLaptops from "./UI/pages/SellDevices-pages/SellOldLaptops"
 import SellTV from "./UI/pages/SellDevices-pages/SellTV"
 import SellTablet from "./UI/pages/SellDevices-pages/SellTablet"
@@ -67,8 +67,8 @@ function App() {
         <Route path="/defects" element={<DefectSelection/>} />
         
         <Route path="/compare" element={<CompareDevices/>} />
-        
-
+        <Route path="/comp" element={<PhoneDetail/>} />
+      
 
 
           <Route path="/wishlist" element={<Wishlist />} />
