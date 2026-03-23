@@ -482,6 +482,172 @@ exports.getListings = async (req, res) => {
 };
 
 ////////////////////////////////////////////////////////////////////
+//// GET NEARBY DEVICE LISTINGS — for "Sell devices near you"
+//// GET /api/device-sell/listings/nearby
+////////////////////////////////////////////////////////////////////
+
+exports.getNearbyListings = async (req, res) => {
+  try {
+    let {
+      latitude,
+      longitude,
+      radius    = 10,
+      category,
+      page      = 1,
+      limit     = 20,
+    } = req.query;
+
+    // Use saved user location if no coords provided
+    if (!latitude || !longitude) {
+      if (req.user?.location?.coordinates) {
+        const [savedLng, savedLat] = req.user.location.coordinates;
+        if (savedLng !== 0 || savedLat !== 0) {
+          latitude  = savedLat;
+          longitude = savedLng;
+        }
+      }
+    }
+
+    if (!latitude || !longitude) {
+      return res.status(400).json({
+        message: "Location required. Provide ?latitude=&longitude= or save your location first",
+      });
+    }
+
+    const lat     = parseFloat(latitude);
+    const lng     = parseFloat(longitude);
+    const radiusM = Number(radius) * 1000;
+
+    const pageNum  = Math.max(1, parseInt(page));
+    const limitNum = Math.min(50, Math.max(1, parseInt(limit)));
+    const skip     = (pageNum - 1) * limitNum;
+
+    // DeviceListing doesn't have GeoJSON location
+    // so we join with User collection to get their location
+    const pipeline = [
+      {
+        // Join with users to get their location
+        $lookup: {
+          from:         "users",
+          localField:   "listedBy",
+          foreignField: "_id",
+          as:           "user",
+        },
+      },
+      { $unwind: "$user" },
+      {
+        // Filter by distance using user's location
+        $match: {
+          status:              "available",
+          ...(category && { category }),
+          "user.location": {
+            $geoWithin: {
+              $centerSphere: [[lng, lat], Number(radius) / 6378.1],
+            },
+          },
+        },
+      },
+      {
+        // Calculate distance manually using $addFields
+        $addFields: {
+          distance: {
+            $let: {
+              vars: {
+                lat1: lat,
+                lon1: lng,
+                lat2: { $arrayElemAt: ["$user.location.coordinates", 1] },
+                lon2: { $arrayElemAt: ["$user.location.coordinates", 0] },
+              },
+              in: {
+                // Haversine approximation in km
+                $multiply: [
+                  6371,
+                  {
+                    $acos: {
+                      $add: [
+                        {
+                          $multiply: [
+                            { $sin: { $degreesToRadians: "$$lat1" } },
+                            { $sin: { $degreesToRadians: "$$lat2" } },
+                          ],
+                        },
+                        {
+                          $multiply: [
+                            { $cos: { $degreesToRadians: "$$lat1" } },
+                            { $cos: { $degreesToRadians: "$$lat2" } },
+                            { $cos: { $subtract: [{ $degreesToRadians: "$$lon2" }, { $degreesToRadians: "$$lon1" }] } },
+                          ],
+                        },
+                      ],
+                    },
+                  },
+                ],
+              },
+            },
+          },
+        },
+      },
+      { $sort:  { distance: 1 } },
+      { $skip:  skip },
+      { $limit: limitNum },
+      {
+        $project: {
+          brand:        1,
+          category:     1,
+          model:        1,
+          storage:      1,
+          ram:          1,
+          image:        1,
+          finalPrice:   1,
+          basePrice:    1,
+          status:       1,
+          distance:     1,
+          createdAt:    1,
+          evaluation: {
+            canMakeCalls:   1,
+            touchWorking:   1,
+            originalScreen: 1,
+          },
+          listedBy: {
+            _id:            "$user._id",
+            firstname:      "$user.firstname",
+            defaultAddress: "$user.defaultAddress",
+          },
+        },
+      },
+    ];
+
+    const [listings, total] = await Promise.all([
+      DeviceListing.aggregate(pipeline),
+      DeviceListing.countDocuments({
+        status: "available",
+        ...(category && { category }),
+      }),
+    ]);
+
+    res.status(200).json({
+      success: true,
+      meta: {
+        userLocation: { latitude: lat, longitude: lng },
+        radiusKm:     Number(radius),
+      },
+      pagination: {
+        total,
+        page:       pageNum,
+        limit:      limitNum,
+        totalPages: Math.ceil(total / limitNum),
+        hasNext:    pageNum < Math.ceil(total / limitNum),
+        hasPrev:    pageNum > 1,
+      },
+      data: listings,
+    });
+  } catch (error) {
+    console.error("getNearbyListings error:", error);
+    res.status(500).json({ message: "Failed to fetch nearby listings" });
+  }
+};
+
+////////////////////////////////////////////////////////////////////
 //// SELLER ACCEPTS LISTING
 //// POST /api/device-sell/listings/:listingId/accept
 ////////////////////////////////////////////////////////////////////

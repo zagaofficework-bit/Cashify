@@ -140,6 +140,123 @@ exports.getProducts = async (query) => {
   }
 
   ////////////////////////////////////////////////////////////////////
+//// GET NEARBY PRODUCTS
+//// Used for "Devices near you" section like Swiggy nearby
+////////////////////////////////////////////////////////////////////
+
+exports.getNearbyProducts = async ({
+  latitude,
+  longitude,
+  radius    = 10,    // km — default 10km
+  category,
+  deviceType,
+  limit     = 20,
+  page      = 1,
+}) => {
+  const lng     = Number(longitude);
+  const lat     = Number(latitude);
+  const radiusM = Number(radius) * 1000;  // km → meters
+
+  const pageNum  = Math.max(1, parseInt(page));
+  const limitNum = Math.min(50, Math.max(1, parseInt(limit)));
+  const skip     = (pageNum - 1) * limitNum;
+
+  // Base filter inside $geoNear query
+  const baseFilter = { status: "available" };
+  if (category)   baseFilter.category   = category;
+  if (deviceType) baseFilter.deviceType = deviceType;
+
+  const pipeline = [
+    {
+      $geoNear: {
+        near:               { type: "Point", coordinates: [lng, lat] },
+        distanceField:      "distance",      // adds distance field in meters
+        maxDistance:        radiusM,
+        spherical:          true,
+        distanceMultiplier: 0.001,           // convert to km
+        query:              baseFilter,
+      },
+    },
+    { $sort: { distance: 1 } },            // nearest first
+    { $skip: skip },
+    { $limit: limitNum },
+    {
+      $lookup: {
+        from:         "users",
+        localField:   "listedBy",
+        foreignField: "_id",
+        as:           "listedBy",
+        pipeline: [
+          {
+            $project: {
+              firstname:      1,
+              lastname:       1,
+              role:           1,
+              defaultAddress: 1,
+            },
+          },
+        ],
+      },
+    },
+    { $unwind: { path: "$listedBy", preserveNullAndEmptyArrays: true } },
+    {
+      // Only return fields needed for card display
+      $project: {
+        title:        1,
+        brand:        1,
+        category:     1,
+        deviceType:   1,
+        condition:    1,
+        storage:      1,
+        color:        1,
+        price:        1,
+        originalPrice: 1,
+        images:       { $slice: ["$images", 1] },  // only first image
+        rating:       1,
+        status:       1,
+        address:      1,
+        listedBy:     1,
+        distance:     1,   // km from user
+        createdAt:    1,
+      },
+    },
+  ];
+
+  // Count for pagination — use $geoWithin for countDocuments
+  const countFilter = {
+    ...baseFilter,
+    location: {
+      $geoWithin: {
+        $centerSphere: [[lng, lat], Number(radius) / 6378.1],
+      },
+    },
+  };
+
+  const Product = require("../models/product.model");
+
+  const [products, total] = await Promise.all([
+    Product.aggregate(pipeline),
+    Product.countDocuments(countFilter),
+  ]);
+
+  return {
+    products,
+    pagination: {
+      total,
+      page:       pageNum,
+      limit:      limitNum,
+      totalPages: Math.ceil(total / limitNum),
+      hasNext:    pageNum < Math.ceil(total / limitNum),
+      hasPrev:    pageNum > 1,
+    },
+    meta: {
+      userLocation: { latitude: lat, longitude: lng },
+      radiusKm:     Number(radius),
+    },
+  };
+};
+
+  ////////////////////////////////////////////////////////////////////
   //// NORMAL QUERY
   ////////////////////////////////////////////////////////////////////
 

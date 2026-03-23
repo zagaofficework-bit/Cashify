@@ -58,6 +58,19 @@ router.get(
   DeviceSellController.getMyAcceptedListings
 );
 
+/**
+ * @route   GET /api/device-sell/listings/nearby
+ * @desc    Get device sell listings near user
+ * @access  Private (Seller)
+ * @query   ?latitude=19.07&longitude=72.87&radius=10&category=mobile
+ */
+router.get(
+  "/listings/nearby",
+  authMiddleware,
+  authorize("seller"),
+  DeviceSellController.getNearbyListings
+);
+
 // DELETE /api/device-sell/listings/:listingId — user cancels listing
 router.delete(
   "/listings/:listingId",

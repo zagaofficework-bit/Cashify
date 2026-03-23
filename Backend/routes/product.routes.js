@@ -106,6 +106,19 @@ router.post(
   ProductController.createProduct,
 );
 
+/**
+ * @route   GET /api/products/nearby
+ * @desc    Get products near user's location — like Swiggy nearby
+ * @access  Public (coords from query) or Private (uses saved location)
+ * @query   ?latitude=19.07&longitude=72.87&radius=10&category=mobile
+ * ⚠️ Must be before /:id
+ */
+router.get(
+  "/nearby",
+  optionalAuthenticate,   // attach user if token present — to use saved location
+  ProductController.getNearbyProducts
+);
+
 ////////////////////////////////////////////////////////////////////
 //// DYNAMIC :id ROUTES — always last
 ////////////////////////////////////////////////////////////////////

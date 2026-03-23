@@ -89,14 +89,4 @@ reviewSchema.index({ product: 1, createdAt: -1 });
 reviewSchema.index({ author: 1 });
 reviewSchema.index({ parentReview: 1 });
 
-// ─── ONE ROOT REVIEW PER USER PER PRODUCT ─────────────────────────────────
-// Only enforce uniqueness for root reviews (parentReview = null)
-reviewSchema.index(
-  { product: 1, author: 1 },
-  {
-    unique: true,
-    partialFilterExpression: { parentReview: null }, // only root reviews
-  },
-);
-
 module.exports = mongoose.model("Review", reviewSchema);

@@ -8,10 +8,14 @@ function isValidObjectId(id) {
   return mongoose.Types.ObjectId.isValid(id);
 }
 
-// ─── ADD ROOT REVIEW ───────────────────────────────────────────────────────
-// POST /api/products/:productId/reviews
-// Anyone logged in can review EXCEPT the product owner
+// ─── PASTE THESE into review.controller.js ────────────────────────────────────
+// Changes:
+//   addReview  → media allowed only if user has NO existing review with media
+//   addReply   → media completely blocked (files silently ignored + validation skipped)
 
+const MAX_REVIEWS_PER_USER = 3;
+
+// ─── ADD ROOT REVIEW ──────────────────────────────────────────────────────────
 exports.addReview = async (req, res) => {
   try {
     const { productId } = req.params;
@@ -26,60 +30,64 @@ exports.addReview = async (req, res) => {
     if (!comment?.trim()) {
       return res.status(400).json({ message: "Comment is required" });
     }
-
     if (!rating || rating < 1 || rating > 5) {
-      return res.status(400).json({ message: "Rating is required and must be between 1 and 5" });
+      return res.status(400).json({ message: "Rating must be between 1 and 5" });
     }
 
-    // Check product exists
     const product = await Product.findById(productId).lean();
     if (!product) {
       return res.status(404).json({ message: "Product not found" });
     }
 
-    // ✅ Block owner from reviewing their own product
     if (product.listedBy.toString() === userId.toString()) {
-      return res.status(403).json({
-        message: "You cannot review your own product",
-      });
+      return res.status(403).json({ message: "You cannot review your own product" });
     }
 
-    // ✅ Duplicate review check — one review per user per product
-    const existingReview = await Review.findOne({
+    // Count existing root reviews by this user on this product
+    const existingReviews = await Review.find({
       product:      productId,
       author:       userId,
       parentReview: null,
     }).lean();
 
-    if (existingReview) {
+    if (existingReviews.length >= MAX_REVIEWS_PER_USER) {
       return res.status(409).json({
-        message: "You have already reviewed this product",
+        message: `You can add up to ${MAX_REVIEWS_PER_USER} reviews per product. Delete one to add another.`,
       });
     }
 
-    // ── Upload images ───────────────────────────────────────────────────────
-    let imageUrls = [];
-    if (req.files?.images?.length > 0) {
-      const results = await Promise.all(
-        req.files.images.map((f) =>
-          uploadToCloudinary(f.buffer, {
-            resourceType: "image",
-            folder:       "reviews",
-          })
-        )
-      );
-      imageUrls = results.map((r) => r.secure_url);
+    // ── Media: only allowed if user has NO existing review with images/video ──
+    // This means only ONE of their reviews can have media attached.
+    const hasMediaReview = existingReviews.some(
+      r => (r.images?.length > 0) || r.video
+    );
+
+    const hasIncomingMedia =
+      (req.files?.images?.length > 0) || (req.files?.video?.length > 0);
+
+    if (hasIncomingMedia && hasMediaReview) {
+      return res.status(409).json({
+        message: "You can only attach images/video to one of your reviews per product. Delete your existing media review to add media here.",
+      });
     }
 
-    // ── Upload video ────────────────────────────────────────────────────────
+    // ── Upload images ─────────────────────────────────────────────────────────
+    let imageUrls = [];
+    if (!hasMediaReview && req.files?.images?.length > 0) {
+      const results = await Promise.all(
+        req.files.images.map(f =>
+          uploadToCloudinary(f.buffer, { resourceType: "image", folder: "reviews" })
+        )
+      );
+      imageUrls = results.map(r => r.secure_url);
+    }
+
+    // ── Upload video ──────────────────────────────────────────────────────────
     let videoUrl = null;
-    if (req.files?.video?.length > 0) {
+    if (!hasMediaReview && req.files?.video?.length > 0) {
       const result = await uploadToCloudinary(
         req.files.video[0].buffer,
-        {
-          resourceType: "video",
-          folder:       "reviews",
-        }
+        { resourceType: "video", folder: "reviews" }
       );
       videoUrl = result.secure_url;
     }
@@ -93,8 +101,6 @@ exports.addReview = async (req, res) => {
       depth:              0,
       images:             imageUrls,
       video:              videoUrl,
-
-      // ✅ No longer tied to an order
       orderId:            null,
       isVerifiedPurchase: false,
     });
@@ -111,18 +117,14 @@ exports.addReview = async (req, res) => {
       data:    populated,
     });
   } catch (error) {
-    if (error.code === 11000) {
-      return res.status(409).json({ message: "You have already reviewed this product" });
-    }
     console.error("addReview error:", error);
     res.status(500).json({ message: "Failed to add review" });
   }
 };
 
-// ─── ADD REPLY ─────────────────────────────────────────────────────────────
-// POST /api/products/:productId/reviews/:reviewId/reply
-// Anyone logged in can reply — no purchase required
 
+// ─── ADD REPLY ────────────────────────────────────────────────────────────────
+// Replies never get media — files are ignored even if sent
 exports.addReply = async (req, res) => {
   try {
     const { productId, reviewId } = req.params;
@@ -137,46 +139,19 @@ exports.addReply = async (req, res) => {
       return res.status(400).json({ message: "Comment is required" });
     }
 
-    const parent = await Review.findOne({
-      _id:     reviewId,
-      product: productId,
-    }).lean();
-
-    if (!parent) {
-      return res.status(404).json({ message: "Review not found" });
-    }
-
-    if (parent.depth >= 2) {
+    // ── Block media on replies ─────────────────────────────────────────────
+    if ((req.files?.images?.length > 0) || (req.files?.video?.length > 0)) {
       return res.status(400).json({
-        message: "Maximum reply depth reached",
+        message: "Replies cannot include images or videos.",
       });
     }
 
-    // ── Upload images ───────────────────────────────────────────────────────
-    let imageUrls = [];
-    if (req.files?.images?.length > 0) {
-      const results = await Promise.all(
-        req.files.images.map((f) =>
-          uploadToCloudinary(f.buffer, {
-            resourceType: "image",
-            folder:       "reviews",
-          })
-        )
-      );
-      imageUrls = results.map((r) => r.secure_url);
+    const parent = await Review.findOne({ _id: reviewId, product: productId }).lean();
+    if (!parent) {
+      return res.status(404).json({ message: "Review not found" });
     }
-
-    // ── Upload video ────────────────────────────────────────────────────────
-    let videoUrl = null;
-    if (req.files?.video?.length > 0) {
-      const result = await uploadToCloudinary(
-        req.files.video[0].buffer,
-        {
-          resourceType: "video",
-          folder:       "reviews",
-        }
-      );
-      videoUrl = result.secure_url;
+    if (parent.depth >= 2) {
+      return res.status(400).json({ message: "Maximum reply depth reached" });
     }
 
     const reply = await Review.create({
@@ -186,8 +161,8 @@ exports.addReply = async (req, res) => {
       rating:       null,
       parentReview: reviewId,
       depth:        parent.depth + 1,
-      images:       imageUrls,
-      video:        videoUrl,
+      images:       [],   // always empty on replies
+      video:        null, // always null on replies
     });
 
     const populated = await Review.findById(reply._id)
@@ -204,7 +179,6 @@ exports.addReply = async (req, res) => {
     res.status(500).json({ message: "Failed to add reply" });
   }
 };
-
 
 // ─── GET REVIEWS FOR A PRODUCT ─────────────────────────────────────────────
 // GET /api/products/:productId/reviews
@@ -420,43 +394,69 @@ exports.editReview = async (req, res) => {
   }
 };
 
-
-// ─── DELETE REVIEW (SOFT) ──────────────────────────────────────────────────
+// ─── DELETE REVIEW (HARD) ──────────────────────────────────────────────────
 // DELETE /api/products/:productId/reviews/:reviewId
-// Soft delete — shows as [deleted] like Reddit, keeps replies intact
+//
+// Hard delete — removes from DB completely so user can review again.
+// Also deletes all nested replies (depth 1 & 2) under this review.
+//
+// Who can delete:
+//   ✅ The review AUTHOR — can re-review after deleting
+//   ✅ The PRODUCT OWNER (seller) — can remove bad reviews on their listing
+//   ❌ Admin — no permission
+//   ❌ Other sellers — cannot touch reviews on products they don't own
 
 exports.deleteReview = async (req, res) => {
   try {
-    const { reviewId } = req.params;
-    const userId       = req.user._id;
+    const { productId, reviewId } = req.params;
+    const userId                  = req.user._id;
 
     if (!isValidObjectId(reviewId)) {
       return res.status(400).json({ message: "Invalid review ID" });
     }
 
-    const review = await Review.findOne({
-      _id:    reviewId,
-      $or:    [{ author: userId }, { _: req.user.role === "admin" }],
-    });
-
-    // Allow author or admin to delete
-    const isAuthor = review?.author?.toString() === userId.toString();
-    const isAdmin  = req.user.role === "admin";
-
-    const target = await Review.findById(reviewId);
-    if (!target) {
+    const review = await Review.findById(reviewId);
+    if (!review) {
       return res.status(404).json({ message: "Review not found" });
     }
 
-    if (!isAuthor && !isAdmin) {
-      return res.status(403).json({ message: "Not authorized to delete this review" });
+    // ── Authorization ─────────────────────────────────────────────────────────
+    const isAuthor = review.author.toString() === userId.toString();
+
+    let isProductOwner = false;
+    if (!isAuthor && productId && isValidObjectId(productId)) {
+      const product = await Product.findById(productId).select("listedBy").lean();
+      isProductOwner = product?.listedBy?.toString() === userId.toString();
     }
 
-    await Review.findByIdAndUpdate(reviewId, { isDeleted: true });
+    if (!isAuthor && !isProductOwner) {
+      return res.status(403).json({
+        message: "You can only delete your own reviews or reviews on your own products",
+      });
+    }
 
-    // Recalculate rating if root review deleted
-    if (target.parentReview === null) {
-      await updateProductRating(target.product.toString());
+    // ── Hard delete: remove this review + all its nested replies ──────────────
+    // Depth 1 replies (direct children)
+    const directReplies = await Review.find({ parentReview: reviewId }).lean();
+
+    // Depth 2 replies (children of children)
+    const depth2Ids = [];
+    for (const reply of directReplies) {
+      const deeper = await Review.find({ parentReview: reply._id }).lean();
+      depth2Ids.push(...deeper.map(r => r._id));
+    }
+
+    if (depth2Ids.length > 0) {
+      await Review.deleteMany({ _id: { $in: depth2Ids } });
+    }
+    if (directReplies.length > 0) {
+      await Review.deleteMany({ parentReview: reviewId });
+    }
+    await Review.findByIdAndDelete(reviewId);
+
+    // ── Recalculate product rating if root review deleted ─────────────────────
+    if (review.parentReview === null) {
+      await updateProductRating(review.product.toString());
     }
 
     res.status(200).json({
