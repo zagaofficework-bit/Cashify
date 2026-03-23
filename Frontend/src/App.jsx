@@ -54,6 +54,7 @@ import Blogs from "./UI/pages/Support/Blogs";
 import Support from "./UI/pages/Support/Support";
 import About from "./UI/pages/Support/About";
 import AddProduct from "./UI/pages/AddProduct";
+import SearchPage from "./UI/components/SearchPage";
 function App() {
   return (
     <>
@@ -157,6 +158,8 @@ function App() {
           <Route path="/support" element={<Support />} />
           <Route path="/about" element={<About />} />
           
+              <Route path="/laptops"  element={<FindNewLaptops />} />
+          <Route path="/search"   element={<SearchPage />} />     
         </Routes>
       </BrowserRouter>
     </>

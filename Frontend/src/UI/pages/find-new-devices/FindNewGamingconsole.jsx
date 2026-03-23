@@ -24,7 +24,11 @@ const FindNewGamingconsole = () => {
     <div>
         <NavMenu/>
       <SlidingAnimations/>
-      <SearchByModel data={consolesFilterData}/>
+      <SearchByModel
+             data={camerasFilterData}
+            deviceType="cameras"
+           />
+     
       <Recents/>
        <section className="bg-gray-50 px-6 py-12">
       <div className="max-w-6xl mx-auto">
