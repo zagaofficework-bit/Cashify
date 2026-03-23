@@ -92,32 +92,16 @@ export default function NavMenu({ mobileOpen, setMobileMenuOpen }) {
       title: "More",
       subItems: [
         {
-          label: "Support",
-          subs: [
-            { label: "Help Center", path: "/help-center" },
-            { label: "Track Order", path: "/track-order" },
-            { label: "Warranty Claim", path: "/warranty" },
-            { label: "Contact Us", path: "/contact" },
-          ],
+          label: "Support", path:"/support"
+          
         },
         {
-          label: "Blog",
-          subs: [
-            { label: "Tech News", path: "/blog/tech-news" },
-            { label: "Buying Guides", path: "/blog/guides" },
-            { label: "Comparison", path: "/blog/comparison" },
-            { label: "Tips & Tricks", path: "/blog/tips" },
-          ],
+          label: "Blog",  path: "/blog"
+          
         },
-        {
-          label: "About Us",
-          subs: [
-            { label: "Our Story", path: "/about" },
-            { label: "Team", path: "/team" },
-            { label: "Careers", path: "/careers" },
-            { label: "Press", path: "/press" },
-          ],
-        },
+        { label: "About Us", path: "/about" 
+
+        }, 
       ],
     },
   ];
@@ -164,8 +148,7 @@ export default function NavMenu({ mobileOpen, setMobileMenuOpen }) {
                           <div key={si} className="relative">
                             <button
                               onMouseEnter={() => handleSubClick(subKey)}
-                              className={`w-full flex items-center justify-between px-4 py-2.5 text-sm font-medium transition-colors duration-100 ${
-                                isSubOpen
+                              className={`w-full flex items-center justify-between px-4 py-2.5 rounded-2xl text-sm font-medium transition-colors duration-100 ${isSubOpen
                                   ? "bg-teal-50 text-teal-700"
                                   : "text-gray-700 hover:bg-teal-50 hover:text-teal-700"
                               }`}

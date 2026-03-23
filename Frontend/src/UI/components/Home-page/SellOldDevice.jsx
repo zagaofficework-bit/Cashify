@@ -46,7 +46,7 @@ const SellOldDevices = () => {
           {/* Sell More card */}
           <div
             onClick={() => setOpenSidebar(true)}
-            className="group flex flex-col items-center text-center cursor-pointer"
+            className="group flex flex-col items-center text-center cursor-pointer z-50"
           >
             <div className="w-full aspect-square flex flex-col items-center justify-center bg-gray-50 border border-gray-100 rounded-2xl shadow-sm group-hover:shadow-md group-hover:bg-teal-50 group-hover:border-teal-200 transition-all duration-200 gap-1">
               <div className="flex gap-1">
@@ -67,7 +67,7 @@ const SellOldDevices = () => {
       <div className={`fixed top-0 right-0 h-full w-80 bg-white shadow-2xl transform transition-transform duration-300 z-50 flex flex-col ${openSidebar ? "translate-x-0" : "translate-x-full"}`}>
 
         {/* Sidebar header */}
-        <div className="flex justify-between items-center px-5 py-4 border-b border-gray-100">
+        <div className="flex justify-between items-center px-5 py-4 border-b  border-gray-100">
           <div className="flex items-center gap-2.5">
             <div className="w-1 h-5 bg-teal-500 rounded-full" />
             <h3 className="text-base font-bold text-gray-900">Sell Devices</h3>

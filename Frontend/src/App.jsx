@@ -5,29 +5,29 @@ import SellPhones from "./UI/pages/SellDevices-pages/SellPhones";
 import BuyPhone from "./UI/pages/Our-Services-pages/BuyPhone";
 import BuyGadgets from "./UI/pages/Our-Services-pages/BuyGadgets";
 import BuyLaptops from "./UI/pages/Our-Services-pages/BuyLaptops";
-import FindNewPhone from "./UI/pages/Our-Services-pages/FindNewPhone"
-import BuyWatches from "./UI/pages/Our-Services-pages/BuyWatches"
-import BuyAccessories from "./UI/pages/Our-Services-pages/BuyAccessories"
+import FindNewPhone from "./UI/pages/Our-Services-pages/FindNewPhone";
+import BuyWatches from "./UI/pages/Our-Services-pages/BuyWatches";
+import BuyAccessories from "./UI/pages/Our-Services-pages/BuyAccessories";
 import BuyCamera from "./UI/pages/Our-Services-pages/BuyCamera";
 import BuyAudioDevices from "./UI/pages/Our-Services-pages/BuyAudioDevices";
 import BuyTablets from "./UI/pages/Our-Services-pages/BuyTablets";
-import BuyGamingConsole from "./UI/pages/Our-Services-pages/BuyGamingConsole"
+import BuyGamingConsole from "./UI/pages/Our-Services-pages/BuyGamingConsole";
 
-import SellOldLaptops from "./UI/pages/SellDevices-pages/SellOldLaptops"
-import SellSmartWatch from "./UI/pages/SellDevices-pages/SellSmartWatch"
-import SellGamingConsole from "./UI/pages/SellDevices-pages/SellGamingConsole"
-import SellTablet from "./UI/pages/SellDevices-pages/SellTablet"
-import SellSmartSpeaker from "./UI/pages/SellDevices-pages/SellSmartSpeakers"
-import SellTV from "./UI/pages/SellDevices-pages/SellTV"
+import SellOldLaptops from "./UI/pages/SellDevices-pages/SellOldLaptops";
+import SellSmartWatch from "./UI/pages/SellDevices-pages/SellSmartWatch";
+import SellGamingConsole from "./UI/pages/SellDevices-pages/SellGamingConsole";
+import SellTablet from "./UI/pages/SellDevices-pages/SellTablet";
+import SellSmartSpeaker from "./UI/pages/SellDevices-pages/SellSmartSpeakers";
+import SellTV from "./UI/pages/SellDevices-pages/SellTV";
 
-import Login from "./UI/pages/Login";
-import Signup from "./UI/pages/Signup";
-import OtpGeneration from "./UI/pages/OtpGeneration";
+import Login from "./UI/pages/Login-Signup/Login";
+import Signup from "./UI/pages/Login-Signup/Signup";
+import OtpGeneration from "./UI/pages/Login-Signup/OtpGeneration";
 import ScrollToTop from "./UI/components/ScrollToTop";
 
-import BasePrice from "./UI/pages/SellUserProduct/BasePrice"
+import BasePrice from "./UI/pages/SellUserProduct/BasePrice";
 import YesNo from "./UI/pages/SellUserProduct/YesNo";
-import ChooseVariant from "./UI/pages/SellUserProduct/ChooseVariant"
+import ChooseVariant from "./UI/pages/SellUserProduct/ChooseVariant";
 import DefectSelection from "./UI/pages/SellUserProduct/DefectSelection";
 import Wishlist from "./UI/pages/Wishlist";
 import PhoneDetail from "./UI/pages/DetailedProduct/PhoneDetail";
@@ -50,9 +50,12 @@ import ApplePhone from "./UI/pages/SellUserProduct/sell-mobile-brands/ApplePhone
 import Samsung from "./UI/pages/SellUserProduct/sell-mobile-brands/SamsungPhone";
 import OneplusPhone from "./UI/pages/SellUserProduct/sell-mobile-brands/OneplusPhone";
 import XiaomiPhone from "./UI/pages/SellUserProduct/sell-mobile-brands/XiaomiPhone";
+import Blogs from "./UI/pages/Support/Blogs";
+import Support from "./UI/pages/Support/Support";
+import About from "./UI/pages/Support/About";
+import AddProduct from "./UI/pages/AddProduct";
 import SearchPage from "./UI/components/SearchPage";
 function App() {
-
   return (
     <>
       <BrowserRouter>
@@ -89,7 +92,10 @@ function App() {
           <Route path="/buy-refurbished-smartwatch" element={<BuyWatches />} />
           <Route path="/buy-refurbished-cam" element={<BuyCamera />} />
           <Route path="/buy-refurbished-tablet" element={<BuyTablets />} />
-          <Route path="/buy-refurbished-gaming" element={<BuyGamingConsole />} />
+          <Route
+            path="/buy-refurbished-gaming"
+            element={<BuyGamingConsole />}
+          />
 
           <Route path="/find-new-phone" element={<FindNewPhone />} />
           <Route path="/accessories" element={<BuyAccessories />} />
@@ -100,7 +106,7 @@ function App() {
           <Route path="/base" element={<BasePrice />} />
           <Route path="/defects" element={<DefectSelection />} />
           <Route path="/wishlist" element={<Wishlist />} />
-
+          <Route path="/:id" element={<PhoneDetail/>}/>
           
 
           {/* Sell-watches-brands */}
@@ -108,7 +114,6 @@ function App() {
           <Route path="/samsung-watch" element={<Samsung_watch />} />
           <Route path="/boat-watch" element={<Boat_watches />} />
           <Route path="/noise-watch" element={<Noise_watches />} /> */}
-
 
           {/* Sell-watches-brands */}
           {/* <Route path="/apple-speakers" element={<Apple_speaker />} />
@@ -133,7 +138,7 @@ function App() {
           <Route path="/buy-refurbished-laptop/dell-laptops" element={<Dell_laptops />} />
 
           <Route path="/choose-variant" element={<ChooseVariant />} />
-          {/* <Route path="/add-product" element={<AddProduct />} /> */}
+          <Route path="/add-product" element={<AddProduct />} />
 
           <Route path="/by-mobile-brand-apple" element={<Apple />} />
           <Route path="/searchbymodel" element={<SearchByModel data={phonesFilterData} />} />
@@ -149,14 +154,17 @@ function App() {
 
         <Route path="/laptops"  element={<FindNewLaptops />} />
         <Route path="/search"   element={<SearchPage />} />     
+
+          {/*Support*/}
+          <Route path="/blog" element={<Blogs />} />
+          <Route path="/support" element={<Support />} />
+          <Route path="/about" element={<About />} />
+          
+              <Route path="/laptops"  element={<FindNewLaptops />} />
+          <Route path="/search"   element={<SearchPage />} />     
         </Routes>
-
       </BrowserRouter>
-
-
     </>
-
-
   );
 }
 
