@@ -156,13 +156,13 @@ export default function NavMenu({ mobileOpen, setMobileMenuOpen }) {
       subItems: [
         {
           label: "Support",
-          subs: ["Help Center", "Track Order", "Warranty Claim", "Contact Us"],
+          
         },
         {
           label: "Blog",
-          subs: ["Tech News", "Buying Guides", "Comparison", "Tips & Tricks"],
+          
         },
-        { label: "About Us", subs: ["Our Story", "Team", "Careers", "Press"] },
+        { label: "About Us", },
       ],
     },
   ];
@@ -215,7 +215,7 @@ export default function NavMenu({ mobileOpen, setMobileMenuOpen }) {
                             {/* Clickable sub row */}
                             <button
                               onMouseEnter={() => handleSubClick(subKey)}
-                              className={`w-full flex items-center justify-between px-4 py-2.5 text-sm font-medium transition-colors duration-100 ${isSubOpen
+                              className={`w-full flex items-center justify-between px-4 py-2.5 rounded-2xl text-sm font-medium transition-colors duration-100 ${isSubOpen
                                   ? "bg-teal-50 text-teal-700"
                                   : "text-gray-700 hover:bg-teal-50 hover:text-teal-700"
                                 }`}
