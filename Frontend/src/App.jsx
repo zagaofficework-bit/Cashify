@@ -50,6 +50,7 @@ import ApplePhone from "./UI/pages/SellUserProduct/sell-mobile-brands/ApplePhone
 import Samsung from "./UI/pages/SellUserProduct/sell-mobile-brands/SamsungPhone";
 import OneplusPhone from "./UI/pages/SellUserProduct/sell-mobile-brands/OneplusPhone";
 import XiaomiPhone from "./UI/pages/SellUserProduct/sell-mobile-brands/XiaomiPhone";
+import SearchPage from "./UI/components/SearchPage";
 function App() {
 
   return (
@@ -146,6 +147,8 @@ function App() {
           <Route path="/find-new-gamingconsoles" element={<FindNewSpeakers />} />
           <Route path="/find-new-speakers" element={<FindNewSpeakers />} />
 
+              <Route path="/laptops"  element={<FindNewLaptops />} />
+          <Route path="/search"   element={<SearchPage />} />     
         </Routes>
 
       </BrowserRouter>

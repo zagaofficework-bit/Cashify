@@ -76,6 +76,7 @@ export default function NavMenu({ mobileOpen, setMobileMenuOpen }) {
         { label: "Find New Tablets", path: "/find-new-tablets" },
         { label: "Find New Gaming Console", path: "/find-new-gamingconsoles" },
         { label: "Find New Speakers", path: "/find-new-speakers" },
+        { label: "Find New Cameras", path: "/find-new-cameras" },
       ],
     },
     {

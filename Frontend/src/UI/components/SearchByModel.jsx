@@ -1,42 +1,28 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // SearchByModel
 //
-// Search + quick-filter widget. When user clicks ANY brand, usage filter,
-// price list button, Search button, or releases the price slider —
-// it immediately calls `onOpenFilter` so the parent can show the Filter page.
+// Now accepts a `category` prop (e.g. "cameras", "laptops", "phones").
+// This is encoded as ?cat= in the URL so SearchPage knows which data maps to use.
+//
+// URL examples produced:
+//   /search?cat=cameras&bids=canon
+//   /search?cat=laptops&bids=apple,dell&priceMax=80000
+//   /search?cat=phones&usage=gaming
 //
 // Props:
-//   data           — from SearchFilterData.js  (brands, usageFilters, priceList, priceRange)
-//   onOpenFilter   — (filters) => void
-//                    filters: { query, priceMin, priceMax, selectedBrands, selectedUsage }
-//
-// ── Parent wiring example ────────────────────────────────────────────────────
-//
-//   import SearchByModel from "./SearchByModel";
-//   import Filter        from "./Filter";
-//   import { laptopsFilterData } from "./SearchFilterData";
-//   import { laptopsData }       from "./DeviceDetail";
-//
-//   export default function LaptopsPage() {
-//     const [filterOpen,  setFilterOpen]  = useState(false);
-//     const [filterState, setFilterState] = useState(null);
-//
-//     const handleOpenFilter = (filters) => {
-//       setFilterState(filters);
-//       setFilterOpen(true);
-//     };
-//
-//     return filterOpen
-//       ? <Filter data={laptopsData} initialFilters={filterState} onBack={() => setFilterOpen(false)} />
-//       : <SearchByModel data={laptopsFilterData} onOpenFilter={handleOpenFilter} />;
-//   }
+//   data          — from your filter data file (e.g. camerasFilterData)
+//   category      — string key, e.g. "cameras" | "laptops" | "phones"
+//   onOpenFilter  — optional legacy callback
 // ─────────────────────────────────────────────────────────────────────────────
 
 const fmt = (v) => `Rs ${Number(v).toLocaleString("en-IN")}`;
 
-export default function SearchByModel({ data = {}, onOpenFilter }) {
+export default function SearchByModel({ data = {}, category = "laptops", onOpenFilter }) {
+  const navigate = useNavigate();
+
   const {
     priceRange   = { min: 0, max: 200000, step: 1000 },
     priceList    = [],
@@ -49,49 +35,55 @@ export default function SearchByModel({ data = {}, onOpenFilter }) {
   const [selectedBrands, setSelectedBrands] = useState([]);
   const [selectedUsage,  setSelectedUsage]  = useState([]);
 
-  // Core: build payload and call parent to open Filter
-  const openFilter = (overrides = {}) => {
-    onOpenFilter?.({
+  // ── Core: build URL params and navigate ─────────────────────────────────────
+  const goToSearch = (overrides = {}) => {
+    const state = {
       query,
-      priceMin:      priceRange.min,
       priceMax,
       selectedBrands,
       selectedUsage,
       ...overrides,
-    });
+    };
+
+    onOpenFilter?.(state);
+
+    const params = new URLSearchParams();
+
+    // Always encode the category so SearchPage knows which data map to use
+    params.set("cat", category);
+
+    if (state.query?.trim())               params.set("q",        state.query.trim());
+    if (state.priceMax !== priceRange.max) params.set("priceMax", state.priceMax);
+    if (state.selectedBrands?.length)      params.set("bids",     state.selectedBrands.join(","));
+    if (state.selectedUsage?.length)       params.set("usage",    state.selectedUsage.join(","));
+
+    navigate(`/search?${params.toString()}`);
   };
 
-  // Brand click → toggle + immediately open Filter with updated brands
   const handleBrandClick = (id) => {
     const next = selectedBrands.includes(id)
       ? selectedBrands.filter((x) => x !== id)
       : [...selectedBrands, id];
     setSelectedBrands(next);
-    openFilter({ selectedBrands: next });
+    goToSearch({ selectedBrands: next });
   };
 
-  // Usage click → toggle + immediately open Filter with updated usage
   const handleUsageClick = (id) => {
     const next = selectedUsage.includes(id)
       ? selectedUsage.filter((x) => x !== id)
       : [...selectedUsage, id];
     setSelectedUsage(next);
-    openFilter({ selectedUsage: next });
+    goToSearch({ selectedUsage: next });
   };
 
-  // Price list button → set price + immediately open Filter
   const handlePriceListClick = (max) => {
     setPriceMax(max);
-    openFilter({ priceMax: max });
+    goToSearch({ priceMax: max });
   };
 
-  // Slider drag → update local state only (user still dragging)
-  // On release (mouseup/touchend) → open Filter
-  const handleSliderChange = (val) => setPriceMax(val);
-  const handleSliderRelease = () => openFilter();
-
-  // Search button or Enter → open Filter with current state
-  const handleSearch = () => openFilter();
+  const handleSliderChange  = (val) => setPriceMax(val);
+  const handleSliderRelease = ()    => goToSearch();
+  const handleSearch        = ()    => goToSearch();
 
   const handleReset = () => {
     setQuery("");
@@ -160,9 +152,7 @@ export default function SearchByModel({ data = {}, onOpenFilter }) {
             </div>
             <input
               type="range"
-              min={priceRange.min}
-              max={priceRange.max}
-              step={priceRange.step}
+              min={priceRange.min} max={priceRange.max} step={priceRange.step}
               value={priceMax}
               onChange={(e) => handleSliderChange(Number(e.target.value))}
               onMouseUp={handleSliderRelease}
@@ -170,9 +160,7 @@ export default function SearchByModel({ data = {}, onOpenFilter }) {
               className="absolute inset-0 w-full opacity-0 cursor-pointer h-1.5"
               style={{ zIndex: 2 }}
             />
-            {/* Min thumb (fixed) */}
             <div className="absolute top-1/2 -translate-y-1/2 left-0 w-4 h-4 rounded-full bg-white border-2 border-teal-500 shadow -ml-2 pointer-events-none" />
-            {/* Max thumb (moves) */}
             <div
               className="absolute top-1/2 -translate-y-1/2 w-4 h-4 rounded-full bg-white border-2 border-teal-500 shadow -ml-2 pointer-events-none transition-all duration-150"
               style={{ left: `${fillPct}%` }}
@@ -187,7 +175,7 @@ export default function SearchByModel({ data = {}, onOpenFilter }) {
             Search
           </button>
 
-          {/* Price list quick buttons */}
+          {/* Price list */}
           <p className="text-xs font-bold text-gray-700 mb-3">Search by Price List</p>
           <div className="grid grid-cols-2 gap-1.5">
             {priceList.map((item) => (
