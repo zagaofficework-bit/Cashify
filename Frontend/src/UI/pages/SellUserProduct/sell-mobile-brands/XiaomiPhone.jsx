@@ -1,9 +1,9 @@
 import React from 'react'
-import SellMobileBrand from '../../components/SellMobileBrand'
-import { xiaomi } from "../../../../res/Data/Sell-Devices-data/SellBrandData";
-import SellDevices from '../../components/SellDevices'
 
-const Xiaomi = () => {
+import { xiaomi } from "../../../../res/Data/Sell-Devices-data/SellBrandData";
+import SellDevices from '../../../components/SellDevices'
+
+const XiaomiPhone = () => {
   return (
     <div>
       <SellDevices data={xiaomi} brand="Xiaomi" />
@@ -11,4 +11,4 @@ const Xiaomi = () => {
   )
 }
 
-export default Xiaomi
+export default XiaomiPhone

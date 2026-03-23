@@ -120,24 +120,24 @@ export const speakersFilterData = {
     { label: "Below 1,50,000", max: 150000 },
   ],
   brands: [
-    { id: "jbl",           name: "JBL",            logo: "🔊", abbr: "JBL" },
-    { id: "bose",          name: "Bose",            logo: "🎵", abbr: "Bose" },
-    { id: "sony",          name: "Sony",            logo: "🎶", abbr: "SONY" },
-    { id: "marshall",      name: "Marshall",        logo: "🎸", abbr: "Marshall" },
-    { id: "harman",        name: "Harman Kardon",   logo: "🎼", abbr: "Harman" },
-    { id: "apple",         name: "Apple",           logo: "🍎", abbr: "Apple" },
+    { id: "jbl",      name: "JBL",          logo: "🔊", abbr: "JBL" },
+    { id: "bose",     name: "Bose",         logo: "🎵", abbr: "Bose" },
+    { id: "sony",     name: "Sony",         logo: "🎶", abbr: "SONY" },
+    { id: "marshall", name: "Marshall",     logo: "🎸", abbr: "Marshall" },
+    { id: "harman",   name: "Harman Kardon",logo: "🎼", abbr: "Harman" },
+    { id: "apple",    name: "Apple",        logo: "🍎", abbr: "Apple" },
   ],
   usageFilters: [
-    { id: "portable",  label: "Portable",   icon: "🎒" },
-    { id: "home",      label: "Home",       icon: "🏠" },
-    { id: "outdoor",   label: "Outdoor",    icon: "⛰️" },
-    { id: "party",     label: "Party",      icon: "🎉" },
-    { id: "soundbar",  label: "Soundbar",   icon: "📻" },
-    { id: "smart",     label: "Smart",      icon: "🤖" },
+    { id: "portable", label: "Portable", icon: "🎒" },
+    { id: "home",     label: "Home",     icon: "🏠" },
+    { id: "outdoor",  label: "Outdoor",  icon: "⛰️" },
+    { id: "party",    label: "Party",    icon: "🎉" },
+    { id: "soundbar", label: "Soundbar", icon: "📻" },
+    { id: "smart",    label: "Smart",    icon: "🤖" },
   ],
 };
 
-// ── GAMING CONSOLES ───────────────────────────────────────────────────────────
+// ── GAMING CONSOLES ─────────────────────────────────────────────
 export const consolesFilterData = {
   deviceType: "Gaming Consoles",
   priceRange: { min: 0, max: 100000, step: 500 },
@@ -157,11 +157,69 @@ export const consolesFilterData = {
     { id: "asus",      name: "Asus ROG",  logo: "🔴", abbr: "ROG" },
   ],
   usageFilters: [
-    { id: "handheld",  label: "Handheld",  icon: "🤲" },
-    { id: "home",      label: "Home",      icon: "📺" },
-    { id: "vr",        label: "VR",        icon: "🥽" },
+    { id: "handheld", label: "Handheld", icon: "🤲" },
+    { id: "home",     label: "Home",     icon: "📺" },
+    { id: "vr",       label: "VR",       icon: "🥽" },
+    { id: "casual",   label: "Casual",   icon: "😊" },
+    { id: "hardcore", label: "Hardcore", icon: "💀" },
+    { id: "family",   label: "Family",   icon: "👨‍👩‍👧" },
+  ],
+};
+
+// ── TABLETS ─────────────────────────────────────────────────────
+export const tabletsFilterData = {
+  deviceType: "Tablets",
+  priceRange: { min: 0, max: 150000, step: 500 },
+  priceList: [
+    { label: "Below 10,000", max: 10000 },
+    { label: "Below 20,000", max: 20000 },
+    { label: "Below 30,000", max: 30000 },
+    { label: "Below 50,000", max: 50000 },
+    { label: "Below 80,000", max: 80000 },
+    { label: "Below 1,50,000", max: 150000 },
+  ],
+  brands: [
+    { id: "apple",   name: "Apple",   logo: "🍎", abbr: "iPad" },
+    { id: "samsung", name: "Samsung", logo: "📱", abbr: "Samsung" },
+    { id: "lenovo",  name: "Lenovo",  logo: "💻", abbr: "Lenovo" },
+    { id: "xiaomi",  name: "Xiaomi",  logo: "🔶", abbr: "Mi" },
+    { id: "realme",  name: "Realme",  logo: "🟡", abbr: "Realme" },
+  ],
+  usageFilters: [
+    { id: "gaming",     label: "Gaming",     icon: "🎮" },
+    { id: "study",      label: "Study",      icon: "📚" },
+    { id: "work",       label: "Work",       icon: "💼" },
+    { id: "entertain",  label: "Entertainment", icon: "🎬" },
+    { id: "drawing",    label: "Drawing",    icon: "✏️" },
+    { id: "portable",   label: "Portable",   icon: "🎒" },
+  ],
+};
+
+// ── SMARTWATCHES ────────────────────────────────────────────────
+export const smartwatchFilterData = {
+  deviceType: "Smartwatches",
+  priceRange: { min: 0, max: 100000, step: 500 },
+  priceList: [
+    { label: "Below 2,000",  max: 2000 },
+    { label: "Below 5,000",  max: 5000 },
+    { label: "Below 10,000", max: 10000 },
+    { label: "Below 20,000", max: 20000 },
+    { label: "Below 50,000", max: 50000 },
+    { label: "Below 1,00,000", max: 100000 },
+  ],
+  brands: [
+    { id: "apple",   name: "Apple",   logo: "🍎", abbr: "Apple" },
+    { id: "samsung", name: "Samsung", logo: "📱", abbr: "Samsung" },
+    { id: "noise",   name: "Noise",   logo: "🔊", abbr: "Noise" },
+    { id: "boat",    name: "boAt",    logo: "🚤", abbr: "boAt" },
+    { id: "amazfit", name: "Amazfit", logo: "⌚", abbr: "Amazfit" },
+  ],
+  usageFilters: [
+    { id: "fitness",   label: "Fitness",   icon: "🏃" },
+    { id: "health",    label: "Health",    icon: "❤️" },
+    { id: "sports",    label: "Sports",    icon: "⚽" },
     { id: "casual",    label: "Casual",    icon: "😊" },
-    { id: "hardcore",  label: "Hardcore",  icon: "💀" },
-    { id: "family",    label: "Family",    icon: "👨‍👩‍👧" },
+    { id: "premium",   label: "Premium",   icon: "💎" },
+    { id: "battery",   label: "Long Battery", icon: "🔋" },
   ],
 };

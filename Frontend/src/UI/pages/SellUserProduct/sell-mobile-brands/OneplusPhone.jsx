@@ -1,9 +1,9 @@
 import React from 'react'
 
 import { onePlus } from "../../../../res/Data/Sell-Devices-data/SellBrandData";
-import SellDevices from '../../components/SellDevices'
+import SellDevices from '../../../components/SellDevices'
 
-const Oneplus = () => {
+const OneplusPhone = () => {
   return (
     <div>
       <SellDevices data={onePlus} brand="OnePlus"/>
@@ -11,4 +11,4 @@ const Oneplus = () => {
   )
 }
 
-export default Oneplus
+export default OneplusPhone

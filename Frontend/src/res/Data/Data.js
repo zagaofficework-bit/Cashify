@@ -1,5 +1,5 @@
 export const services = [
-  { title: "Sell Phone", image: "/assets/phone.png", path: "/sell-phone" },
+  { title: "Sell Phone", image: "/assets/phone.png", path: "/sell-old-phone" },
   { title: "Buy Gadgets", image: "/assets/gadget.png", path: "/buy-gadgets" },
   { title: "Buy Phone", image: "/assets/mobile.png", path: "/buy-phone" },
   { title: "Buy Laptops", image: "/assets/laptop.png", path: "/buy-laptops" },
@@ -9,13 +9,13 @@ export const services = [
  
 ];
 export const sellDevices = [
-  { title: "Sell Phone", image: "/assets/phone.png", path: "/sell-phone" },
-  { title: "Sell Laptop", image: "/assets/laptop.png", path: "/sell-laptop" },
-  { title: "Sell TV", image: "/assets/tv.png", path: "/sell-tv" },
-  { title: "Sell Tablet", image: "/assets/tablet.png", path: "/sell-tablet" },
-  { title: "Sell Gaming Consoles", image: "/assets/game.png", path: "/sell-gaming" },
-  { title: "Sell Smartwatch", image: "/assets/watch.png", path: "/sell-smartwatch" },
-  { title: "Sell Smart Speakers", image: "/assets/speaker.png", path: "/sell-speaker" },
+  { title: "Sell Phone", image: "/assets/phone.png", path: "/sell-old-phone" },
+  { title: "Sell Laptop", image: "/assets/laptop.png", path: "/sell-old-laptop" },
+  { title: "Sell TV", image: "/assets/tv.png", path: "/sell-old-tv" },
+  { title: "Sell Tablet", image: "/assets/tablet.png", path: "/sell-old-tablet" },
+  { title: "Sell Gaming Consoles", image: "/assets/game.png", path: "/sell-old-gaming" },
+  { title: "Sell Smartwatch", image: "/assets/watch.png", path: "/sell-old-smartwatch" },
+  { title: "Sell Smart Speakers", image: "/assets/speaker.png", path: "/sell-old-speaker" },
   
 ];
 
