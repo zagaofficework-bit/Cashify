@@ -4,35 +4,75 @@ import NavMenu from "./Header/NavMenu";
 import Filter from "./Filter";
 import Footer from "./Home-page/Footer";
 
-// ── Laptops ──────────────────────────────────────────────────────────────────
+// ── Laptops ───────────────────────────────────────────────────────────────────
 import {
   laptopsData,
-  appleLaptopsData, samsungLaptopsData, acerLaptopsData, lenovoLaptopsData,
-  dellLaptopsData,  hpLaptopsData,      asusLaptopsData,  microsoftLaptopsData,
+  appleLaptopsData, samsungLaptopsData, acerLaptopsData,  lenovoLaptopsData,
+  dellLaptopsData,  hpLaptopsData,      asusLaptopsData,   microsoftLaptopsData,
   buildLaptopsData,
-  appleLaptops,     samsungLaptops,     acerLaptops,     lenovoLaptops,
-  dellLaptops,      hpLaptops,          asusLaptops,     microsoftLaptops,
+  appleLaptops,     samsungLaptops,     acerLaptops,       lenovoLaptops,
+  dellLaptops,      hpLaptops,          asusLaptops,       microsoftLaptops,
 } from "../../res/Data/Filter-data/laptops";
 
 // ── Cameras ───────────────────────────────────────────────────────────────────
-// 👇 Replace these imports with your real camera data file paths
 import {
   camerasData,
-  canonCamerasData, sonymCamerasData,  nikonCamerasData,  fujifilmCamerasData,
+  canonCamerasData, sonymCamerasData,    nikonCamerasData,    fujifilmCamerasData,
   panasonicCamerasData, olympusCamerasData,
   buildCamerasData,
-  canonCameras,    sonyCameras,       nikonCameras,      fujifilmCameras,
+  canonCameras,     sonyCameras,         nikonCameras,        fujifilmCameras,
   panasonicCameras, olympusCameras,
 } from "../../res/Data/Filter-data/cameras";
 
 // ── Phones ────────────────────────────────────────────────────────────────────
-// 👇 Replace these imports with your real phones data file paths
 import {
   phonesData,
-  applePhoneData,   samsungPhoneData,  onePlugPhoneData,  googlePhoneData,
+  applePhoneData,    samsungPhoneData,  onePlugPhoneData, googlePhoneData,
+  xiaomiPhoneData,   motorolaPhoneData, nothingPhoneData, vivoPhoneData,
   buildPhonesData,
-  applePhones,      samsungPhones,     onePlusPhones,     googlePhones,
+  applePhones,       samsungPhones,    onePlusPhones,    googlePhones,
+  xiaomiPhones,      motorolaPhones,   nothingPhones,    vivoPhones,
 } from "../../res/Data/Filter-data/phones";
+
+// ── Gaming Consoles ───────────────────────────────────────────────────────────
+import {
+  consolesData,
+  sonyConsolesData,  microsoftConsolesData, nintendoConsolesData,
+  valveConsolesData, asusConsolesData,
+  buildConsolesData,
+  sonyConsoles,      microsoftConsoles,     nintendoConsoles,
+  valveConsoles,     asusConsoles,
+} from "../../res/Data/Filter-data/console";
+
+// ── Smartwatches ──────────────────────────────────────────────────────────────
+import {
+  smartwatchesData,
+  appleWatchData,   samsungWatchData, noiseWatchData,
+  boatWatchData,    amazfitWatchData, garminWatchData,
+  buildSmartwatchesData,
+  appleWatches,     samsungWatches,   noiseWatches,
+  boatWatches,      amazfitWatches,   garminWatches,
+} from "../../res/Data/Filter-data/smartwatch";
+
+// ── Tablets ───────────────────────────────────────────────────────────────────
+import {
+  tabletsData,
+  appleTabletsData,   samsungTabletsData, lenovoTabletsData,
+  xiaomiTabletsData,  realmeTabletsData,  onePlusTabletsData,
+  buildTabletsData,
+  appleTablets,       samsungTablets,     lenovoTablets,
+  xiaomiTablets,      realmeTablets,      onePlusTablets,
+} from "../../res/Data/Filter-data/tablets";
+
+// ── Speakers ──────────────────────────────────────────────────────────────────
+import {
+  speakersData,
+  jblSpeakersData,      boseSpeakersData,   sonySpeakersData,
+  marshallSpeakersData, harmanSpeakersData, appleSpeakersData,
+  buildSpeakersData,
+  jblSpeakers,          boseSpeakers,       sonySpeakers,
+  marshallSpeakers,     harmanSpeakers,     appleSpeakers,
+} from "../../res/Data/Filter-data/speakers";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // CATEGORY REGISTRY
@@ -46,6 +86,8 @@ import {
 //   label         — human-readable category name (used in breadcrumb)
 // ─────────────────────────────────────────────────────────────────────────────
 const CATEGORY_REGISTRY = {
+
+  // ── Laptops ────────────────────────────────────────────────────────────────
   laptops: {
     label:        "Laptops",
     defaultData:  laptopsData,
@@ -72,6 +114,7 @@ const CATEGORY_REGISTRY = {
     },
   },
 
+  // ── Cameras ────────────────────────────────────────────────────────────────
   cameras: {
     label:        "Cameras",
     defaultData:  camerasData,
@@ -94,27 +137,123 @@ const CATEGORY_REGISTRY = {
     },
   },
 
+  // ── Phones ─────────────────────────────────────────────────────────────────
   phones: {
     label:        "Phones",
     defaultData:  phonesData,
     buildFn:      buildPhonesData,
     brandDataMap: {
-      apple:   applePhoneData,
-      samsung: samsungPhoneData,
-      oneplus: onePlugPhoneData,
-      google:  googlePhoneData,
+      apple:    applePhoneData,
+      samsung:  samsungPhoneData,
+      oneplus:  onePlugPhoneData,
+      google:   googlePhoneData,
+      xiaomi:   xiaomiPhoneData,
+      motorola: motorolaPhoneData,
+      nothing:  nothingPhoneData,
+      vivo:     vivoPhoneData,
     },
     brandDevices: {
-      apple:   applePhones,
-      samsung: samsungPhones,
-      oneplus: onePlusPhones,
-      google:  googlePhones,
+      apple:    applePhones,
+      samsung:  samsungPhones,
+      oneplus:  onePlusPhones,
+      google:   googlePhones,
+      xiaomi:   xiaomiPhones,
+      motorola: motorolaPhones,
+      nothing:  nothingPhones,
+      vivo:     vivoPhones,
     },
   },
 
-  // ── ADD MORE CATEGORIES HERE ─────────────────────────────────────────────
-  // tablets: { label: "Tablets", defaultData: tabletsData, buildFn: buildTabletsData, brandDataMap: {...}, brandDevices: {...} },
-  // tvs:     { label: "TVs",     defaultData: tvsData,     buildFn: buildTvsData,     brandDataMap: {...}, brandDevices: {...} },
+  // ── Gaming Consoles ────────────────────────────────────────────────────────
+  consoles: {
+    label:        "Gaming Consoles",
+    defaultData:  consolesData,
+    buildFn:      buildConsolesData,
+    brandDataMap: {
+      sony:      sonyConsolesData,
+      microsoft: microsoftConsolesData,
+      nintendo:  nintendoConsolesData,
+      valve:     valveConsolesData,
+      asus:      asusConsolesData,
+    },
+    brandDevices: {
+      sony:      sonyConsoles,
+      microsoft: microsoftConsoles,
+      nintendo:  nintendoConsoles,
+      valve:     valveConsoles,
+      asus:      asusConsoles,
+    },
+  },
+
+  // ── Smartwatches ───────────────────────────────────────────────────────────
+  smartwatches: {
+    label:        "Smartwatches",
+    defaultData:  smartwatchesData,
+    buildFn:      buildSmartwatchesData,
+    brandDataMap: {
+      apple:   appleWatchData,
+      samsung: samsungWatchData,
+      noise:   noiseWatchData,
+      boat:    boatWatchData,
+      amazfit: amazfitWatchData,
+      garmin:  garminWatchData,
+    },
+    brandDevices: {
+      apple:   appleWatches,
+      samsung: samsungWatches,
+      noise:   noiseWatches,
+      boat:    boatWatches,
+      amazfit: amazfitWatches,
+      garmin:  garminWatches,
+    },
+  },
+
+  // ── Tablets ────────────────────────────────────────────────────────────────
+  tablets: {
+    label:        "Tablets",
+    defaultData:  tabletsData,
+    buildFn:      buildTabletsData,
+    brandDataMap: {
+      apple:   appleTabletsData,
+      samsung: samsungTabletsData,
+      lenovo:  lenovoTabletsData,
+      xiaomi:  xiaomiTabletsData,
+      realme:  realmeTabletsData,
+      oneplus: onePlusTabletsData,
+    },
+    brandDevices: {
+      apple:   appleTablets,
+      samsung: samsungTablets,
+      lenovo:  lenovoTablets,
+      xiaomi:  xiaomiTablets,
+      realme:  realmeTablets,
+      oneplus: onePlusTablets,
+    },
+  },
+
+  // ── Speakers ───────────────────────────────────────────────────────────────
+  speakers: {
+    label:        "Speakers",
+    defaultData:  speakersData,
+    buildFn:      buildSpeakersData,
+    brandDataMap: {
+      jbl:      jblSpeakersData,
+      bose:     boseSpeakersData,
+      sony:     sonySpeakersData,
+      marshall: marshallSpeakersData,
+      harman:   harmanSpeakersData,
+      apple:    appleSpeakersData,
+    },
+    brandDevices: {
+      jbl:      jblSpeakers,
+      bose:     boseSpeakers,
+      sony:     sonySpeakers,
+      marshall: marshallSpeakers,
+      harman:   harmanSpeakers,
+      apple:    appleSpeakers,
+    },
+  },
+
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -169,7 +308,7 @@ export default function SearchPage() {
 
         <span className="text-gray-200">|</span>
 
-        {/* Breadcrumb — shows the category label (Laptops / Cameras / Phones …) */}
+        {/* Breadcrumb — shows the category label */}
         <span className="text-sm text-gray-400">{registry.label}</span>
         {brandLabels.length > 0 && (
           <>

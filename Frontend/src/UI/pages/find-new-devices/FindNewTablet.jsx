@@ -24,7 +24,7 @@ const FindNewTablet = () => {
     <div>
         <NavMenu/>
       <SlidingAnimations/>
-      <SearchByModel data={tabletsFilterData}/>
+      <SearchByModel data={tabletsFilterData} category='tablets'/>
       <Recents/>
        <section className="bg-gray-50 px-6 py-12">
       <div className="max-w-6xl mx-auto">

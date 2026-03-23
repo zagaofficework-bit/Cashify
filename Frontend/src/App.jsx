@@ -100,8 +100,8 @@ function App() {
           <Route path="/base" element={<BasePrice />} />
           <Route path="/defects" element={<DefectSelection />} />
           <Route path="/wishlist" element={<Wishlist />} />
-          
 
+          
 
           {/* Sell-watches-brands */}
           {/* <Route path="/apple-watch" element={<Apple_watch />} />
@@ -147,8 +147,8 @@ function App() {
           <Route path="/find-new-gamingconsoles" element={<FindNewSpeakers />} />
           <Route path="/find-new-speakers" element={<FindNewSpeakers />} />
 
-              <Route path="/laptops"  element={<FindNewLaptops />} />
-          <Route path="/search"   element={<SearchPage />} />     
+        <Route path="/laptops"  element={<FindNewLaptops />} />
+        <Route path="/search"   element={<SearchPage />} />     
         </Routes>
 
       </BrowserRouter>

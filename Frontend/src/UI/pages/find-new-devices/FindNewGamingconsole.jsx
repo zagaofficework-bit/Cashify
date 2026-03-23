@@ -26,7 +26,7 @@ const FindNewGamingconsole = () => {
       <SlidingAnimations/>
       <SearchByModel
              data={camerasFilterData}
-            deviceType="cameras"
+            category='consoles'
            />
      
       <Recents/>

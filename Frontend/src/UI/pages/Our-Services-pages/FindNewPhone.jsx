@@ -24,7 +24,7 @@ const FindNewPhone = () => {
     <div>
         <NavMenu/>
       <SlidingAnimations/>
-      <SearchByModel data={phonesFilterData}/>
+      <SearchByModel data={phonesFilterData} category='phones'/>
       <Recents/>
        <section className="bg-gray-50 px-6 py-12">
       <div className="max-w-6xl mx-auto">

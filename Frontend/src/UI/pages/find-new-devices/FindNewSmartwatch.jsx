@@ -24,7 +24,7 @@ const FindNewSmartwatch = () => {
     <div>
         <NavMenu/>
       <SlidingAnimations/>
-      <SearchByModel data={smartwatchFilterData}/>
+      <SearchByModel data={smartwatchFilterData} category='smartwatches'/>
       <Recents/>
        <section className="bg-gray-50 px-6 py-12">
       <div className="max-w-6xl mx-auto">
