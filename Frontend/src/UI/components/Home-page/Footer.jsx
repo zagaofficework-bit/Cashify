@@ -100,7 +100,7 @@ export default function Footer() {
 
         {/* Desktop chat button */}
         <div className="hidden md:block mt-6">
-          <a href="/chat"
+          <a href="/chatbot"
             className="inline-flex items-center gap-2 bg-teal-500 text-white px-4 py-3 rounded-lg text-sm hover:bg-teal-600 transition">
             💬 Chat with Us
           </a>

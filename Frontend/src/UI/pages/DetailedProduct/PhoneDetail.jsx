@@ -1,5 +1,5 @@
 import React from 'react'
-import ProductDetails from '../ProductDetails'
+import ProductDetails from '../../components/ProductDetail/ProductDetails'
 import { refurbishedProducts } from '../../../res/Data/DevicesData'
 import { useParams } from 'react-router-dom'
 

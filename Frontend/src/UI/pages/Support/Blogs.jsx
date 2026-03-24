@@ -1,4 +1,5 @@
 import { useState } from "react";
+import Footer from "../../components/Home-page/Footer";
 
 const posts = [
   {
@@ -302,6 +303,7 @@ export default function Blog() {
         </div>
 
       </div>
+      <Footer/>
     </div>
   );
 }

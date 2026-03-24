@@ -2,12 +2,36 @@ import React from "react";
 
 export default function PhonifyTrust() {
   const trustItems = [
-    { icon: "./assets/icons/happy-customers.png", title: "40+ Lakh", subtitle: "Happy Customers" },
-    { icon: "./assets/icons/devices-sold.png", title: "27+ Lakh", subtitle: "Devices Sold" },
-    { icon: "./assets/icons/quality-checks.png", title: "32 Points", subtitle: "Quality Checks" },
-    { icon: "./assets/icons/refund.png", title: "15 Days", subtitle: "Refund*" },
-    { icon: "./assets/icons/warranty.png", title: "Upto 12 Months", subtitle: "Warranty*" },
-    { icon: "./assets/icons/stores.png", title: "200+", subtitle: "Phonify Stores" },
+    {
+      icon: "./assets/icons/happy-customers.png",
+      title: "40+ Lakh",
+      subtitle: "Happy Customers",
+    },
+    {
+      icon: "./assets/icons/devices-sold.png",
+      title: "27+ Lakh",
+      subtitle: "Devices Sold",
+    },
+    {
+      icon: "./assets/icons/quality-checks.png",
+      title: "32 Points",
+      subtitle: "Quality Checks",
+    },
+    {
+      icon: "./assets/icons/refund.png",
+      title: "15 Days",
+      subtitle: "Refund*",
+    },
+    {
+      icon: "./assets/icons/warranty.png",
+      title: "Upto 12 Months",
+      subtitle: "Warranty*",
+    },
+    {
+      icon: "./assets/icons/stores.png",
+      title: "200+",
+      subtitle: "Phonify Stores",
+    },
   ];
 
   return (

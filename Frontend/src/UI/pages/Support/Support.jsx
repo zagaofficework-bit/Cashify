@@ -1,4 +1,5 @@
 import { useState } from "react";
+import Footer from "../../components/Home-page/Footer";
 
 const faqs = [
   {
@@ -318,6 +319,7 @@ export default function Support() {
         </div>
 
       </div>
+      <Footer/>
     </div>
   );
 }

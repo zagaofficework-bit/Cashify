@@ -30,7 +30,6 @@ import YesNo from "./UI/pages/SellUserProduct/YesNo";
 import ChooseVariant from "./UI/pages/SellUserProduct/ChooseVariant";
 import DefectSelection from "./UI/pages/SellUserProduct/DefectSelection";
 import Wishlist from "./UI/pages/Wishlist";
-import PhoneDetail from "./UI/pages/DetailedProduct/PhoneDetail";
 import Apple from "./UI/pages/Buy-Devices/Buy-Mobile-Brands(Offer-pages)/Apple"
 import SearchByModel from "./UI/components/SearchByModel";
 import { phonesFilterData } from "./res/Data/SearchFilter";
@@ -55,6 +54,7 @@ import Support from "./UI/pages/Support/Support";
 import About from "./UI/pages/Support/About";
 import AddProduct from "./UI/pages/AddProduct";
 import SearchPage from "./UI/components/SearchPage";
+import PhoneDetail from "./UI/pages/DetailedProduct/PhoneDetail"
 function App() {
   return (
     <>
@@ -109,9 +109,9 @@ function App() {
           
 
 
-          {/* Sell-watches-brands */}
-          {/* <Route path="/apple-watch" element={<Apple_watch />} />
-          <Route path="/samsung-watch" element={<Samsung_watch />} />
+          {/*Sell-watches-brands */}
+           {/* <Route path="/apple-watch" element={<Apple_watch />} />
+          <Route path="/samsung-watch" elem ent={<Samsung_watch />} />
           <Route path="/boat-watch" element={<Boat_watches />} />
           <Route path="/noise-watch" element={<Noise_watches />} /> */}
 
@@ -160,6 +160,10 @@ function App() {
           
               <Route path="/laptops"  element={<FindNewLaptops />} />
           <Route path="/search"   element={<SearchPage />} />     
+        
+          <Route path="/:id"   element={<PhoneDetail />} />     
+        
+        
         </Routes>
       </BrowserRouter>
     </>

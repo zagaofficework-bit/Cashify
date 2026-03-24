@@ -1,11 +1,11 @@
 import React, { useState } from "react";
-import BuyRefurbishedDevices from "../components/Home-page/BuyRefurbishedDevices";
-import PhonifyTrust from "../components/Banners/PhonifyTrust";
-import WhyPhonify from "../components/Banners/WhyPhonify";
-import FAQ from "../components/Home-page/FAQ";
-import RatingReviews from "../components/RatingReview";
-import Footer from "../components/Home-page/Footer";
-import { audioDevices } from "../../res/Data/DevicesData";
+import BuyRefurbishedDevices from "../Home-page/BuyRefurbishedDevices";
+import PhonifyTrust from "../Banners/PhonifyTrust";
+import WhyPhonify from "../Banners/WhyPhonify";
+import FAQ from "../Home-page/FAQ";
+import RatingReviews from "../RatingReview";
+import Footer from "../Home-page/Footer";
+import { audioDevices } from "../../../res/Data/DevicesData";
 
 
 
