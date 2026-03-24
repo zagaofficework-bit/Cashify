@@ -1,6 +1,6 @@
 import React from 'react'
 import { samsung } from "../../../../res/Data/Sell-Devices-data/SellBrandData";
-import SellDevices from '../../../components/SellDevices'
+import SellDevices from '../../../components/Card/SellDevices'
 
 const SamsungPhone = () => {
   return (

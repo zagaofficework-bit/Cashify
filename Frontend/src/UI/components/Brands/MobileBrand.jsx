@@ -1,9 +1,9 @@
 import React from "react";
-import Category from "./Category";
-import BuyRefurbishedDevices from "./Home-page/BuyRefurbishedDevices";
-import { refurbishedProducts } from "../../res/Data/DevicesData";
 
-const MobileBrand = ({ brand }) => {
+import BuyRefurbishedDevices from "../Home-page/BuyRefurbishedDevices";
+import { refurbishedProducts } from "../../../res/Data/DevicesData";
+
+const MobileBrand = ({brands}) => {
   return (
     <div className="w-full">
 
@@ -20,7 +20,7 @@ const MobileBrand = ({ brand }) => {
       <div className="max-w-7xl mx-auto px-4 md:px-6 py-8">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
 
-          {brand.map((card, index) => (
+          {brands.map((card, index) => (
             <div
               key={index}
               className={`relative rounded-2xl p-6 overflow-hidden min-h-[160px] ${card.bg}`}

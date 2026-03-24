@@ -7,11 +7,11 @@ import Shopbuy from '../../components/PriceUpto';
 import BuyRefurbishedDevices from '../../components/Home-page/BuyRefurbishedDevices';
 
 import BestSellingcomponent from '../../components/BestSellingcomponent';
-import ConditionsExplained from '../../components/ConditionalExplained';
+import ConditionsExplained from '../../components/Banners/ConditionalExplained';
 import Footer from '../../components/Home-page/Footer';
 import { tablets } from '../../../res/Data/DevicesData';
 import { Tablets } from "../../../res/Data/Categorydata";
-import Category from '../../components/Category';
+import Category from '../../components/Banners/Category';
 
 const BuyTablets = () => {
     return (

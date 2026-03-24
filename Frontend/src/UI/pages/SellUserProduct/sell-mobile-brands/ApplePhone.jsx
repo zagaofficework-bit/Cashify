@@ -3,10 +3,10 @@ import { apple } from "../../../../res/Data/Sell-Devices-data/SellBrandData";
 import NavMenu from "../../../components/Header/NavMenu";
 
 
-import Brands from "../../../components/Brands";
+import Brands from "../../../components/Brands/Brands";
 import DownloadAppBanner from "../../../components/Home-page/DownloadAppBanner";
 import Footer from "../../../components/Home-page/Footer";
-import SellDevices from "../../../components/SellDevices";
+import SellDevices from "../../../components/Card/SellDevices";
 
 const ApplePhone = () => {
   

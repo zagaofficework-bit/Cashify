@@ -30,7 +30,7 @@ import YesNo from "./UI/pages/SellUserProduct/YesNo";
 import ChooseVariant from "./UI/pages/SellUserProduct/ChooseVariant";
 import DefectSelection from "./UI/pages/SellUserProduct/DefectSelection";
 import Wishlist from "./UI/pages/Wishlist";
-import Apple from "./UI/pages/Buy-Devices/Buy-Mobile-Brands(Offer-pages)/Apple"
+import Apple from "./UI/pages/Buy-Devices/Buy-Mobile-Brands(offer pages)/Apple"
 import SearchByModel from "./UI/components/SearchByModel";
 import { phonesFilterData } from "./res/Data/SearchFilter";
 import Filter from "./UI/components/Filter";
@@ -39,11 +39,11 @@ import Apple_laptops from "./UI/pages/Buy-refurbished-devices/buy-refurbished-la
 import Lenovo_laptops from "./UI/pages/Buy-refurbished-devices/buy-refurbished-laptops/Lenovo_laptops";
 import Acer_laptops from "./UI/pages/Buy-refurbished-devices/buy-refurbished-laptops/Acer_laptops";
 import Dell_laptops from "./UI/pages/Buy-refurbished-devices/buy-refurbished-laptops/Dell_laptops";
-import FindNewLaptops from "./UI/pages/find-new-devices/findNewLaptops";
-import FindNewCamera from "./UI/pages/find-new-devices/FindNewCamera";
-import FindNewSmartwatch from "./UI/pages/find-new-devices/FindNewSmartwatch";
-import FindNewTablet from "./UI/pages/find-new-devices/FindNewTablet";
-import FindNewSpeakers from "./UI/pages/find-new-devices/FindNewSpeakers";
+import FindNewLaptops from "./UI/pages/find-new-devices-pages/findNewLaptops";
+import FindNewCamera from "./UI/pages/find-new-devices-pages/FindNewCamera";
+import FindNewSmartwatch from "./UI/pages/find-new-devices-pages/FindNewSmartwatch";
+import FindNewTablet from "./UI/pages/find-new-devices-pages/FindNewTablet";
+import FindNewSpeakers from "./UI/pages/find-new-devices-pages/FindNewSpeakers";
 
 import ApplePhone from "./UI/pages/SellUserProduct/sell-mobile-brands/ApplePhone"
 import Samsung from "./UI/pages/SellUserProduct/sell-mobile-brands/SamsungPhone";
@@ -55,6 +55,8 @@ import About from "./UI/pages/Support/About";
 import AddProduct from "./UI/pages/AddProduct";
 import SearchPage from "./UI/components/SearchPage";
 import PhoneDetail from "./UI/pages/DetailedProduct/PhoneDetail"
+import Google from "./UI/pages/Buy-Devices/Buy-Mobile-Brands(offer pages)/Google"
+
 function App() {
   return (
     <>
@@ -161,12 +163,12 @@ function App() {
           <Route path="/support" element={<Support />} />
           <Route path="/about" element={<About />} />
           
-              <Route path="/laptops"  element={<FindNewLaptops />} />
+            <Route path="/laptops"  element={<FindNewLaptops />} />
           <Route path="/search"   element={<SearchPage />} />     
         
           <Route path="/:id"   element={<PhoneDetail />} />     
-        
-        
+       <Route path="/t" element={<Google/>}/>
+         
         </Routes>
       </BrowserRouter>
     </>

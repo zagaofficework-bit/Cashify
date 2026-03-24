@@ -3,7 +3,7 @@ import NavMenu from "../../components/Header/NavMenu";
 import NavBar from "../../components/Header/NavBar";
 import SellCard from "../../components/Card/SellCard";
 import DealComponent from "../../components/Home-page/DealComponent";
-import Brands from "../../components/Brands";
+import Brands from "../../components/Brands/Brands";
 import Feedback from "../../components/Home-page/Feedback";
 import FAQ from "../../components/Home-page/FAQ";
 import DownloadAppBanner from "../../components/Home-page/DownloadAppBanner";

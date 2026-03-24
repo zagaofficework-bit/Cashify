@@ -1,5 +1,5 @@
 import React from 'react'
-import { brands } from "../../res/Data/Data.js"
+import { brands } from "../../../res/Data/Data.js"
 const FavouriteBrands = () => {
   return (
     <div className="max-w-6xl mx-auto px-6 py-6">

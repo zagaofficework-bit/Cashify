@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 
+//top selling brands
 
 const brands = [
   { name: "Xiaomi", img: "https://upload.wikimedia.org/wikipedia/commons/2/29/Xiaomi_logo.svg" },

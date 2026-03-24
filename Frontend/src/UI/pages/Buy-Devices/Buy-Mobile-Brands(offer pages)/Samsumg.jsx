@@ -5,7 +5,7 @@ import { samsung } from '../../../../res/Data/PromoCards'
 const Samsumg = () => {
   return (
     <div>
-        <MobileBrand brand={samsung}/>
+        <MobileBrand brands={samsung}/>
     </div>
   )
 }

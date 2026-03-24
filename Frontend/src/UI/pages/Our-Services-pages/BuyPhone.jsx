@@ -3,12 +3,12 @@ import NavBar from "../../components/Header/NavBar";
 import NavMenu from "../../components/Header/NavMenu";
 import SlidingAnimation from "../../components/Home-page/SlidingAnimation";
 import Devices from "../../components/Devices";
-import FavouriteBrands from "../../components/FavouriteBrands";
+import FavouriteBrands from "../../components/Brands/FavouriteBrands";
 import VideoComponent from "../../components/Banners/VideoComponent";
 import BestSellingcomponent from "../../components/BestSellingcomponent";
 import OfferSection from "../../components/Banners/OfferSection";
 
-import Category from "../../components/Category";
+import Category from "../../components/Banners/Category";
 import Feedback from "../../components/Home-page/Feedback";
 import Footer from "../../components/Home-page/Footer";
 import { bestSelling, Mobilecategories } from "../../../res/Data/Categorydata";

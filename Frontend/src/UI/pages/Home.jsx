@@ -3,7 +3,7 @@ import NavMenu from "../components/Header/NavMenu";
 import ServiceSection from "../components/Home-page/ServiceSection";
 import SlidingAnimation from "../components/Home-page/SlidingAnimation";
 import Chatbot from "../components/ChatBot";
-import SellOldDevices from "../components/Home-page/SellOldDevice";
+import SellOldDevices from "../components/Home-page/SellOldDevices";
 import BuyRefurbishedDevices from "../components/Home-page/BuyRefurbishedDevices";
 import { refurbishedlaptops, refurbishedProducts } from "../../res/Data/DevicesData";
 import RefurbishedLaptops from "../components/Home-page/RefurbishedLaptops";

@@ -5,7 +5,7 @@ import { xiaomi } from '../../../../res/Data/PromoCards'
 const Xiaomi = () => {
   return (
     <div>
-        <MobileBrand brand={xiaomi}/>
+        <MobileBrand brands={xiaomi}/>
     </div>
   )
 }

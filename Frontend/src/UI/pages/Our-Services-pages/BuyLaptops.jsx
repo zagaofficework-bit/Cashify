@@ -8,12 +8,12 @@ import Devices from "../../components/Devices";
 
 import BestSellingcomponent from "../../components/BestSellingcomponent";
 
-import Category from "../../components/Category";
+import Category from "../../components/Banners/Category";
 
 import Footer from "../../components/Home-page/Footer";
 import RefurbishedLaptops from "../../components/Home-page/RefurbishedLaptops";
-import ConditionsExplained from '../../components/ConditionalExplained';
-import LaptopSection from '../../components/LaptopSection';
+import ConditionsExplained from '../../components/Banners/ConditionalExplained';
+import LaptopSection from '../../components/Banners/LaptopSection';
 import { bestSelling } from '../../../res/Data/Categorydata';
 import { refurbishedlaptops, refurbishedProducts } from '../../../res/Data/DevicesData';
 

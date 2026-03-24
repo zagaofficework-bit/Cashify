@@ -7,7 +7,7 @@ import Shopbuy from '../../components/PriceUpto';
 import BuyRefurbishedDevices from '../../components/Home-page/BuyRefurbishedDevices';
 import { bestSelling, Mobilecategories } from '../../../res/Data/Categorydata';
 import BestSellingcomponent from '../../components/BestSellingcomponent';
-import ConditionsExplained from '../../components/ConditionalExplained';
+import ConditionsExplained from '../../components/Banners/ConditionalExplained';
 import Footer from '../../components/Home-page/Footer';
 import {smartwatches } from '../../../res/Data/DevicesData';
 

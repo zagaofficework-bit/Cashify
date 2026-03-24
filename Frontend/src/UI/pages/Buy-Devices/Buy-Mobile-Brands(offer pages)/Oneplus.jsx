@@ -5,7 +5,7 @@ import { oneplus } from '../../../../res/Data/PromoCards'
 const Oneplus = () => {
   return (
     <div>
-        <MobileBrand brand={oneplus}/>
+        <MobileBrand brands={oneplus}/>
     </div>
   )
 }

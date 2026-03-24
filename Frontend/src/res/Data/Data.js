@@ -1,10 +1,10 @@
 export const services = [
   { title: "Sell Phone", image: "/assets/phone.png", path: "/sell-old-phone" },
-  { title: "Buy Gadgets", image: "/assets/gadget.png", path: "/buy-gadgets" },
-  { title: "Buy Phone", image: "/assets/mobile.png", path: "/buy-phone" },
-  { title: "Buy Laptops", image: "/assets/laptop.png", path: "/buy-laptops" },
+  { title: "Buy Gadgets", image: "/assets/gadget.png", path: "/buy-refurbished-gadgets" },
+  { title: "Buy Phone", image: "/assets/mobile.png", path: "/buy-refurbished-phone" },
+  { title: "Buy Laptops", image: "/assets/laptop.png", path: "/buy-refurbished-laptops" },
   { title: "Find New Phone", image: "/assets/mobile.png", path: "/find-phone" },
-   { title: "Buy Smartwatches", image: "/assets/watch.png", path: "/buy-smartwatch" },
+   { title: "Buy Smartwatches", image: "/assets/watch.png", path: "/buy-refurbished-smartwatch" },
   { title: "New Accessories", image: "/assets/acc.png", path: "/accessories" },
  
 ];
