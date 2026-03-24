@@ -106,6 +106,7 @@ function App() {
           <Route path="/base" element={<BasePrice />} />
           <Route path="/defects" element={<DefectSelection />} />
           <Route path="/wishlist" element={<Wishlist />} />
+          <Route path="/:id" element={<PhoneDetail/>}/>
           
 
 
@@ -152,6 +153,8 @@ function App() {
           <Route path="/find-new-gamingconsoles" element={<FindNewSpeakers />} />
           <Route path="/find-new-speakers" element={<FindNewSpeakers />} />
 
+        <Route path="/laptops"  element={<FindNewLaptops />} />
+        <Route path="/search"   element={<SearchPage />} />     
 
           {/*Support*/}
           <Route path="/blog" element={<Blogs />} />

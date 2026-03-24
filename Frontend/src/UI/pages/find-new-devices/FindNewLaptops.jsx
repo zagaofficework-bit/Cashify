@@ -161,7 +161,7 @@ const FindNewLaptops = () => {
       <SearchByModel
         data={laptopsFilterData}
         onOpenFilter={handleOpenFilter}
-        
+        category='laptops'
       />
 
       <Recents />
