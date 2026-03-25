@@ -18,7 +18,7 @@ const deviceCatalogSchema = new mongoose.Schema(
     brand:    { type: String, required: true, trim: true }, // "Apple"
     category: {
       type: String,
-      enum: ["mobile", "laptop", "tablet", "smartwatch", "camera"],
+      enum: ["mobile", "laptop", "tablet", "smartwatch", "television"],
       default: "mobile",
     },
     models: [deviceModelSchema],
