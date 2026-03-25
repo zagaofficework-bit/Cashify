@@ -1,7 +1,7 @@
-const mongoose          = require("mongoose");
-const DeviceCatalog     = require("../models/deviceCatalog.model");
-const DeviceListing     = require("../models/deviceListing.model");
-const EvaluationConfig  = require("../models/evaluationConfig.model");
+const mongoose = require("mongoose");
+const DeviceCatalog = require("../models/deviceCatalog.model");
+const DeviceListing = require("../models/deviceListing.model");
+const EvaluationConfig = require("../models/evaluationConfig.model");
 
 function isValidObjectId(id) {
   return mongoose.Types.ObjectId.isValid(id);
@@ -24,19 +24,20 @@ exports.getBrands = async (req, res) => {
       });
     }
 
-    const brands = await DeviceCatalog
-      .find({ category })
+    const brands = await DeviceCatalog.find({ category })
       .select("brand")
       .lean();
 
     if (brands.length === 0) {
-      return res.status(404).json({ message: `No brands found for category: ${category}` });
+      return res
+        .status(404)
+        .json({ message: `No brands found for category: ${category}` });
     }
 
     res.status(200).json({
-      success:  true,
+      success: true,
       category,
-      data:     brands.map((b) => b.brand),
+      data: brands.map((b) => b.brand),
     });
   } catch (error) {
     console.error("getBrands error:", error);
@@ -51,7 +52,7 @@ exports.getBrands = async (req, res) => {
 
 exports.getModelsByBrand = async (req, res) => {
   try {
-    const { brand }    = req.params;
+    const { brand } = req.params;
     const { category } = req.query;
 
     if (!category) {
@@ -61,23 +62,26 @@ exports.getModelsByBrand = async (req, res) => {
       });
     }
 
-    const catalog = await DeviceCatalog
-      .findOne({ brand, category })
+    const catalog = await DeviceCatalog.findOne({ brand, category })
       .select("brand models.name models.image models.soldCount models._id")
       .lean();
 
     if (!catalog) {
-      return res.status(404).json({ message: `Brand "${brand}" not found in category "${category}"` });
+      return res
+        .status(404)
+        .json({
+          message: `Brand "${brand}" not found in category "${category}"`,
+        });
     }
 
     res.status(200).json({
-      success:  true,
-      brand:    catalog.brand,
+      success: true,
+      brand: catalog.brand,
       category,
-      data:     catalog.models.map((m) => ({
-        id:        m._id,
-        name:      m.name,
-        image:     m.image,
+      data: catalog.models.map((m) => ({
+        id: m._id,
+        name: m.name,
+        image: m.image,
         soldCount: m.soldCount,
       })),
     });
@@ -96,27 +100,25 @@ exports.getVariantsByModel = async (req, res) => {
   try {
     const { modelId } = req.params;
 
-    const catalog = await DeviceCatalog
-      .findOne({ "models._id": modelId })
-      .lean();
+    const catalog = await DeviceCatalog.findOne({
+      "models._id": modelId,
+    }).lean();
 
     if (!catalog) {
       return res.status(404).json({ message: "Model not found" });
     }
 
-    const model = catalog.models.find(
-      (m) => m._id.toString() === modelId
-    );
+    const model = catalog.models.find((m) => m._id.toString() === modelId);
 
     res.status(200).json({
       success: true,
-      model:   model.name,
-      image:   model.image,
-      data:    model.variants.map((v) => ({
-        id:        v._id,
-        ram:       v.ram,
-        storage:   v.storage,
-        label:     v.ram ? `${v.ram}/${v.storage}` : v.storage,
+      model: model.name,
+      image: model.image,
+      data: model.variants.map((v) => ({
+        id: v._id,
+        ram: v.ram,
+        storage: v.storage,
+        label: v.ram ? `${v.ram}/${v.storage}` : v.storage,
         basePrice: v.basePrice,
       })),
     });
@@ -125,7 +127,6 @@ exports.getVariantsByModel = async (req, res) => {
     res.status(500).json({ message: "Failed to fetch variants" });
   }
 };
-
 
 ////////////////////////////////////////////////////////////////////
 //// STEP 4 — GET EVALUATION CONFIG
@@ -153,12 +154,12 @@ exports.getEvaluationConfig = async (req, res) => {
     }
 
     res.status(200).json({
-      success:  true,
+      success: true,
       category,
       data: {
-        questions:     config.questions.sort((a, b) => a.order - b.order),
-        defects:       config.defects.sort((a, b) => a.order - b.order),
-        accessories:   config.accessories.sort((a, b) => a.order - b.order),
+        questions: config.questions.sort((a, b) => a.order - b.order),
+        defects: config.defects.sort((a, b) => a.order - b.order),
+        accessories: config.accessories.sort((a, b) => a.order - b.order),
         processingFee: config.processingFee,
       },
     });
@@ -178,7 +179,7 @@ exports.calculatePrice = async (req, res) => {
     const {
       variantId,
       modelId,
-      category,     // ✅ now required
+      category, // ✅ now required
       answers,
       defectKeys,
       accessoryKeys,
@@ -188,20 +189,16 @@ exports.calculatePrice = async (req, res) => {
       return res.status(400).json({ message: "category is required" });
     }
 
-    const catalog = await DeviceCatalog
-      .findOne({ "models._id": modelId })
-      .lean();
+    const catalog = await DeviceCatalog.findOne({
+      "models._id": modelId,
+    }).lean();
 
     if (!catalog) {
       return res.status(404).json({ message: "Model not found" });
     }
 
-    const model = catalog.models.find(
-      (m) => m._id.toString() === modelId
-    );
-    const variant = model?.variants.find(
-      (v) => v._id.toString() === variantId
-    );
+    const model = catalog.models.find((m) => m._id.toString() === modelId);
+    const variant = model?.variants.find((v) => v._id.toString() === variantId);
 
     if (!variant) {
       return res.status(404).json({ message: "Variant not found" });
@@ -216,7 +213,7 @@ exports.calculatePrice = async (req, res) => {
     }
 
     let totalDeductionPercent = 0;
-    const deductionBreakdown  = [];
+    const deductionBreakdown = [];
 
     if (answers) {
       for (const q of config.questions) {
@@ -224,7 +221,7 @@ exports.calculatePrice = async (req, res) => {
         if (answer === false && q.deductionOnNo > 0) {
           totalDeductionPercent += q.deductionOnNo;
           deductionBreakdown.push({
-            reason:    q.label,
+            reason: q.label,
             deduction: q.deductionOnNo,
           });
         }
@@ -237,7 +234,7 @@ exports.calculatePrice = async (req, res) => {
         if (defect) {
           totalDeductionPercent += defect.deduction;
           deductionBreakdown.push({
-            reason:    defect.label,
+            reason: defect.label,
             deduction: defect.deduction,
           });
         }
@@ -245,7 +242,7 @@ exports.calculatePrice = async (req, res) => {
     }
 
     let totalAdditionPercent = 0;
-    const additionBreakdown  = [];
+    const additionBreakdown = [];
 
     if (accessoryKeys?.length > 0) {
       for (const key of accessoryKeys) {
@@ -253,27 +250,33 @@ exports.calculatePrice = async (req, res) => {
         if (accessory && accessory.addition > 0) {
           totalAdditionPercent += accessory.addition;
           additionBreakdown.push({
-            reason:   accessory.label,
+            reason: accessory.label,
             addition: accessory.addition,
           });
         }
       }
     }
 
-    const basePrice       = variant.basePrice;
-    const deductionAmount = parseFloat(((basePrice * totalDeductionPercent) / 100).toFixed(2));
-    const additionAmount  = parseFloat(((basePrice * totalAdditionPercent) / 100).toFixed(2));
+    const basePrice = variant.basePrice;
+    const deductionAmount = parseFloat(
+      ((basePrice * totalDeductionPercent) / 100).toFixed(2),
+    );
+    const additionAmount = parseFloat(
+      ((basePrice * totalAdditionPercent) / 100).toFixed(2),
+    );
     const afterDeductions = basePrice - deductionAmount + additionAmount;
-    const processingFee   = config.processingFee;
-    const finalPrice      = Math.max(0, Math.round(afterDeductions - processingFee));
+    const processingFee = config.processingFee;
+    const finalPrice = Math.max(0, Math.round(afterDeductions - processingFee));
 
     res.status(200).json({
       success: true,
       data: {
         device: {
-          model:    model.name,
-          variant:  variant.ram ? `${variant.ram}/${variant.storage}` : variant.storage,
-          image:    model.image,
+          model: model.name,
+          variant: variant.ram
+            ? `${variant.ram}/${variant.storage}`
+            : variant.storage,
+          image: model.image,
           category,
         },
         pricing: {
@@ -286,7 +289,7 @@ exports.calculatePrice = async (req, res) => {
         },
         breakdown: {
           deductions: deductionBreakdown,
-          additions:  additionBreakdown,
+          additions: additionBreakdown,
         },
       },
     });
@@ -308,7 +311,7 @@ exports.submitListing = async (req, res) => {
     const {
       variantId,
       modelId,
-      category,       // ✅ now required
+      category, // ✅ now required
       answers,
       defectKeys,
       accessoryKeys,
@@ -318,20 +321,16 @@ exports.submitListing = async (req, res) => {
       return res.status(400).json({ message: "category is required" });
     }
 
-    const catalog = await DeviceCatalog
-      .findOne({ "models._id": modelId })
-      .lean();
+    const catalog = await DeviceCatalog.findOne({
+      "models._id": modelId,
+    }).lean();
 
     if (!catalog) {
       return res.status(404).json({ message: "Model not found" });
     }
 
-    const model = catalog.models.find(
-      (m) => m._id.toString() === modelId
-    );
-    const variant = model?.variants.find(
-      (v) => v._id.toString() === variantId
-    );
+    const model = catalog.models.find((m) => m._id.toString() === modelId);
+    const variant = model?.variants.find((v) => v._id.toString() === variantId);
 
     if (!variant) {
       return res.status(404).json({ message: "Variant not found" });
@@ -346,7 +345,7 @@ exports.submitListing = async (req, res) => {
     }
 
     let totalDeductionPercent = 0;
-    const defectsData         = [];
+    const defectsData = [];
 
     if (answers) {
       for (const q of config.questions) {
@@ -362,8 +361,8 @@ exports.submitListing = async (req, res) => {
         if (defect) {
           totalDeductionPercent += defect.deduction;
           defectsData.push({
-            key:       defect.key,
-            label:     defect.label,
+            key: defect.key,
+            label: defect.label,
             deduction: defect.deduction,
           });
         }
@@ -371,8 +370,9 @@ exports.submitListing = async (req, res) => {
     }
 
     let totalAdditionPercent = 0;
-    const hasOriginalCharger = accessoryKeys?.includes("original_charger") || false;
-    const hasOriginalBox     = accessoryKeys?.includes("original_box")     || false;
+    const hasOriginalCharger =
+      accessoryKeys?.includes("original_charger") || false;
+    const hasOriginalBox = accessoryKeys?.includes("original_box") || false;
 
     if (accessoryKeys?.length > 0) {
       for (const key of accessoryKeys) {
@@ -381,52 +381,59 @@ exports.submitListing = async (req, res) => {
       }
     }
 
-    const basePrice       = variant.basePrice;
-    const deductionAmount = parseFloat(((basePrice * totalDeductionPercent) / 100).toFixed(2));
-    const additionAmount  = parseFloat(((basePrice * totalAdditionPercent) / 100).toFixed(2));
-    const processingFee   = config.processingFee;
-    const finalPrice      = Math.max(0, Math.round(basePrice - deductionAmount + additionAmount - processingFee));
+    const basePrice = variant.basePrice;
+    const deductionAmount = parseFloat(
+      ((basePrice * totalDeductionPercent) / 100).toFixed(2),
+    );
+    const additionAmount = parseFloat(
+      ((basePrice * totalAdditionPercent) / 100).toFixed(2),
+    );
+    const processingFee = config.processingFee;
+    const finalPrice = Math.max(
+      0,
+      Math.round(basePrice - deductionAmount + additionAmount - processingFee),
+    );
 
     const listing = await DeviceListing.create({
-      listedBy:  userId,
-      brand:     catalog.brand,
-      category,                    // ✅ saved on listing
-      model:     model.name,
-      ram:       variant.ram,
-      storage:   variant.storage,
-      image:     model.image,
+      listedBy: userId,
+      brand: catalog.brand,
+      category, // ✅ saved on listing
+      model: model.name,
+      ram: variant.ram,
+      storage: variant.storage,
+      image: model.image,
 
       evaluation: {
-        canMakeCalls:        answers?.can_make_calls   ?? true,
-        touchWorking:        answers?.touch_working    ?? true,
-        originalScreen:      answers?.original_screen  ?? true,
-        defects:             defectsData,
+        canMakeCalls: answers?.can_make_calls ?? true,
+        touchWorking: answers?.touch_working ?? true,
+        originalScreen: answers?.original_screen ?? true,
+        defects: defectsData,
         hasOriginalCharger,
         hasOriginalBox,
       },
 
       basePrice,
-      totalDeduction:  totalDeductionPercent,
+      totalDeduction: totalDeductionPercent,
       deductionAmount,
       processingFee,
       finalPrice,
-      status:          "available",
+      status: "available",
     });
 
     await DeviceCatalog.updateOne(
       { "models._id": modelId },
-      { $inc: { "models.$.soldCount": 1 } }
+      { $inc: { "models.$.soldCount": 1 } },
     );
 
     res.status(201).json({
       success: true,
       message: "Your device has been listed. Sellers will contact you soon.",
       data: {
-        listingId:  listing._id,
-        device:     `${model.name} (${variant.ram ? `${variant.ram}/` : ""}${variant.storage})`,
+        listingId: listing._id,
+        device: `${model.name} (${variant.ram ? `${variant.ram}/` : ""}${variant.storage})`,
         category,
         finalPrice,
-        status:     "available",
+        status: "available",
       },
     });
   } catch (error) {
@@ -436,18 +443,30 @@ exports.submitListing = async (req, res) => {
 };
 
 ////////////////////////////////////////////////////////////////////
-//// GET ALL AVAILABLE DEVICE LISTINGS — for sellers to browse
-//// GET /api/device-sell/listings
+//// GET LISTINGS — for sellers to browse
+//// Super seller sees super_seller_only listings
+//// Regular sellers see all_sellers listings
 ////////////////////////////////////////////////////////////////////
 
 exports.getListings = async (req, res) => {
   try {
     const { brand, model, category, page = 1, limit = 20 } = req.query;
+    const seller = req.user;
 
     const filter = { status: "available" };
+
+    if (seller.isSuperSeller) {
+      // ✅ Super seller ONLY sees super_seller_only listings
+      // Once rejected (visibility flips to all_sellers) — gone from their view
+      filter.visibility = "super_seller_only";
+    } else {
+      // ✅ Regular sellers ONLY see listings super seller has passed on
+      filter.visibility = "all_sellers";
+    }
+
     if (brand)    filter.brand    = new RegExp(brand, "i");
     if (model)    filter.model    = new RegExp(model, "i");
-    if (category) filter.category = category;    // ✅ filter by category
+    if (category) filter.category = category;
 
     const pageNum  = Math.max(1, parseInt(page));
     const limitNum = Math.min(50, Math.max(1, parseInt(limit)));
@@ -465,6 +484,7 @@ exports.getListings = async (req, res) => {
 
     res.status(200).json({
       success: true,
+      pool: seller.isSuperSeller ? "priority_pool" : "open_pool",
       pagination: {
         total,
         page:       pageNum,
@@ -481,6 +501,7 @@ exports.getListings = async (req, res) => {
   }
 };
 
+
 ////////////////////////////////////////////////////////////////////
 //// GET NEARBY DEVICE LISTINGS — for "Sell devices near you"
 //// GET /api/device-sell/listings/nearby
@@ -491,10 +512,10 @@ exports.getNearbyListings = async (req, res) => {
     let {
       latitude,
       longitude,
-      radius    = 10,
+      radius = 10,
       category,
-      page      = 1,
-      limit     = 20,
+      page = 1,
+      limit = 20,
     } = req.query;
 
     // Use saved user location if no coords provided
@@ -502,7 +523,7 @@ exports.getNearbyListings = async (req, res) => {
       if (req.user?.location?.coordinates) {
         const [savedLng, savedLat] = req.user.location.coordinates;
         if (savedLng !== 0 || savedLat !== 0) {
-          latitude  = savedLat;
+          latitude = savedLat;
           longitude = savedLng;
         }
       }
@@ -510,17 +531,18 @@ exports.getNearbyListings = async (req, res) => {
 
     if (!latitude || !longitude) {
       return res.status(400).json({
-        message: "Location required. Provide ?latitude=&longitude= or save your location first",
+        message:
+          "Location required. Provide ?latitude=&longitude= or save your location first",
       });
     }
 
-    const lat     = parseFloat(latitude);
-    const lng     = parseFloat(longitude);
+    const lat = parseFloat(latitude);
+    const lng = parseFloat(longitude);
     const radiusM = Number(radius) * 1000;
 
-    const pageNum  = Math.max(1, parseInt(page));
+    const pageNum = Math.max(1, parseInt(page));
     const limitNum = Math.min(50, Math.max(1, parseInt(limit)));
-    const skip     = (pageNum - 1) * limitNum;
+    const skip = (pageNum - 1) * limitNum;
 
     // DeviceListing doesn't have GeoJSON location
     // so we join with User collection to get their location
@@ -528,17 +550,17 @@ exports.getNearbyListings = async (req, res) => {
       {
         // Join with users to get their location
         $lookup: {
-          from:         "users",
-          localField:   "listedBy",
+          from: "users",
+          localField: "listedBy",
           foreignField: "_id",
-          as:           "user",
+          as: "user",
         },
       },
       { $unwind: "$user" },
       {
         // Filter by distance using user's location
         $match: {
-          status:              "available",
+          status: "available",
           ...(category && { category }),
           "user.location": {
             $geoWithin: {
@@ -575,7 +597,14 @@ exports.getNearbyListings = async (req, res) => {
                           $multiply: [
                             { $cos: { $degreesToRadians: "$$lat1" } },
                             { $cos: { $degreesToRadians: "$$lat2" } },
-                            { $cos: { $subtract: [{ $degreesToRadians: "$$lon2" }, { $degreesToRadians: "$$lon1" }] } },
+                            {
+                              $cos: {
+                                $subtract: [
+                                  { $degreesToRadians: "$$lon2" },
+                                  { $degreesToRadians: "$$lon1" },
+                                ],
+                              },
+                            },
                           ],
                         },
                       ],
@@ -587,30 +616,30 @@ exports.getNearbyListings = async (req, res) => {
           },
         },
       },
-      { $sort:  { distance: 1 } },
-      { $skip:  skip },
+      { $sort: { distance: 1 } },
+      { $skip: skip },
       { $limit: limitNum },
       {
         $project: {
-          brand:        1,
-          category:     1,
-          model:        1,
-          storage:      1,
-          ram:          1,
-          image:        1,
-          finalPrice:   1,
-          basePrice:    1,
-          status:       1,
-          distance:     1,
-          createdAt:    1,
+          brand: 1,
+          category: 1,
+          model: 1,
+          storage: 1,
+          ram: 1,
+          image: 1,
+          finalPrice: 1,
+          basePrice: 1,
+          status: 1,
+          distance: 1,
+          createdAt: 1,
           evaluation: {
-            canMakeCalls:   1,
-            touchWorking:   1,
+            canMakeCalls: 1,
+            touchWorking: 1,
             originalScreen: 1,
           },
           listedBy: {
-            _id:            "$user._id",
-            firstname:      "$user.firstname",
+            _id: "$user._id",
+            firstname: "$user.firstname",
             defaultAddress: "$user.defaultAddress",
           },
         },
@@ -629,15 +658,15 @@ exports.getNearbyListings = async (req, res) => {
       success: true,
       meta: {
         userLocation: { latitude: lat, longitude: lng },
-        radiusKm:     Number(radius),
+        radiusKm: Number(radius),
       },
       pagination: {
         total,
-        page:       pageNum,
-        limit:      limitNum,
+        page: pageNum,
+        limit: limitNum,
         totalPages: Math.ceil(total / limitNum),
-        hasNext:    pageNum < Math.ceil(total / limitNum),
-        hasPrev:    pageNum > 1,
+        hasNext: pageNum < Math.ceil(total / limitNum),
+        hasPrev: pageNum > 1,
       },
       data: listings,
     });
@@ -648,37 +677,47 @@ exports.getNearbyListings = async (req, res) => {
 };
 
 ////////////////////////////////////////////////////////////////////
-//// SELLER ACCEPTS LISTING
-//// POST /api/device-sell/listings/:listingId/accept
+//// ACCEPT LISTING — works same for both seller types
 ////////////////////////////////////////////////////////////////////
 
 exports.acceptListing = async (req, res) => {
   try {
     const { listingId } = req.params;
-    const sellerId      = req.user._id;
+    const seller = req.user;
 
     if (!isValidObjectId(listingId)) {
       return res.status(400).json({ message: "Invalid listing ID" });
     }
 
+    // Build filter based on seller type
+    // Super seller can only accept super_seller_only listings
+    // Regular sellers can only accept all_sellers listings
+    const visibilityFilter = seller.isSuperSeller
+      ? { visibility: "super_seller_only" }
+      : { visibility: "all_sellers" };
+
     const listing = await DeviceListing.findOne({
-      _id:    listingId,
+      _id: listingId,
       status: "available",
+      ...visibilityFilter,
     }).populate("listedBy", "firstname lastname mobile");
 
     if (!listing) {
       return res.status(404).json({
-        message: "Listing not found or already accepted by another seller",
+        message: seller.isSuperSeller
+          ? "Listing not found or already accepted"
+          : "Listing not found, already accepted, or not yet available to regular sellers",
       });
     }
 
-    // Seller cannot accept their own listing (edge case)
-    if (listing.listedBy._id.toString() === sellerId.toString()) {
-      return res.status(400).json({ message: "You cannot accept your own listing" });
+    if (listing.listedBy._id.toString() === seller._id.toString()) {
+      return res
+        .status(400)
+        .json({ message: "You cannot accept your own listing" });
     }
 
-    listing.status     = "accepted";
-    listing.acceptedBy = sellerId;
+    listing.status = "accepted";
+    listing.acceptedBy = seller._id;
     listing.acceptedAt = new Date();
     await listing.save();
 
@@ -686,11 +725,12 @@ exports.acceptListing = async (req, res) => {
       success: true,
       message: "Listing accepted. Contact the user to arrange pickup.",
       data: {
-        listingId:  listing._id,
-        device:     `${listing.model}`,
+        listingId: listing._id,
+        device: listing.model,
         finalPrice: listing.finalPrice,
+        acceptedAs: seller.isSuperSeller ? "super_seller" : "seller",
         user: {
-          name:   `${listing.listedBy.firstname} ${listing.listedBy.lastname}`,
+          name: `${listing.listedBy.firstname} ${listing.listedBy.lastname}`,
           mobile: listing.listedBy.mobile,
         },
       },
@@ -701,7 +741,6 @@ exports.acceptListing = async (req, res) => {
   }
 };
 
-
 ////////////////////////////////////////////////////////////////////
 //// SELLER COMPLETES — after face-to-face inspection
 //// POST /api/device-sell/listings/:listingId/complete
@@ -710,16 +749,16 @@ exports.acceptListing = async (req, res) => {
 exports.completeListing = async (req, res) => {
   try {
     const { listingId } = req.params;
-    const sellerId      = req.user._id;
+    const sellerId = req.user._id;
 
     if (!isValidObjectId(listingId)) {
       return res.status(400).json({ message: "Invalid listing ID" });
     }
 
     const listing = await DeviceListing.findOne({
-      _id:        listingId,
+      _id: listingId,
       acceptedBy: sellerId,
-      status:     "accepted",
+      status: "accepted",
     });
 
     if (!listing) {
@@ -728,7 +767,7 @@ exports.completeListing = async (req, res) => {
       });
     }
 
-    listing.status      = "completed";
+    listing.status = "completed";
     listing.completedAt = new Date();
     await listing.save();
 
@@ -736,8 +775,8 @@ exports.completeListing = async (req, res) => {
       success: true,
       message: "Transaction completed successfully",
       data: {
-        listingId:   listing._id,
-        finalPrice:  listing.finalPrice,
+        listingId: listing._id,
+        finalPrice: listing.finalPrice,
         completedAt: listing.completedAt,
       },
     });
@@ -747,26 +786,25 @@ exports.completeListing = async (req, res) => {
   }
 };
 
-
 ////////////////////////////////////////////////////////////////////
-//// SELLER REJECTS — after face-to-face inspection
-//// POST /api/device-sell/listings/:listingId/reject
+//// REJECT LISTING — only super seller can reject to open pool
+//// Regular sellers use cancelListing after accepting if needed
 ////////////////////////////////////////////////////////////////////
 
 exports.rejectListing = async (req, res) => {
   try {
     const { listingId } = req.params;
-    const sellerId      = req.user._id;
-    const { reason }    = req.body;
+    const seller = req.user;
+    const { reason } = req.body;
 
     if (!isValidObjectId(listingId)) {
       return res.status(400).json({ message: "Invalid listing ID" });
     }
 
     const listing = await DeviceListing.findOne({
-      _id:        listingId,
-      acceptedBy: sellerId,
-      status:     "accepted",
+      _id: listingId,
+      acceptedBy: seller._id,
+      status: "accepted",
     });
 
     if (!listing) {
@@ -775,21 +813,49 @@ exports.rejectListing = async (req, res) => {
       });
     }
 
-    // Put back to available so other sellers can accept
-    listing.status          = "available";
-    listing.acceptedBy      = null;
-    listing.acceptedAt      = null;
-    listing.rejectedAt      = new Date();
+    // ── Super seller rejects after face-to-face ────────────────────────────
+    // → listing goes to open pool for regular sellers
+    if (seller.isSuperSeller) {
+      listing.status = "available";
+      listing.acceptedBy = null;
+      listing.acceptedAt = null;
+      listing.visibility = "all_sellers"; // ✅ now open to all
+      listing.superSellerRejected = true;
+      listing.superSellerRejectedBy = seller._id;
+      listing.superSellerRejectedAt = new Date();
+      listing.rejectionReason = reason?.trim() || null;
+      await listing.save();
+
+      return res.status(200).json({
+        success: true,
+        message: "Listing rejected. It is now visible to all regular sellers.",
+        data: {
+          listingId: listing._id,
+          visibility: "all_sellers",
+          status: "available",
+          reason: reason?.trim() || null,
+        },
+      });
+    }
+
+    // ── Regular seller rejects after face-to-face ──────────────────────────
+    // → listing stays in open pool (visibility unchanged)
+    listing.status = "available";
+    listing.acceptedBy = null;
+    listing.acceptedAt = null;
+    listing.rejectedAt = new Date();
     listing.rejectionReason = reason?.trim() || null;
     await listing.save();
 
     res.status(200).json({
       success: true,
-      message: "Listing rejected. It is now available for other sellers.",
+      message:
+        "Listing rejected. It is back in the open pool for other sellers.",
       data: {
         listingId: listing._id,
-        status:    "available",
-        reason:    reason?.trim() || null,
+        visibility: listing.visibility,
+        status: "available",
+        reason: reason?.trim() || null,
       },
     });
   } catch (error) {
@@ -798,31 +864,30 @@ exports.rejectListing = async (req, res) => {
   }
 };
 
-
 ////////////////////////////////////////////////////////////////////
 //// SELLER — GET THEIR OWN ACCEPTED/COMPLETED LISTINGS
 //// GET /api/device-sell/my-accepted-listings
 ////////////////////////////////////////////////////////////////////
- 
+
 exports.getMyAcceptedListings = async (req, res) => {
   try {
     const sellerId = req.user._id;
- 
+
     // Fetch all listings this seller has accepted or completed.
     // "rejected" is excluded because the backend resets those back to "available"
     // and clears acceptedBy, so they'd never match this seller anyway.
     const listings = await DeviceListing.find({
       acceptedBy: sellerId,
-      status:     { $in: ["accepted", "completed"] },
+      status: { $in: ["accepted", "completed"] },
     })
       .sort({ acceptedAt: -1 })
       .populate("listedBy", "firstname lastname mobile defaultAddress")
       .lean();
- 
+
     res.status(200).json({
       success: true,
-      count:   listings.length,
-      data:    listings,
+      count: listings.length,
+      data: listings,
     });
   } catch (error) {
     console.error("getMyAcceptedListings error:", error);
@@ -838,16 +903,16 @@ exports.getMyAcceptedListings = async (req, res) => {
 exports.cancelListing = async (req, res) => {
   try {
     const { listingId } = req.params;
-    const userId        = req.user._id;
+    const userId = req.user._id;
 
     if (!isValidObjectId(listingId)) {
       return res.status(400).json({ message: "Invalid listing ID" });
     }
 
     const listing = await DeviceListing.findOne({
-      _id:      listingId,
+      _id: listingId,
       listedBy: userId,
-      status:   { $in: ["available"] }, // can only cancel if not yet accepted
+      status: { $in: ["available"] }, // can only cancel if not yet accepted
     });
 
     if (!listing) {
@@ -869,7 +934,6 @@ exports.cancelListing = async (req, res) => {
   }
 };
 
-
 ////////////////////////////////////////////////////////////////////
 //// GET MY LISTINGS — user sees their own listings
 //// GET /api/device-sell/my-listings
@@ -884,15 +948,14 @@ exports.getMyListings = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      count:   listings.length,
-      data:    listings,
+      count: listings.length,
+      data: listings,
     });
   } catch (error) {
     console.error("getMyListings error:", error);
     res.status(500).json({ message: "Failed to fetch your listings" });
   }
 };
-
 
 ////////////////////////////////////////////////////////////////////
 //// ADMIN — MANAGE CATALOG
@@ -909,7 +972,9 @@ exports.addBrandCatalog = async (req, res) => {
 
     const existing = await DeviceCatalog.findOne({ brand, category });
     if (existing) {
-      return res.status(409).json({ message: "Brand already exists in catalog" });
+      return res
+        .status(409)
+        .json({ message: "Brand already exists in catalog" });
     }
 
     const catalog = await DeviceCatalog.create({ brand, category, models });
@@ -917,7 +982,7 @@ exports.addBrandCatalog = async (req, res) => {
     res.status(201).json({
       success: true,
       message: "Brand catalog created",
-      data:    catalog,
+      data: catalog,
     });
   } catch (error) {
     console.error("addBrandCatalog error:", error);
@@ -925,11 +990,11 @@ exports.addBrandCatalog = async (req, res) => {
   }
 };
 
-
 // Update evaluation config
 exports.updateEvaluationConfig = async (req, res) => {
   try {
-    const { category, questions, defects, accessories, processingFee } = req.body;
+    const { category, questions, defects, accessories, processingFee } =
+      req.body;
 
     if (!category) {
       return res.status(400).json({
@@ -939,18 +1004,77 @@ exports.updateEvaluationConfig = async (req, res) => {
     }
 
     const config = await EvaluationConfig.findOneAndUpdate(
-      { category },                                          // ✅ per category
+      { category }, // ✅ per category
       { $set: { category, questions, defects, accessories, processingFee } },
-      { new: true, upsert: true }
+      { new: true, upsert: true },
     );
 
     res.status(200).json({
       success: true,
       message: `Evaluation config updated for category: ${category}`,
-      data:    config,
+      data: config,
     });
   } catch (error) {
     console.error("updateEvaluationConfig error:", error);
     res.status(500).json({ message: "Failed to update config" });
+  }
+};
+
+////////////////////////////////////////////////////////////////////
+//// SUPER SELLER DISMISSES LISTING — without accepting first
+//// POST /api/device-sell/listings/:listingId/dismiss
+//// Moves listing directly to open pool for regular sellers
+////////////////////////////////////////////////////////////////////
+
+exports.dismissListing = async (req, res) => {
+  try {
+    const { listingId } = req.params;
+    const seller        = req.user;
+    const { reason }    = req.body;
+
+    if (!isValidObjectId(listingId)) {
+      return res.status(400).json({ message: "Invalid listing ID" });
+    }
+
+    // Only super seller can dismiss
+    if (!seller.isSuperSeller) {
+      return res.status(403).json({
+        message: "Only super seller can dismiss listings",
+      });
+    }
+
+    const listing = await DeviceListing.findOne({
+      _id:        listingId,
+      status:     "available",
+      visibility: "super_seller_only",  // must still be in super seller pool
+    });
+
+    if (!listing) {
+      return res.status(404).json({
+        message: "Listing not found or already processed",
+      });
+    }
+
+    // ✅ Flip visibility — now gone from super seller view
+    // ✅ Now visible to all regular sellers
+    listing.visibility            = "all_sellers";
+    listing.superSellerRejected   = true;
+    listing.superSellerRejectedBy = seller._id;
+    listing.superSellerRejectedAt = new Date();
+    listing.rejectionReason       = reason?.trim() || null;
+    await listing.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Listing dismissed. It is now visible to all regular sellers.",
+      data: {
+        listingId:  listing._id,
+        visibility: "all_sellers",
+        status:     "available",
+      },
+    });
+  } catch (error) {
+    console.error("dismissListing error:", error);
+    res.status(500).json({ message: "Failed to dismiss listing" });
   }
 };

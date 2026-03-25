@@ -115,6 +115,15 @@ router.post(
   DeviceSellController.rejectListing
 );
 
+// POST /api/device-sell/listings/:listingId/dismiss
+// Super seller dismisses from browse screen — no need to accept first
+router.post(
+  "/listings/:listingId/dismiss",
+  authMiddleware,
+  authorize("seller"),
+  DeviceSellController.dismissListing
+);
+
 ////////////////////////////////////////////////////////////////////
 //// ADMIN — MANAGE CATALOG + CONFIG
 ////////////////////////////////////////////////////////////////////

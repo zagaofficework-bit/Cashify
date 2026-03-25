@@ -55,7 +55,32 @@ const deviceListingSchema = new mongoose.Schema(
       enum: ["available", "accepted", "completed", "rejected", "cancelled"],
       default: "available",
     },
+    // ─── VISIBILITY ────────────────────────────────────────────────
+    // super_seller_only → only super seller can see
+    // all_sellers       → super seller rejected, now open to all sellers
+    visibility: {
+      type: String,
+      enum: ["super_seller_only", "all_sellers"],
+      default: "super_seller_only",
+    },
 
+    // Track if super seller already passed on this listing
+    superSellerRejected: {
+      type: Boolean,
+      default: false,
+    },
+
+    // Who rejected at super seller stage
+    superSellerRejectedBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      default: null,
+    },
+
+    superSellerRejectedAt: {
+      type: Date,
+      default: null,
+    },
     // ─── SELLER WHO ACCEPTED ───────────────────────────────────────
     acceptedBy: {
       type: mongoose.Schema.Types.ObjectId,

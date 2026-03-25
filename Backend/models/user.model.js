@@ -135,7 +135,13 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-
+    // ─── SUPER SELLER FLAG ─────────────────────────────────────────
+    // Set manually in DB — only one seller gets this
+    // db.users.updateOne({ email: "..." }, { $set: { isSuperSeller: true } })
+    isSuperSeller: {
+      type: Boolean,
+      default: false,
+    },
     isActive: {
       type: Boolean,
       default: true,
