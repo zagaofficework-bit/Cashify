@@ -124,6 +124,20 @@ router.post(
   DeviceSellController.dismissListing
 );
 
+// User confirms pickup slot + payment method after seller accepts
+router.post(
+  "/listings/:listingId/confirm-pickup",
+  authMiddleware,
+  DeviceSellController.confirmPickup
+);
+ 
+// Seller proposes / updates slots on an accepted listing
+router.patch(
+  "/listings/:listingId/propose-slots",
+  authMiddleware,
+  DeviceSellController.proposeSlots
+);
+
 ////////////////////////////////////////////////////////////////////
 //// ADMIN — MANAGE CATALOG + CONFIG
 ////////////////////////////////////////////////////////////////////

@@ -20,7 +20,7 @@ exports.getBrands = async (req, res) => {
     if (!category) {
       return res.status(400).json({
         message: "category is required",
-        allowed: ["mobile", "laptop", "tablet", "smartwatch", "camera"],
+        allowed: ["mobile", "laptop", "tablet", "smartwatch", "television"],
       });
     }
 
@@ -58,7 +58,7 @@ exports.getModelsByBrand = async (req, res) => {
     if (!category) {
       return res.status(400).json({
         message: "category is required",
-        allowed: ["mobile", "laptop", "tablet", "smartwatch", "camera"],
+        allowed: ["mobile", "laptop", "tablet", "smartwatch", "television"],
       });
     }
 
@@ -141,7 +141,7 @@ exports.getEvaluationConfig = async (req, res) => {
     if (!category) {
       return res.status(400).json({
         message: "category is required",
-        allowed: ["mobile", "laptop", "tablet", "smartwatch", "camera"],
+        allowed: ["mobile", "laptop", "tablet", "smartwatch", "television"],
       });
     }
 
@@ -682,26 +682,24 @@ exports.getNearbyListings = async (req, res) => {
 
 exports.acceptListing = async (req, res) => {
   try {
-    const { listingId } = req.params;
-    const seller = req.user;
-
+    const { listingId }    = req.params;
+    const seller           = req.user;
+    const { proposedSlots = [] } = req.body;
+ 
     if (!isValidObjectId(listingId)) {
       return res.status(400).json({ message: "Invalid listing ID" });
     }
-
-    // Build filter based on seller type
-    // Super seller can only accept super_seller_only listings
-    // Regular sellers can only accept all_sellers listings
+ 
     const visibilityFilter = seller.isSuperSeller
       ? { visibility: "super_seller_only" }
       : { visibility: "all_sellers" };
-
+ 
     const listing = await DeviceListing.findOne({
-      _id: listingId,
+      _id:    listingId,
       status: "available",
       ...visibilityFilter,
     }).populate("listedBy", "firstname lastname mobile");
-
+ 
     if (!listing) {
       return res.status(404).json({
         message: seller.isSuperSeller
@@ -709,28 +707,45 @@ exports.acceptListing = async (req, res) => {
           : "Listing not found, already accepted, or not yet available to regular sellers",
       });
     }
-
+ 
     if (listing.listedBy._id.toString() === seller._id.toString()) {
-      return res
-        .status(400)
-        .json({ message: "You cannot accept your own listing" });
+      return res.status(400).json({ message: "You cannot accept your own listing" });
     }
-
-    listing.status = "accepted";
+ 
+    // Validate slots (max 3, each needs date + timeRange)
+    const cleanSlots = (proposedSlots || [])
+      .slice(0, 3)
+      .filter((s) => s?.date && s?.timeRange)
+      .map((s) => ({ date: s.date.trim(), timeRange: s.timeRange.trim() }));
+ 
+    listing.status     = "accepted";
     listing.acceptedBy = seller._id;
     listing.acceptedAt = new Date();
+ 
+    // ✅ Create pickup sub-document with proposed slots
+    listing.pickup = {
+      status:        "awaiting_user_confirmation",
+      proposedSlots: cleanSlots,
+      confirmedSlot: null,
+      paymentMethod: null,
+      paymentDetails: null,
+      confirmedAt:   null,
+    };
+ 
     await listing.save();
-
+ 
     res.status(200).json({
       success: true,
-      message: "Listing accepted. Contact the user to arrange pickup.",
+      message: "Listing accepted. User will be notified to confirm pickup slot and payment method.",
       data: {
-        listingId: listing._id,
-        device: listing.model,
-        finalPrice: listing.finalPrice,
-        acceptedAs: seller.isSuperSeller ? "super_seller" : "seller",
+        listingId:      listing._id,
+        device:         listing.model,
+        finalPrice:     listing.finalPrice,
+        acceptedAs:     seller.isSuperSeller ? "super_seller" : "seller",
+        proposedSlots:  cleanSlots,
+        pickupStatus:   "awaiting_user_confirmation",
         user: {
-          name: `${listing.listedBy.firstname} ${listing.listedBy.lastname}`,
+          name:   `${listing.listedBy.firstname} ${listing.listedBy.lastname}`,
           mobile: listing.listedBy.mobile,
         },
       },
@@ -738,6 +753,158 @@ exports.acceptListing = async (req, res) => {
   } catch (error) {
     console.error("acceptListing error:", error);
     res.status(500).json({ message: "Failed to accept listing" });
+  }
+};
+
+
+//Confrim Pickup
+exports.confirmPickup = async (req, res) => {
+  try {
+    const { listingId }  = req.params;
+    const userId         = req.user._id;
+    const { slotIndex, paymentMethod, paymentDetails } = req.body;
+ 
+    if (!isValidObjectId(listingId)) {
+      return res.status(400).json({ message: "Invalid listing ID" });
+    }
+ 
+    // Validate payment method
+    const VALID_PAYMENT_METHODS = ["cash", "upi", "bank_transfer"];
+    if (!VALID_PAYMENT_METHODS.includes(paymentMethod)) {
+      return res.status(400).json({
+        message: "Invalid payment method",
+        allowed: VALID_PAYMENT_METHODS,
+      });
+    }
+ 
+    // UPI and bank transfer require payment details
+    if (["upi", "bank_transfer"].includes(paymentMethod) && !paymentDetails?.trim()) {
+      return res.status(400).json({
+        message: `paymentDetails is required for ${paymentMethod}`,
+      });
+    }
+ 
+    // Find the listing owned by this user, currently accepted + awaiting confirmation
+    const listing = await DeviceListing.findOne({
+      _id:      listingId,
+      listedBy: userId,
+      status:   "accepted",
+      "pickup.status": "awaiting_user_confirmation",
+    }).populate("acceptedBy", "firstname lastname mobile");
+ 
+    if (!listing) {
+      return res.status(404).json({
+        message: "Listing not found, not in accepted state, or already confirmed",
+      });
+    }
+ 
+    // Validate slot index
+    const slots = listing.pickup.proposedSlots || [];
+    if (slots.length === 0) {
+      return res.status(400).json({
+        message: "No proposed slots available. Ask the seller to add pickup slots.",
+      });
+    }
+ 
+    const idx = parseInt(slotIndex, 10);
+    if (isNaN(idx) || idx < 0 || idx >= slots.length) {
+      return res.status(400).json({
+        message: `Invalid slotIndex. Must be 0–${slots.length - 1}`,
+      });
+    }
+ 
+    // ✅ Confirm the pickup
+    listing.pickup.confirmedSlot   = slots[idx];
+    listing.pickup.paymentMethod   = paymentMethod;
+    listing.pickup.paymentDetails  = paymentMethod === "cash" ? null : paymentDetails?.trim();
+    listing.pickup.status          = "scheduled";
+    listing.pickup.confirmedAt     = new Date();
+ 
+    await listing.save();
+ 
+    res.status(200).json({
+      success: true,
+      message: "Pickup confirmed! The seller will arrive at the scheduled time.",
+      data: {
+        listingId:     listing._id,
+        device:        `${listing.model}`,
+        finalPrice:    listing.finalPrice,
+        confirmedSlot: listing.pickup.confirmedSlot,
+        paymentMethod: listing.pickup.paymentMethod,
+        paymentDetails: listing.pickup.paymentDetails,
+        seller: {
+          name:   `${listing.acceptedBy.firstname} ${listing.acceptedBy.lastname}`,
+          mobile: listing.acceptedBy.mobile,
+        },
+      },
+    });
+  } catch (error) {
+    console.error("confirmPickup error:", error);
+    res.status(500).json({ message: "Failed to confirm pickup" });
+  }
+};
+
+
+//slots for pickup
+exports.proposeSlots = async (req, res) => {
+  try {
+    const { listingId }      = req.params;
+    const sellerId           = req.user._id;
+    const { proposedSlots }  = req.body;
+ 
+    if (!isValidObjectId(listingId)) {
+      return res.status(400).json({ message: "Invalid listing ID" });
+    }
+ 
+    if (!Array.isArray(proposedSlots) || proposedSlots.length === 0) {
+      return res.status(400).json({ message: "proposedSlots must be a non-empty array" });
+    }
+ 
+    const cleanSlots = proposedSlots
+      .slice(0, 3)
+      .filter((s) => s?.date && s?.timeRange)
+      .map((s) => ({ date: s.date.trim(), timeRange: s.timeRange.trim() }));
+ 
+    if (cleanSlots.length === 0) {
+      return res.status(400).json({
+        message: "Each slot must have date and timeRange",
+      });
+    }
+ 
+    const listing = await DeviceListing.findOne({
+      _id:        listingId,
+      acceptedBy: sellerId,
+      status:     "accepted",
+    });
+ 
+    if (!listing) {
+      return res.status(404).json({
+        message: "Listing not found or you are not the accepting seller",
+      });
+    }
+ 
+    // Reset pickup to awaiting confirmation with new slots
+    listing.pickup.proposedSlots  = cleanSlots;
+    listing.pickup.confirmedSlot  = null;
+    listing.pickup.paymentMethod  = null;
+    listing.pickup.paymentDetails = null;
+    listing.pickup.status         = "awaiting_user_confirmation";
+    listing.pickup.confirmedAt    = null;
+ 
+    await listing.save();
+ 
+    res.status(200).json({
+      success: true,
+      message: "Proposed slots updated. User will be notified to confirm.",
+      data: {
+        listingId:     listing._id,
+        proposedSlots: cleanSlots,
+        pickupStatus:  "awaiting_user_confirmation",
+      },
+    });
+  } catch (error) {
+    console.error("proposeSlots error:", error);
+    res.status(500).json({ message: "Failed to update slots" });
   }
 };
 
@@ -999,7 +1166,7 @@ exports.updateEvaluationConfig = async (req, res) => {
     if (!category) {
       return res.status(400).json({
         message: "category is required",
-        allowed: ["mobile", "laptop", "tablet", "smartwatch", "camera"],
+        allowed: ["mobile", "laptop", "tablet", "smartwatch", "television"],
       });
     }
 
