@@ -13,7 +13,7 @@ const deviceListingSchema = new mongoose.Schema(
     brand: { type: String, required: true }, // "Apple"
     category: {
       type: String,
-      enum: ["mobile", "laptop", "tablet", "smartwatch", "camera"],
+      enum: ["mobile", "laptop", "tablet", "smartwatch", "television"],
       default: "mobile",
     },
     model: { type: String, required: true }, // "Apple iPhone 6"
@@ -87,6 +87,13 @@ const deviceListingSchema = new mongoose.Schema(
       ref: "User",
       default: null,
     },
+    // ─── SUPER SELLER WINDOW ───────────────────────────────────────
+    // Super seller has exclusive access until this time
+    // After this → auto-flipped to all_sellers by cron job
+    superSellerExpiresAt: {
+      type: Date,
+      default: null,
+    },
 
     acceptedAt: { type: Date, default: null },
     completedAt: { type: Date, default: null },
@@ -94,6 +101,7 @@ const deviceListingSchema = new mongoose.Schema(
 
     rejectionReason: { type: String, default: null },
   },
+
   { timestamps: true },
 );
 

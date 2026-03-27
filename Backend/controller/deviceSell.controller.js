@@ -20,7 +20,7 @@ exports.getBrands = async (req, res) => {
     if (!category) {
       return res.status(400).json({
         message: "category is required",
-        allowed: ["mobile", "laptop", "tablet", "smartwatch", "camera"],
+        allowed: ["mobile", "laptop", "tablet", "smartwatch", "television"],
       });
     }
 
@@ -58,7 +58,7 @@ exports.getModelsByBrand = async (req, res) => {
     if (!category) {
       return res.status(400).json({
         message: "category is required",
-        allowed: ["mobile", "laptop", "tablet", "smartwatch", "camera"],
+        allowed: ["mobile", "laptop", "tablet", "smartwatch", "television"],
       });
     }
 
@@ -67,11 +67,9 @@ exports.getModelsByBrand = async (req, res) => {
       .lean();
 
     if (!catalog) {
-      return res
-        .status(404)
-        .json({
-          message: `Brand "${brand}" not found in category "${category}"`,
-        });
+      return res.status(404).json({
+        message: `Brand "${brand}" not found in category "${category}"`,
+      });
     }
 
     res.status(200).json({
@@ -141,7 +139,7 @@ exports.getEvaluationConfig = async (req, res) => {
     if (!category) {
       return res.status(400).json({
         message: "category is required",
-        allowed: ["mobile", "laptop", "tablet", "smartwatch", "camera"],
+        allowed: ["mobile", "laptop", "tablet", "smartwatch", "television"],
       });
     }
 
@@ -418,6 +416,10 @@ exports.submitListing = async (req, res) => {
       processingFee,
       finalPrice,
       status: "available",
+      visibility: "super_seller_only",
+
+      // ✅ Super seller has 6 hours exclusive window
+      superSellerExpiresAt: new Date(Date.now() + 6 * 60 * 60 * 1000),
     });
 
     await DeviceCatalog.updateOne(
@@ -452,15 +454,14 @@ exports.getListings = async (req, res) => {
   try {
     const { brand, model, category, page = 1, limit = 20 } = req.query;
     const seller = req.user;
+    const now    = new Date();
 
     const filter = { status: "available" };
 
     if (seller.isSuperSeller) {
-      // ✅ Super seller ONLY sees super_seller_only listings
-      // Once rejected (visibility flips to all_sellers) — gone from their view
-      filter.visibility = "super_seller_only";
+      filter.visibility           = "super_seller_only";
+      filter.superSellerExpiresAt = { $gt: now };  // ✅ only show non-expired listings
     } else {
-      // ✅ Regular sellers ONLY see listings super seller has passed on
       filter.visibility = "all_sellers";
     }
 
@@ -482,9 +483,19 @@ exports.getListings = async (req, res) => {
       DeviceListing.countDocuments(filter),
     ]);
 
+    // ✅ Add time remaining for super seller listings
+    const enriched = seller.isSuperSeller
+      ? listings.map((l) => ({
+          ...l,
+          expiresInMinutes: l.superSellerExpiresAt
+            ? Math.max(0, Math.round((new Date(l.superSellerExpiresAt) - now) / 60000))
+            : null,
+        }))
+      : listings;
+
     res.status(200).json({
       success: true,
-      pool: seller.isSuperSeller ? "priority_pool" : "open_pool",
+      pool:    seller.isSuperSeller ? "priority_pool" : "open_pool",
       pagination: {
         total,
         page:       pageNum,
@@ -493,14 +504,13 @@ exports.getListings = async (req, res) => {
         hasNext:    pageNum < Math.ceil(total / limitNum),
         hasPrev:    pageNum > 1,
       },
-      data: listings,
+      data: enriched,
     });
   } catch (error) {
     console.error("getListings error:", error);
     res.status(500).json({ message: "Failed to fetch listings" });
   }
 };
-
 
 ////////////////////////////////////////////////////////////////////
 //// GET NEARBY DEVICE LISTINGS — for "Sell devices near you"
@@ -999,7 +1009,7 @@ exports.updateEvaluationConfig = async (req, res) => {
     if (!category) {
       return res.status(400).json({
         message: "category is required",
-        allowed: ["mobile", "laptop", "tablet", "smartwatch", "camera"],
+        allowed: ["mobile", "laptop", "tablet", "smartwatch", "television"],
       });
     }
 
@@ -1029,8 +1039,8 @@ exports.updateEvaluationConfig = async (req, res) => {
 exports.dismissListing = async (req, res) => {
   try {
     const { listingId } = req.params;
-    const seller        = req.user;
-    const { reason }    = req.body;
+    const seller = req.user;
+    const { reason } = req.body;
 
     if (!isValidObjectId(listingId)) {
       return res.status(400).json({ message: "Invalid listing ID" });
@@ -1044,9 +1054,9 @@ exports.dismissListing = async (req, res) => {
     }
 
     const listing = await DeviceListing.findOne({
-      _id:        listingId,
-      status:     "available",
-      visibility: "super_seller_only",  // must still be in super seller pool
+      _id: listingId,
+      status: "available",
+      visibility: "super_seller_only", // must still be in super seller pool
     });
 
     if (!listing) {
@@ -1057,20 +1067,20 @@ exports.dismissListing = async (req, res) => {
 
     // ✅ Flip visibility — now gone from super seller view
     // ✅ Now visible to all regular sellers
-    listing.visibility            = "all_sellers";
-    listing.superSellerRejected   = true;
+    listing.visibility = "all_sellers";
+    listing.superSellerRejected = true;
     listing.superSellerRejectedBy = seller._id;
     listing.superSellerRejectedAt = new Date();
-    listing.rejectionReason       = reason?.trim() || null;
+    listing.rejectionReason = reason?.trim() || null;
     await listing.save();
 
     res.status(200).json({
       success: true,
       message: "Listing dismissed. It is now visible to all regular sellers.",
       data: {
-        listingId:  listing._id,
+        listingId: listing._id,
         visibility: "all_sellers",
-        status:     "available",
+        status: "available",
       },
     });
   } catch (error) {

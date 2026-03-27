@@ -27,9 +27,10 @@ const reviewSchema = new mongoose.Schema(
     // ─── RATING — only on root reviews (parentReview: null) ────────
     rating: {
       type: Number,
-      min: 1,
-      max: 5,
+      min: [1, "Rating must be at least 1"],
+      max: [5, "Rating cannot exceed 5"],
       default: null,
+      // Root reviews only — enforced in controller. Replies always null.
     },
 
     // ─── NESTED STRUCTURE ──────────────────────────────────────────
@@ -63,7 +64,7 @@ const reviewSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    
+
     // ─── MEDIA ─────────────────────────────────────────────────────
     // Up to 5 images and 1 video per review
     images: {
