@@ -1,9 +1,8 @@
 // controller/deviceSell.controller.js
-const mongoose         = require("mongoose");
+const mongoose = require("mongoose");
 const DeviceCatalog    = require("../models/deviceCatalog.model");
 const DeviceListing    = require("../models/deviceListing.model");
 const EvaluationConfig = require("../models/evaluationConfig.model");
-const emailService     = require("../service/email.service");
 const { VARIANT_FIELDS_MAP, buildVariantLabel } = require("../constants/deviceSell.constants");
 
 function isValidObjectId(id) {
@@ -156,7 +155,6 @@ function computePricing({ config, answers, defectKeys, accessoryKeys, basePrice 
   let totalAdditionPercent  = 0;
   const deductionBreakdown  = [];
   const additionBreakdown   = [];
-
   if (answers) {
     for (const q of config.questions) {
       if (answers[q.key] === false && q.deductionOnNo > 0) {
@@ -189,7 +187,6 @@ function computePricing({ config, answers, defectKeys, accessoryKeys, basePrice 
       }
     }
   }
-
   if (accessoryKeys?.length > 0) {
     for (const key of accessoryKeys) {
       const accessory = config.accessories.find((a) => a.key === key);
@@ -199,12 +196,11 @@ function computePricing({ config, answers, defectKeys, accessoryKeys, basePrice 
       }
     }
   }
-
+ 
   const deductionAmount = parseFloat(((basePrice * totalDeductionPercent) / 100).toFixed(2));
   const additionAmount  = parseFloat(((basePrice * totalAdditionPercent)  / 100).toFixed(2));
   const afterDeductions = basePrice - deductionAmount + additionAmount;
   const finalPrice      = Math.max(0, Math.round(afterDeductions - config.processingFee));
-
   return {
     totalDeductionPercent,
     totalAdditionPercent,
@@ -287,13 +283,21 @@ exports.submitListing = async (req, res) => {
     const config = await EvaluationConfig.findOne({ category }).lean();
     if (!config) return res.status(500).json({ message: `Evaluation config not found for category: ${category}` });
 
-    const pricing = computePricing({ config, answers, defectKeys, accessoryKeys, basePrice: variant.basePrice });
+    const pricing = computePricing({
+      config,
+      answers,
+      defectKeys,
+      accessoryKeys,
+      basePrice: variant.basePrice,
+    });
 
+    // Build defects array for storage
     const defectsData = (defectKeys || [])
       .map((key) => config.defects.find((d) => d.key === key))
       .filter(Boolean)
       .map((d) => ({ key: d.key, label: d.label, deduction: d.deduction }));
 
+    // Build answers map (boolean) for storage
     const answersMap = {};
     if (answers) {
       for (const q of config.questions) {
@@ -547,29 +551,9 @@ exports.acceptListing = async (req, res) => {
     listing.status     = "accepted";
     listing.acceptedBy = seller._id;
     listing.acceptedAt = new Date();
-    listing.pickup     = {
-      status: "awaiting_user_confirmation",
-      proposedSlots: cleanSlots,
-      confirmedSlot: null,
-      paymentMethod: null,
-      paymentDetails: null,
-      confirmedAt: null,
-    };
+    listing.pickup     = { status: "awaiting_user_confirmation", proposedSlots: cleanSlots, confirmedSlot: null, paymentMethod: null, paymentDetails: null, confirmedAt: null };
 
     await listing.save();
-
-    // ── Email: notify user their listing was accepted ──────────────────────
-    if (listing.listedBy?.email) {
-      emailService.sendListingAcceptedEmail(listing.listedBy.email, {
-        firstname:    listing.listedBy.firstname,
-        listingId:    listing._id,
-        deviceName:   listing.model,
-        finalPrice:   listing.finalPrice,
-        sellerName:   `${seller.firstname} ${seller.lastname}`,
-        proposedSlots: cleanSlots,
-        acceptedAs:   seller.isSuperSeller ? "super_seller" : "seller",
-      }).catch((err) => console.error("sendListingAcceptedEmail error:", err));
-    }
 
     res.status(200).json({
       success: true,
@@ -581,10 +565,7 @@ exports.acceptListing = async (req, res) => {
         acceptedAs:   seller.isSuperSeller ? "super_seller" : "seller",
         proposedSlots: cleanSlots,
         pickupStatus: "awaiting_user_confirmation",
-        user: {
-          name:   `${listing.listedBy.firstname} ${listing.listedBy.lastname}`,
-          mobile: listing.listedBy.mobile,
-        },
+        user: { name: `${listing.listedBy.firstname} ${listing.listedBy.lastname}`, mobile: listing.listedBy.mobile },
       },
     });
   } catch (error) {
@@ -650,6 +631,14 @@ exports.confirmPickup = async (req, res) => {
       }).catch((err) => console.error("sendPickupConfirmedEmail error:", err));
     }
 
+    listing.pickup.confirmedSlot   = slots[idx];
+    listing.pickup.paymentMethod   = paymentMethod;
+    listing.pickup.paymentDetails  = paymentMethod === "cash" ? null : paymentDetails?.trim();
+    listing.pickup.status          = "scheduled";
+    listing.pickup.confirmedAt     = new Date();
+
+    await listing.save();
+
     res.status(200).json({
       success: true,
       message: "Pickup confirmed! The seller will arrive at the scheduled time.",
@@ -660,10 +649,7 @@ exports.confirmPickup = async (req, res) => {
         confirmedSlot:  listing.pickup.confirmedSlot,
         paymentMethod:  listing.pickup.paymentMethod,
         paymentDetails: listing.pickup.paymentDetails,
-        seller: {
-          name:   `${listing.acceptedBy.firstname} ${listing.acceptedBy.lastname}`,
-          mobile: listing.acceptedBy.mobile,
-        },
+        seller: { name: `${listing.acceptedBy.firstname} ${listing.acceptedBy.lastname}`, mobile: listing.acceptedBy.mobile },
       },
     });
   } catch (error) {
