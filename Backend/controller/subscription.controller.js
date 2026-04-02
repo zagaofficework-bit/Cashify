@@ -1,5 +1,6 @@
 const SubscriptionModel = require("../models/subscription.model");
 const userModel         = require("../models/user.model");
+const emailService      = require("../service/email.service");
 
 const PLANS = SubscriptionModel.PLANS;
 
@@ -51,14 +52,12 @@ exports.subscribe = async (req, res) => {
   try {
     const { plan, paymentMethod, paymentId } = req.body;
 
-    // 1. Validate plan
     if (!PLANS[plan]) {
       return res.status(400).json({
         message: "Invalid plan. Choose from: basic, standard, premium",
       });
     }
 
-    // 2. Check if already has active subscription
     const existing = await SubscriptionModel.findOne({
       seller:   req.user._id,
       isActive: true,
@@ -74,17 +73,15 @@ exports.subscribe = async (req, res) => {
 
     const selectedPlan = PLANS[plan];
 
-    // 3. Set 1 year validity
     const startDate = new Date();
     const endDate   = new Date();
     endDate.setFullYear(endDate.getFullYear() + 1);
 
-    // 4. Create subscription
     const subscription = await SubscriptionModel.create({
       seller:              req.user._id,
       plan,
       price:               selectedPlan.price,
-      activeListingsLimit: selectedPlan.activeListings, // -1 = unlimited for premium
+      activeListingsLimit: selectedPlan.activeListings,
       prioritySupport:     selectedPlan.prioritySupport,
       supportType:         selectedPlan.supportType,
       startDate,
@@ -94,11 +91,20 @@ exports.subscribe = async (req, res) => {
       paymentId:     paymentId     || null,
     });
 
-    // 5. ✅ AUTO ROLE CHANGE: user → seller on subscription purchase
     await userModel.findByIdAndUpdate(req.user._id, {
       role:         "seller",
       subscription: subscription._id,
     });
+
+    // ── Email: welcome as seller ───────────────────────────────────────────
+    emailService.sendSubscriptionPurchasedEmail(req.user.email, {
+      firstname:           req.user.firstname,
+      plan,
+      price:               selectedPlan.price,
+      startDate,
+      endDate,
+      activeListingsLimit: selectedPlan.activeListings,
+    }).catch((err) => console.error("sendSubscriptionPurchasedEmail error:", err));
 
     res.status(201).json({
       success: true,
@@ -127,8 +133,8 @@ exports.getMySubscription = async (req, res) => {
       });
     }
 
-    const now          = new Date();
-    const isExpired    = new Date(subscription.endDate) < now;
+    const now           = new Date();
+    const isExpired     = new Date(subscription.endDate) < now;
     const daysRemaining = isExpired
       ? 0
       : Math.ceil((new Date(subscription.endDate) - now) / (1000 * 60 * 60 * 24));
@@ -159,14 +165,12 @@ exports.upgradePlan = async (req, res) => {
       });
     }
 
-    // Get current active plan
     const current = await SubscriptionModel.findOne({
       seller:   req.user._id,
       isActive: true,
       endDate:  { $gte: new Date() },
     }).lean();
 
-    // Prevent downgrade
     const planOrder = { basic: 1, standard: 2, premium: 3 };
     if (current && planOrder[plan] <= planOrder[current.plan]) {
       return res.status(400).json({
@@ -174,7 +178,6 @@ exports.upgradePlan = async (req, res) => {
       });
     }
 
-    // Deactivate current subscription
     await SubscriptionModel.updateMany(
       { seller: req.user._id, isActive: true },
       { isActive: false }
@@ -185,7 +188,6 @@ exports.upgradePlan = async (req, res) => {
     const endDate      = new Date();
     endDate.setFullYear(endDate.getFullYear() + 1);
 
-    // Create new subscription
     const subscription = await SubscriptionModel.create({
       seller:              req.user._id,
       plan,
@@ -200,10 +202,18 @@ exports.upgradePlan = async (req, res) => {
       paymentId:     paymentId     || null,
     });
 
-    // Update user subscription reference
     await userModel.findByIdAndUpdate(req.user._id, {
       subscription: subscription._id,
     });
+
+    // ── Email: plan upgraded ───────────────────────────────────────────────
+    emailService.sendSubscriptionUpgradedEmail(req.user.email, {
+      firstname: req.user.firstname,
+      oldPlan:   current?.plan || "none",
+      newPlan:   plan,
+      price:     selectedPlan.price,
+      endDate,
+    }).catch((err) => console.error("sendSubscriptionUpgradedEmail error:", err));
 
     res.status(200).json({
       success: true,
@@ -223,7 +233,7 @@ exports.getAllSubscriptions = async (req, res) => {
     const { plan, isActive, page = 1, limit = 20 } = req.query;
 
     const filter = {};
-    if (plan)              filter.plan     = plan;
+    if (plan)                   filter.plan     = plan;
     if (isActive !== undefined) filter.isActive = isActive === "true";
 
     const pageNum  = Math.max(1, parseInt(page));
@@ -264,17 +274,23 @@ exports.revokeSubscription = async (req, res) => {
   try {
     const { userId } = req.params;
 
-    // Deactivate all subscriptions for this user
     await SubscriptionModel.updateMany(
       { seller: userId },
       { isActive: false }
     );
 
-    // ✅ Revert role back to user
-    await userModel.findByIdAndUpdate(userId, {
-      role:         "user",
-      subscription: null,
-    });
+    const user = await userModel.findByIdAndUpdate(
+      userId,
+      { role: "user", subscription: null },
+      { new: true }
+    ).lean();
+
+    // ── Email: inform seller their subscription was revoked ────────────────
+    if (user?.email) {
+      emailService.sendSubscriptionRevokedEmail(user.email, {
+        firstname: user.firstname,
+      }).catch((err) => console.error("sendSubscriptionRevokedEmail error:", err));
+    }
 
     res.status(200).json({
       success: true,

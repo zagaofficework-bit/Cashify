@@ -1,10 +1,10 @@
 const mongoose       = require("mongoose");
 const ProductService = require("../service/product.service");
 const OrderModel     = require("../models/order.model");
+const emailService   = require("../service/email.service");
 
 const COMMISSION_RATES = OrderModel.COMMISSION_RATES;
 
-// ─── Allowed payment methods ───────────────────────────────────────────────────
 const VALID_PAYMENT_METHODS = ["Cash", "UPI", "Card", "NetBanking"];
 
 function isValidObjectId(id) {
@@ -15,7 +15,6 @@ function isValidPaymentMethod(method) {
   return VALID_PAYMENT_METHODS.includes(method);
 }
 
-// ─── HELPER: Calculate commission ─────────────────────────────────────────────
 function calculateCommission(price, role) {
   const rates  = COMMISSION_RATES[role];
   const rate   = (rates.min + rates.max) / 2;
@@ -23,7 +22,6 @@ function calculateCommission(price, role) {
   return { rate, amount };
 }
 
-// ─── Buyer populate fields — includes phone + address for seller order view ───
 const BUYER_FIELDS  = "firstname lastname email mobile phone defaultAddress";
 const SELLER_FIELDS = "firstname lastname email defaultAddress";
 
@@ -98,6 +96,29 @@ exports.buyProduct = async (req, res) => {
 
     await ProductService.markAsReserved(product._id);
 
+    // ── Email: notify buyer that order was placed ──────────────────────────
+    emailService.sendOrderPlacedEmail(req.user.email, {
+      buyerName:   `${req.user.firstname} ${req.user.lastname}`,
+      orderId:     order._id,
+      productTitle: product.title,
+      price:       product.price,
+      paymentMethod,
+    }).catch((err) => console.error("sendOrderPlacedEmail error:", err));
+
+    // ── Email: notify seller of new order ──────────────────────────────────
+    const seller = product.listedBy;
+    if (seller.email) {
+      emailService.sendNewOrderNotificationEmail(seller.email, {
+        sellerName:   `${seller.firstname} ${seller.lastname}`,
+        orderId:      order._id,
+        productTitle: product.title,
+        price:        product.price,
+        buyerName:    `${req.user.firstname} ${req.user.lastname}`,
+        buyerEmail:   req.user.email,
+        paymentMethod,
+      }).catch((err) => console.error("sendNewOrderNotificationEmail error:", err));
+    }
+
     res.status(201).json({
       success: true,
       message: "Payment successful. Order placed — waiting for seller to confirm.",
@@ -143,7 +164,7 @@ exports.confirmBuyOrder = async (req, res) => {
       status:          "pending",
     })
       .populate("product", "title price images status")
-      .populate("buyer",   BUYER_FIELDS)   // ← full buyer fields
+      .populate("buyer",   BUYER_FIELDS)
       .lean();
 
     if (!order) {
@@ -162,11 +183,23 @@ exports.confirmBuyOrder = async (req, res) => {
       { new: true }
     )
       .populate("product", "title price images")
-      .populate("buyer",   BUYER_FIELDS)   // ← full buyer fields
+      .populate("buyer",   BUYER_FIELDS)
       .populate("seller",  SELLER_FIELDS)
       .lean();
 
     await ProductService.markAsSold(order.product._id);
+
+    // ── Email: notify buyer that seller confirmed ──────────────────────────
+    if (order.buyer?.email) {
+      emailService.sendOrderConfirmedEmail(order.buyer.email, {
+        buyerName:   `${order.buyer.firstname} ${order.buyer.lastname}`,
+        orderId:     order._id,
+        productTitle: order.product.title,
+        price:       order.product.price,
+        sellerName:  `${req.user.firstname} ${req.user.lastname}`,
+        confirmedAt: confirmedOrder.confirmedAt,
+      }).catch((err) => console.error("sendOrderConfirmedEmail error:", err));
+    }
 
     res.status(200).json({
       success: true,
@@ -209,7 +242,7 @@ exports.rejectBuyOrder = async (req, res) => {
       transactionType: "buy",
       status:          "pending",
     })
-      .populate("buyer",   BUYER_FIELDS)   // ← full buyer fields
+      .populate("buyer",   BUYER_FIELDS)
       .populate("product", "title")
       .lean();
 
@@ -226,6 +259,16 @@ exports.rejectBuyOrder = async (req, res) => {
     });
 
     await ProductService.markAsAvailable(order.product._id);
+
+    // ── Email: notify buyer that order was rejected ────────────────────────
+    if (order.buyer?.email) {
+      emailService.sendOrderRejectedEmail(order.buyer.email, {
+        buyerName:    `${order.buyer.firstname} ${order.buyer.lastname}`,
+        orderId:      order._id,
+        productTitle: order.product.title,
+        reason:       reason?.trim() || null,
+      }).catch((err) => console.error("sendOrderRejectedEmail error:", err));
+    }
 
     res.status(200).json({
       success: true,
@@ -259,6 +302,7 @@ exports.cancelBuyOrder = async (req, res) => {
       status:          "pending",
     })
       .populate("product", "title _id")
+      .populate("seller",  SELLER_FIELDS)
       .lean();
 
     if (!order) {
@@ -273,6 +317,15 @@ exports.cancelBuyOrder = async (req, res) => {
     });
 
     await ProductService.markAsAvailable(order.product._id);
+
+    // ── Email: notify seller that buyer cancelled ──────────────────────────
+    if (order.seller?.email) {
+      emailService.sendOrderCancelledEmail(order.seller.email, {
+        sellerName:   `${order.seller.firstname} ${order.seller.lastname}`,
+        orderId:      order._id,
+        productTitle: order.product.title,
+      }).catch((err) => console.error("sendOrderCancelledEmail error:", err));
+    }
 
     res.status(200).json({
       success: true,
@@ -312,7 +365,7 @@ exports.getMyOrders = async (req, res) => {
         .skip(skip)
         .limit(limitNum)
         .populate("product", "title images price brand")
-        .populate("buyer",   BUYER_FIELDS)   // ← full buyer fields
+        .populate("buyer",   BUYER_FIELDS)
         .populate("seller",  SELLER_FIELDS)
         .lean(),
       OrderModel.countDocuments(filter),
@@ -348,7 +401,7 @@ exports.getSellerPendingOrders = async (req, res) => {
     })
       .sort({ createdAt: -1 })
       .populate("product", "title images price condition brand")
-      .populate("buyer",   BUYER_FIELDS)   // ← full buyer fields
+      .populate("buyer",   BUYER_FIELDS)
       .lean();
 
     res.status(200).json({
@@ -404,9 +457,45 @@ exports.updateOrderStatus = async (req, res) => {
 
     const updatedOrder = await OrderModel.findById(order._id)
       .populate("product", "title price brand images")
-      .populate("buyer",   BUYER_FIELDS)   // ← full buyer fields
+      .populate("buyer",   BUYER_FIELDS)
       .populate("seller",  SELLER_FIELDS)
       .lean();
+
+    // ── Email: notify on shipped ───────────────────────────────────────────
+    if (status === "shipped" && updatedOrder.buyer?.email) {
+      emailService.sendOrderShippedEmail(updatedOrder.buyer.email, {
+        buyerName:    `${updatedOrder.buyer.firstname} ${updatedOrder.buyer.lastname}`,
+        orderId:      updatedOrder._id,
+        productTitle: updatedOrder.product.title,
+        price:        updatedOrder.product.price,
+        sellerName:   `${updatedOrder.seller.firstname} ${updatedOrder.seller.lastname}`,
+        shippedAt:    new Date(),
+      }).catch((err) => console.error("sendOrderShippedEmail error:", err));
+    }
+
+    // ── Email: notify buyer AND seller on delivered ────────────────────────
+    if (status === "delivered") {
+      if (updatedOrder.buyer?.email) {
+        emailService.sendOrderDeliveredToBuyerEmail(updatedOrder.buyer.email, {
+          buyerName:    `${updatedOrder.buyer.firstname} ${updatedOrder.buyer.lastname}`,
+          orderId:      updatedOrder._id,
+          productTitle: updatedOrder.product.title,
+          price:        updatedOrder.product.price,
+          sellerName:   `${updatedOrder.seller.firstname} ${updatedOrder.seller.lastname}`,
+          deliveredAt:  new Date(),
+        }).catch((err) => console.error("sendOrderDeliveredToBuyerEmail error:", err));
+      }
+
+      if (updatedOrder.seller?.email) {
+        emailService.sendOrderDeliveredToSellerEmail(updatedOrder.seller.email, {
+          sellerName:   `${updatedOrder.seller.firstname} ${updatedOrder.seller.lastname}`,
+          orderId:      updatedOrder._id,
+          productTitle: updatedOrder.product.title,
+          earnings:     updatedOrder.sellerEarnings,
+          deliveredAt:  new Date(),
+        }).catch((err) => console.error("sendOrderDeliveredToSellerEmail error:", err));
+      }
+    }
 
     res.status(200).json({
       success: true,

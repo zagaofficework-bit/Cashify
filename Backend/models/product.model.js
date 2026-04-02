@@ -66,12 +66,6 @@ const productSchema = new mongoose.Schema(
       default: null,
     },
 
-    payment: {
-      type:     String,
-      enum:     ["Cash", "UPI", "Card", "NetBanking"],
-      required: [true, "Payment method is required"],
-    },
-
     // ─── MEDIA ─────────────────────────────────────────────────────
     images: {
       type:     [String],
