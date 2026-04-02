@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const DeviceCatalog    = require("../models/deviceCatalog.model");
 const DeviceListing    = require("../models/deviceListing.model");
 const EvaluationConfig = require("../models/evaluationConfig.model");
+const emailService     = require("../service/email.service");
 const { VARIANT_FIELDS_MAP, buildVariantLabel } = require("../constants/deviceSell.constants");
 
 function isValidObjectId(id) {
@@ -272,39 +273,31 @@ exports.submitListing = async (req, res) => {
     const userId = req.user._id;
     const { variantId, modelId, category, answers, defectKeys, accessoryKeys } = req.body;
     if (!category) return res.status(400).json({ message: "category is required" });
-
+ 
     const catalog = await DeviceCatalog.findOne({ "models._id": modelId }).lean();
     if (!catalog) return res.status(404).json({ message: "Model not found" });
-
+ 
     const model   = catalog.models.find((m) => m._id.toString() === modelId);
     const variant = model?.variants.find((v) => v._id.toString() === variantId);
     if (!variant) return res.status(404).json({ message: "Variant not found" });
-
+ 
     const config = await EvaluationConfig.findOne({ category }).lean();
     if (!config) return res.status(500).json({ message: `Evaluation config not found for category: ${category}` });
-
-    const pricing = computePricing({
-      config,
-      answers,
-      defectKeys,
-      accessoryKeys,
-      basePrice: variant.basePrice,
-    });
-
-    // Build defects array for storage
+ 
+    const pricing = computePricing({ config, answers, defectKeys, accessoryKeys, basePrice: variant.basePrice });
+ 
     const defectsData = (defectKeys || [])
       .map((key) => config.defects.find((d) => d.key === key))
       .filter(Boolean)
       .map((d) => ({ key: d.key, label: d.label, deduction: d.deduction }));
-
-    // Build answers map (boolean) for storage
+ 
     const answersMap = {};
     if (answers) {
       for (const q of config.questions) {
         if (answers[q.key] !== undefined) answersMap[q.key] = answers[q.key];
       }
     }
-
+ 
     const listing = await DeviceListing.create({
       listedBy:  userId,
       brand:     catalog.brand,
@@ -312,30 +305,30 @@ exports.submitListing = async (req, res) => {
       model:     model.name,
       image:     model.image,
       specs:     variant.specs,
-
+ 
       evaluation: {
         answers:       answersMap,
         defects:       defectsData,
         accessoryKeys: accessoryKeys || [],
       },
-
+ 
       basePrice:       variant.basePrice,
       totalDeduction:  pricing.totalDeductionPercent,
       deductionAmount: pricing.deductionAmount,
       additionAmount:  pricing.additionAmount,
       processingFee:   pricing.processingFee,
       finalPrice:      pricing.finalPrice,
-
+ 
       status:     "available",
       visibility: "super_seller_only",
       superSellerExpiresAt: new Date(Date.now() + 6 * 60 * 60 * 1000),
     });
-
+ 
     await DeviceCatalog.updateOne(
       { "models._id": modelId },
       { $inc: { "models.$.soldCount": 1 } }
     );
-
+ 
     // ── Email: confirm listing submitted to user ───────────────────────────
     emailService.sendDeviceListingSubmittedEmail(req.user.email, {
       firstname:  req.user.firstname,
@@ -344,7 +337,7 @@ exports.submitListing = async (req, res) => {
       category,
       finalPrice: pricing.finalPrice,
     }).catch((err) => console.error("sendDeviceListingSubmittedEmail error:", err));
-
+ 
     res.status(201).json({
       success: true,
       message: "Your device has been listed. Sellers will contact you soon.",
@@ -520,17 +513,17 @@ exports.acceptListing = async (req, res) => {
     const { listingId } = req.params;
     const seller = req.user;
     const { proposedSlots = [] } = req.body;
-
+ 
     if (!isValidObjectId(listingId)) return res.status(400).json({ message: "Invalid listing ID" });
-
+ 
     const visibilityFilter = seller.isSuperSeller
       ? { visibility: "super_seller_only" }
       : { visibility: "all_sellers" };
-
+ 
     const listing = await DeviceListing.findOne({
       _id: listingId, status: "available", ...visibilityFilter,
     }).populate("listedBy", "firstname lastname mobile email");
-
+ 
     if (!listing) {
       return res.status(404).json({
         message: seller.isSuperSeller
@@ -538,23 +531,43 @@ exports.acceptListing = async (req, res) => {
           : "Listing not found, already accepted, or not yet available to regular sellers",
       });
     }
-
+ 
     if (listing.listedBy._id.toString() === seller._id.toString()) {
       return res.status(400).json({ message: "You cannot accept your own listing" });
     }
-
+ 
     const cleanSlots = (proposedSlots || [])
       .slice(0, 3)
       .filter((s) => s?.date && s?.timeRange)
       .map((s) => ({ date: s.date.trim(), timeRange: s.timeRange.trim() }));
-
+ 
     listing.status     = "accepted";
     listing.acceptedBy = seller._id;
     listing.acceptedAt = new Date();
-    listing.pickup     = { status: "awaiting_user_confirmation", proposedSlots: cleanSlots, confirmedSlot: null, paymentMethod: null, paymentDetails: null, confirmedAt: null };
-
+    listing.pickup     = {
+      status: "awaiting_user_confirmation",
+      proposedSlots: cleanSlots,
+      confirmedSlot: null,
+      paymentMethod: null,
+      paymentDetails: null,
+      confirmedAt: null,
+    };
+ 
     await listing.save();
-
+ 
+    // ── Email: notify user their listing was accepted ──────────────────────
+    if (listing.listedBy?.email) {
+      emailService.sendListingAcceptedEmail(listing.listedBy.email, {
+        firstname:    listing.listedBy.firstname,
+        listingId:    listing._id,
+        deviceName:   listing.model,
+        finalPrice:   listing.finalPrice,
+        sellerName:   `${seller.firstname} ${seller.lastname}`,
+        proposedSlots: cleanSlots,
+        acceptedAs:   seller.isSuperSeller ? "super_seller" : "seller",
+      }).catch((err) => console.error("sendListingAcceptedEmail error:", err));
+    }
+ 
     res.status(200).json({
       success: true,
       message: "Listing accepted. User will be notified to confirm pickup slot and payment method.",
@@ -565,7 +578,10 @@ exports.acceptListing = async (req, res) => {
         acceptedAs:   seller.isSuperSeller ? "super_seller" : "seller",
         proposedSlots: cleanSlots,
         pickupStatus: "awaiting_user_confirmation",
-        user: { name: `${listing.listedBy.firstname} ${listing.listedBy.lastname}`, mobile: listing.listedBy.mobile },
+        user: {
+          name:   `${listing.listedBy.firstname} ${listing.listedBy.lastname}`,
+          mobile: listing.listedBy.mobile,
+        },
       },
     });
   } catch (error) {
